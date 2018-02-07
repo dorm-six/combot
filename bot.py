@@ -147,7 +147,6 @@ def sendWarningAndPin(msg):
     r = requests.get(BASE_URL + 'pinChatMessage', params=payload)
 
     t = getTimeStringOfMessage(msg)
-
     print('[+] {} PINNED in chat {}:{}'.format(t, msg['chat']['id'], msg['chat']['title']))
 
     return msg
@@ -156,9 +155,11 @@ def getTimeStringOfMessage(msg):
     return datetime.datetime.fromtimestamp(
             msg['date']
         ).strftime('%Y-%m-%d %H:%M:%S')
+
 """
     /hw
 """
+
 def hwHandle_response(msg):
     resp_msg = 'Huli Wi {}'.format(random.choice(HW))
     payload = {
@@ -186,13 +187,32 @@ def hwHandle_body(msg):
 
 
 def hwHandle(msg):
-    if random.randint(0, 3) != 0:
+    if random.randint(0, 1) != 0:
         return
 
     if random.randint(0, 1) == 0:
         hwHandle_body(msg)
     else:
         hwHandle_response(msg)
+
+"""
+    /unpin
+"""
+
+def unpinHandle(msg):
+    payload = {
+        'chat_id': msg['chat']['id'],
+    }
+    r = requests.get(BASE_URL + 'unpinChatMessage', params=payload)
+    if r.json()['ok'] is True:
+        payload = {
+            'chat_id': msg['chat']['id'],
+            'text': 'ОТКРЕПЛЕНО'
+        }
+        requests.get(BASE_URL + 'sendMessage', params=payload)
+
+    t = getTimeStringOfMessage(msg)
+    print('[+] {} Unpinned'.format(t))
 
 """
     initializing
@@ -257,19 +277,7 @@ try:
                     msg = sendWarningAndPin(msg)
                     broadcastWarning(msg)
                 elif msg['text'] == '/unpin@CombatDetectorBot' or msg['text'] == '/unpin':
-                    payload = {
-                        'chat_id': msg['chat']['id'],
-                    }
-                    r = requests.get(BASE_URL + 'unpinChatMessage', params=payload)
-                    if r.json()['ok'] is True:
-                        payload = {
-                            'chat_id': msg['chat']['id'],
-                            'text': 'ОТКРЕПЛЕНО'
-                        }
-                        requests.get(BASE_URL + 'sendMessage', params=payload)
-
-                    t = getTimeStringOfMessage(msg)
-                    print('[+] {} Unpinned'.format(t))
+                    unpinHandle()
                 elif msg['text'] == '/hw':
                     hwHandle(msg)
 
