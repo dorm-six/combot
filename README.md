@@ -4,9 +4,9 @@ Easy way to host your python telegram bot on Heroku
 ## Deploying via [Heroku Toolbelt](https://toolbelt.heroku.com/) (CLI)
 Install [Heroku Toolbelt](https://toolbelt.heroku.com/), then:
 ### Clone repository
-`git clone https://github.com/Kylmakalle/heroku-telegram-bot.git`
+`git clone https://gitlab.com/japroc/combot.git`
 ### Edit files
-1. Edit [bot.py](https://github.com/Kylmakalle/heroku-telegram-bot/blob/master/bot.py) file with your code
+1. Edit [bot.py](https://gitlab.com/japroc/combot/blob/master/bot.py) file with your code
 
     1. **ATTENTION!** Do not collapse/delete/comment `some_token = os.environ[SOME_TOKEN]` style stings _(you can delete redis setup line if you do not need it)_, **do not change them with your REAL tokens**, all tokens will be setted up below in this guide!
     
@@ -14,8 +14,8 @@ Install [Heroku Toolbelt](https://toolbelt.heroku.com/), then:
     3. Also, don't do like [this](http://i.imgur.com/Yni1jZX.png), it's insecure, **realy.**
 
 
-2. Edit [requirments.txt](https://github.com/Kylmakalle/heroku-telegram-bot/blob/master/requirements.txt) with your code's dependencies
-3. Specify your python [runtime](https://github.com/Kylmakalle/heroku-telegram-bot/blob/master/runtime.txt), avaliable versions listed [here](https://devcenter.heroku.com/articles/python-runtimes)
+2. Edit [requirments.txt](https://gitlab.com/japroc/combot/blob/master/requirements.txt) with your code's dependencies
+3. Specify your python [runtime](https://gitlab.com/japroc/combot/blob/master/runtime.txt), avaliable versions listed [here](https://devcenter.heroku.com/articles/python-runtimes)
 
 ### Go to command line
 ```
@@ -34,8 +34,8 @@ heroku ps:stop bot #stop bot dyno
 ```
 
 ## Deploying via [Heroku Dashboard](https://dashboard.heroku.com) (GUI)
-1. [Fork](https://github.com/Kylmakalle/heroku-telegram-bot/fork) this repo to your account. 
-2. [Edit files](https://github.com/Kylmakalle/heroku-telegram-bot#edit-files)
+1. [Fork](https://gitlab.com/japroc/combot/fork) this repo to your account. 
+2. [Edit files](https://gitlab.com/japroc/combot#edit-files)
 3. Go to [Dashboard](https://dashboard.heroku.com), login, Press _New_ and choose _Create new app._
 4. Fill in an _App Name_ and choose _Runtime Region._
 5. Connect your GitHub repo at _Deploy_ page.
