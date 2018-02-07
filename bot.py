@@ -6,6 +6,7 @@ import datetime
 from time import gmtime, strftime
 import threading
 import random
+import os
 
 # Example of your code beginning
 #           Config vars
@@ -282,4 +283,3 @@ try:
         time.sleep(3)
 except:
     IS_ALIVE = False
-    
