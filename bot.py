@@ -117,7 +117,7 @@ def combatLogger(message):
 
     print("[!] {} COMBAT DETECTED!!! {} {}".format(t, chat_id, chat_title))
 
-def broadcastWarning(message):
+def broadcastWarning(msg):
     for chat_id in BODIES:
         payload = {
             'chat_id': chat_id,
@@ -251,6 +251,7 @@ def mainActivity():
 
         for res in results:
             msg = res['message']
+            print msg
 
             try:
                 if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
