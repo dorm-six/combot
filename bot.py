@@ -251,7 +251,6 @@ def mainActivity():
 
         for res in results:
             msg = res['message']
-            print msg
 
             try:
                 if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
