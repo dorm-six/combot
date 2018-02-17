@@ -20,7 +20,7 @@ BODIES = [
 ]
 OBWAGA_CHAT_ID = [
     -1001176853573,     # testgroup
-    -1001131239095,     # Obщaga 6f
+    -1001131239095,     # 
 ]
 MALICIOUS = [
     u'комбат', u'кмбат', u'камбат', u'комбта', u'комбот',
@@ -147,6 +147,7 @@ def sendWarningAndPin(msg):
     r = requests.get(BASE_URL + 'pinChatMessage', params=payload)
 
     t = getTimeStringOfMessage(msg)
+
     print('[+] {} PINNED in chat {}:{}'.format(t, msg['chat']['id'], msg['chat']['title']))
 
     return msg
@@ -155,11 +156,9 @@ def getTimeStringOfMessage(msg):
     return datetime.datetime.fromtimestamp(
             msg['date']
         ).strftime('%Y-%m-%d %H:%M:%S')
-
 """
     /hw
 """
-
 def hwHandle_response(msg):
     resp_msg = 'Huli Wi {}'.format(random.choice(HW))
     payload = {
@@ -187,7 +186,7 @@ def hwHandle_body(msg):
 
 
 def hwHandle(msg):
-    if random.randint(0, 1) != 0:
+    if random.randint(0, 3) != 0:
         return
 
     if random.randint(0, 1) == 0:
@@ -195,62 +194,46 @@ def hwHandle(msg):
     else:
         hwHandle_response(msg)
 
-"""
-    /unpin
-"""
+def mainActivity():
+    global UPDATE_OFFSET
+    global BASE_URL
+    global LAST_UPDATE_ID
 
-def unpinHandle(msg):
-    payload = {
-        'chat_id': msg['chat']['id'],
-    }
-    r = requests.get(BASE_URL + 'unpinChatMessage', params=payload)
-    if r.json()['ok'] is True:
-        payload = {
-            'chat_id': msg['chat']['id'],
-            'text': 'ОТКРЕПЛЕНО'
-        }
-        requests.get(BASE_URL + 'sendMessage', params=payload)
+    """
+        initializing
+    """
+    print('Initializing...')
 
-    t = getTimeStringOfMessage(msg)
-    print('[+] {} Unpinned'.format(t))
+    payload = {'allowed_updates': ['message'], 'offset': UPDATE_OFFSET}
+    r = requests.get(BASE_URL + 'getUpdates', params=payload)
+    data = r.json()
 
-"""
-    initializing
-"""
+    if data['ok'] == False:
+        print('status "False" on getUpdates returned')
+        print('Exiting...')
+        exit()
 
-print('Initializing...')
+    if len(data['result']) > 0:
+        UPDATE_OFFSET = data['result'][-1]['update_id']
 
-payload = {'allowed_updates': ['message'], 'offset': UPDATE_OFFSET}
-r = requests.get(BASE_URL + 'getUpdates', params=payload)
-data = r.json()
+    res = data['result']
 
-if data['ok'] == False:
-    print('status "False" on getUpdates returned')
-    print('Exiting...')
-    exit()
+    if len(res) != 0:
+        last_msg = res[-1]
+        LAST_UPDATE_ID = last_msg['update_id']
 
-if len(data['result']) > 0:
-    UPDATE_OFFSET = data['result'][-1]['update_id']
+    """
+        init heartbeat thread
+    """
 
-res = data['result']
+    heartbeat_thread = HeartbeatThread()  # ...Instantiate a thread and pass a unique ID to it
+    heartbeat_thread.start()
 
-if len(res) != 0:
-    last_msg = res[-1]
-    LAST_UPDATE_ID = last_msg['update_id']
+    """
+        main work
+    """
+    print('Main Work started...')
 
-"""
-    init heartbeat thread
-"""
-
-heartbeat_thread = HeartbeatThread()  # ...Instantiate a thread and pass a unique ID to it
-heartbeat_thread.start()
-
-"""
-    main work
-"""
-
-print('Main Work started...')
-try:
     while True:
         try:
             data = getUpdatesOrExit()
@@ -260,7 +243,7 @@ try:
             continue
 
         ress = data['result']
-        results = filter(filterByUpdateIdandChatId, ress)
+        results = list(filter(filterByUpdateIdandChatId, ress))
 
         if len(results) == 0:
             time.sleep(3)
@@ -277,7 +260,19 @@ try:
                     msg = sendWarningAndPin(msg)
                     broadcastWarning(msg)
                 elif msg['text'] == '/unpin@CombatDetectorBot' or msg['text'] == '/unpin':
-                    unpinHandle()
+                    payload = {
+                        'chat_id': msg['chat']['id'],
+                    }
+                    r = requests.get(BASE_URL + 'unpinChatMessage', params=payload)
+                    if r.json()['ok'] is True:
+                        payload = {
+                            'chat_id': msg['chat']['id'],
+                            'text': 'ОТКРЕПЛЕНО'
+                        }
+                        requests.get(BASE_URL + 'sendMessage', params=payload)
+
+                    t = getTimeStringOfMessage(msg)
+                    print('[+] {} Unpinned'.format(t))
                 elif msg['text'] == '/hw':
                     hwHandle(msg)
 
@@ -289,5 +284,15 @@ try:
         LAST_UPDATE_ID = ress[-1]['update_id']
 
         time.sleep(3)
-except:
-    IS_ALIVE = False
+
+if __name__ == "__main__":
+    while True:
+        try:
+            mainActivity()
+        except KeyboardInterrupt:
+            IS_ALIVE = False
+            break
+        except Exception as e:
+            print(e)
+            IS_ALIVE = False
+            time.sleep(10)
