@@ -287,15 +287,15 @@ def handleAdminCommands(msg):
         print('[PIN] {}'.format(text))
         # PIN MESSAGE
         text = text[5:]
-        res = apiSendMsg(TESTGROUP_CHAT_ID, text)
+        res = apiSendMsg(OBWAGA6_CHAT_ID, text)
         if res is not None:
-            apiPinMsg(TESTGROUP_CHAT_ID, res['message_id'])
+            apiPinMsg(OBWAGA6_CHAT_ID, res['message_id'])
 
     elif text.find('msg: ') == 0:
         print('[MSG] {}'.format(text))
         # SEND MESSAGE
         text = text[5:]
-        apiSendMsg(TESTGROUP_CHAT_ID, text)
+        apiSendMsg(OBWAGA6_CHAT_ID, text)
 
 # -------------------------
 # --- External messages ---
@@ -402,4 +402,3 @@ if __name__ == "__main__":
             print(e)
             IS_ALIVE = False
             time.sleep(10)
-            
