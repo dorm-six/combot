@@ -13,15 +13,22 @@ import os
 TOKEN = os.environ['TELEGRAM_TOKEN']
 BASE_URL = 'https://api.telegram.org/bot' + TOKEN + '/'
 
+JEKA_DJ_CHAT_ID = 239745097
+DENIS_EMINEM_CHAT_ID = 129085681
+VLAD_KULAK_CHAT_ID = 1591398
 BODIES = [
-    239745097,  # Jeka_DJ
-    129085681,  # Denis_Eminem
-    1591398,    # Vlad_Kulak
+    JEKA_DJ_CHAT_ID,        # Jeka_DJ
+    DENIS_EMINEM_CHAT_ID,   # Denis_Eminem
+    VLAD_KULAK_CHAT_ID,     # Vlad_Kulak
 ]
-OBWAGA_CHAT_ID = [
-    -1001176853573,     # testgroup
-    -1001131239095,     # 
+
+OBWAGA6_CHAT_ID = -1001131239095
+TESTGROUP_CHAT_ID = -1001176853573
+OBWAGA_CHAT_IDS = [
+    TESTGROUP_CHAT_ID,     # testgroup
+    OBWAGA6_CHAT_ID,       # 
 ]
+
 MALICIOUS = [
     u'комбат', u'кмбат', u'камбат', u'комбта', u'комбот',
     u'combat', u'cmbat', u'cambat', u'combta', u'combot',
@@ -43,25 +50,27 @@ HW = [
 UPDATE_OFFSET = 0
 LAST_UPDATE_ID = 0
 
+# ------------------------
+# --- Heartbeat thread ---
+# ------------------------
+
 IS_ALIVE = True
-"""
-    Heartbeat thread
-"""
+
 class HeartbeatThread(threading.Thread):
     def run(self):
         while IS_ALIVE is True:
             payload = {
-                'chat_id': 239745097, # Jeka_DJ
+                'chat_id': JEKA_DJ_CHAT_ID, # Jeka_DJ
                 'text': '[<3] Combot Heartbeat'
             }
             requests.get(BASE_URL + 'sendMessage', params=payload)
             print('[<3] {} Heartbeat sent'.format(str(datetime.datetime.now())))
 
-            time.sleep(5*60)
+            time.sleep(15*60)
 
-"""
-    Foos
-"""
+# ------------
+# --- Foos ---
+# ------------
 
 def combatFinder(msg):
     msg = msg.lower()
@@ -104,7 +113,17 @@ def getUpdatesOrExit():
 
 def filterByUpdateIdandChatId(res):
     try:
-        return res['update_id'] > LAST_UPDATE_ID and res['message']['chat']['id'] in OBWAGA_CHAT_ID
+        cond1 = res['update_id'] > LAST_UPDATE_ID
+        cond21 = res['message']['chat']['id'] in OBWAGA_CHAT_IDS
+        cond22 = res['message']['chat']['id'] == 239745097
+        cond2 = cond21 or cond22
+        return cond1 and cond2
+    except KeyError:
+        return False
+
+def filterByUpdateId(res):
+    try:
+        return res['update_id'] > LAST_UPDATE_ID
     except KeyError:
         return False
 
@@ -140,14 +159,9 @@ def sendWarningAndPin(msg):
         return
 
     msg = data['result']
-    payload = {
-        'chat_id': msg['chat']['id'],
-        'message_id': msg['message_id']
-    }
-    r = requests.get(BASE_URL + 'pinChatMessage', params=payload)
+    apiPinMsg(msg['chat']['id'], msg['message_id'])
 
     t = getTimeStringOfMessage(msg)
-
     print('[+] {} PINNED in chat {}:{}'.format(t, msg['chat']['id'], msg['chat']['title']))
 
     return msg
@@ -156,9 +170,35 @@ def getTimeStringOfMessage(msg):
     return datetime.datetime.fromtimestamp(
             msg['date']
         ).strftime('%Y-%m-%d %H:%M:%S')
-"""
-    /hw
-"""
+
+def handleUnpin(msg):
+    payload = {
+        'chat_id': msg['chat']['id'],
+    }
+    r = requests.get(BASE_URL + 'unpinChatMessage', params=payload)
+    if r.json()['ok'] is True:
+        apiSendMsg(msg['chat']['id'], 'ОТКРЕПЛЕНО')
+    t = getTimeStringOfMessage(msg)
+    print('[+] {} Unpinned'.format(t))
+
+def handleBroadcastNotification(msg):
+    broadcastWarning(msg)
+    combatLogger(msg)
+
+def handlePin(msg):
+    msg = sendWarningAndPin(msg)
+    broadcastWarning(msg)
+
+def handlePing(msg):
+    chat_id = msg['chat']['id']
+    text = 'I am Alive, сучка'
+    apiSendMsg(chat_id, text)
+    print('[+] handlePing')
+
+# -----------
+# --- /hw ---
+# -----------
+
 def hwHandle_response(msg):
     resp_msg = 'Huli Wi {}'.format(random.choice(HW))
     payload = {
@@ -188,20 +228,99 @@ def hwHandle_body(msg):
 def hwHandle(msg):
     if random.randint(0, 3) != 0:
         return
-
     if random.randint(0, 1) == 0:
         hwHandle_body(msg)
     else:
         hwHandle_response(msg)
+
+# -----------------
+# --- API CALLS ---
+# -----------------
+
+def apiSendMsg(chat_id, msg):
+    payload = {
+        'chat_id': chat_id,
+        'text': msg
+    }
+    r = requests.get(BASE_URL + 'sendMessage', params=payload)
+    data = r.json()
+
+    if data['ok'] == False:
+        return None
+    else:
+        return data['result']
+
+def apiPinMsg(chat_id, msg_id):
+    payload = {
+        'chat_id': chat_id,
+        'message_id': msg_id
+    }
+    r = requests.get(BASE_URL + 'pinChatMessage', params=payload)
+    data = r.json()
+
+    if data['ok'] == False:
+        return None
+    else:
+        return data['result']
+
+def apiForwardMsg(from_chat_id, to_chat_id, msg_id):
+    payload = {
+        'chat_id': to_chat_id,
+        'from_chat_id': from_chat_id,
+        'message_id': msg_id
+    }
+    r = requests.get(BASE_URL + 'forwardMessage', params=payload)
+    data = r.json()
+
+    if data['ok'] == False:
+        return None
+    else:
+        return data['result']
+
+# ----------------------
+# --- ADMIN COMMANDS ---
+# ----------------------
+
+def handleAdminCommands(msg):
+    text = msg['text']
+    if text.find('pin: ') == 0:
+        print('[PIN] {}'.format(text))
+        # PIN MESSAGE
+        text = text[5:]
+        res = apiSendMsg(TESTGROUP_CHAT_ID, text)
+        if res is not None:
+            apiPinMsg(TESTGROUP_CHAT_ID, res['message_id'])
+
+    elif text.find('msg: ') == 0:
+        print('[MSG] {}'.format(text))
+        # SEND MESSAGE
+        text = text[5:]
+        apiSendMsg(TESTGROUP_CHAT_ID, text)
+
+# -------------------------
+# --- External messages ---
+# -------------------------
+
+def handleExternalMessage(msg):
+    from_chat_id = msg['chat']['id']
+    to_chat_id = JEKA_DJ_CHAT_ID
+    msg_id = msg['message_id']
+    res = apiForwardMsg(from_chat_id, to_chat_id, msg_id)
+    print('[+] handleExternalMessage. from:{}. to:{}. text:{}'.format(from_chat_id, to_chat_id, msg['text']))
+
+# --------------------
+# --- mainActivity ---
+# --------------------
 
 def mainActivity():
     global UPDATE_OFFSET
     global BASE_URL
     global LAST_UPDATE_ID
 
-    """
-        initializing
-    """
+    # --------------------
+    # --- initializing ---
+    # --------------------
+    
     print('Initializing...')
 
     payload = {'allowed_updates': ['message'], 'offset': UPDATE_OFFSET}
@@ -215,23 +334,19 @@ def mainActivity():
 
     if len(data['result']) > 0:
         UPDATE_OFFSET = data['result'][-1]['update_id']
+        LAST_UPDATE_ID = UPDATE_OFFSET
 
-    res = data['result']
-
-    if len(res) != 0:
-        last_msg = res[-1]
-        LAST_UPDATE_ID = last_msg['update_id']
-
-    """
-        init heartbeat thread
-    """
+    # -----------------------------
+    # --- init heartbeat thread ---
+    # -----------------------------
 
     heartbeat_thread = HeartbeatThread()  # ...Instantiate a thread and pass a unique ID to it
     heartbeat_thread.start()
 
-    """
-        main work
-    """
+    # -----------------
+    # --- main work ---
+    # -----------------
+    
     print('Main Work started...')
 
     while True:
@@ -243,7 +358,7 @@ def mainActivity():
             continue
 
         ress = data['result']
-        results = list(filter(filterByUpdateIdandChatId, ress))
+        results = list(filter(filterByUpdateId, ress))
 
         if len(results) == 0:
             time.sleep(3)
@@ -251,37 +366,28 @@ def mainActivity():
 
         for res in results:
             msg = res['message']
+            chat_id = msg['chat']['id']
 
-            try:
-                if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
-                    broadcastWarning(msg)
-                    combatLogger(msg)
-                elif msg['text'] == '/pin@CombatDetectorBot' or msg['text'] == '/pin':
-                    msg = sendWarningAndPin(msg)
-                    broadcastWarning(msg)
-                elif msg['text'] == '/unpin@CombatDetectorBot' or msg['text'] == '/unpin':
-                    payload = {
-                        'chat_id': msg['chat']['id'],
-                    }
-                    r = requests.get(BASE_URL + 'unpinChatMessage', params=payload)
-                    if r.json()['ok'] is True:
-                        payload = {
-                            'chat_id': msg['chat']['id'],
-                            'text': 'ОТКРЕПЛЕНО'
-                        }
-                        requests.get(BASE_URL + 'sendMessage', params=payload)
+            if chat_id in OBWAGA_CHAT_IDS:
+                try:
+                    if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
+                        handleBroadcastNotification(msg)
+                    elif msg['text'] == '/pin@CombatDetectorBot' or msg['text'] == '/pin':
+                        handlePin(msg)
+                    elif msg['text'] == '/unpin@CombatDetectorBot' or msg['text'] == '/unpin':
+                        handleUnpin(msg)
+                    elif msg['text'] == '/hw':
+                        hwHandle(msg)
+                    elif msg['text'] == '/ping@CombatDetectorBot' or msg['text'] == '/ping':
+                        handlePing(msg)
+                except KeyError:
+                    pass
+            elif chat_id == JEKA_DJ_CHAT_ID:
+                handleAdminCommands(msg)
+            else:
+                handleExternalMessage(msg)
 
-                    t = getTimeStringOfMessage(msg)
-                    print('[+] {} Unpinned'.format(t))
-                elif msg['text'] == '/hw':
-                    hwHandle(msg)
-
-            except KeyError:
-                pass
-
-            LAST_UPDATE_ID = res['update_id']
-
-        LAST_UPDATE_ID = ress[-1]['update_id']
+        LAST_UPDATE_ID = results[-1]['update_id']
 
         time.sleep(3)
 
@@ -296,3 +402,4 @@ if __name__ == "__main__":
             print(e)
             IS_ALIVE = False
             time.sleep(10)
+            
