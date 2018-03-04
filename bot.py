@@ -13,6 +13,7 @@ import os
 TOKEN = os.environ['TELEGRAM_TOKEN']
 BASE_URL = 'https://api.telegram.org/bot' + TOKEN + '/'
 
+RUSIK_CHAT_ID = -172022743
 JEKA_DJ_CHAT_ID = 239745097
 DENIS_EMINEM_CHAT_ID = 129085681
 VLAD_KULAK_CHAT_ID = 1591398
@@ -121,30 +122,14 @@ def combatLogger(msg):
 
     print("[!] {} COMBAT DETECTED!!! {} {}".format(t, chat_id, chat_title))
 
-def broadcastWarning(msg):
-    for chat_id in BODIES:
-        apiForwardMsg(msg['chat']['id'], chat_id, msg['message_id'])
-
-def sendMsgAndPin(msg):
-
-    chat_id = msg['chat']['id']
-
-    msg = apiSendMsg(chat_id, 'КОМБАТЫ')
-    if msg is None:
-        print('[!] sendMsgAndPin : result of apiSendMsg is None')
-        return
-
-    apiPinMsg(chat_id, msg['message_id'])
-
-    t = getTimeStringOfMessage(msg)
-    print('[+] {} PINNED in chat {}:{}'.format(t, chat_id, msg['chat']['title']))
-
-    return msg
-
 def getTimeStringOfMessage(msg):
     return datetime.datetime.fromtimestamp(
             msg['date']
         ).strftime('%Y-%m-%d %H:%M:%S')
+
+# ----------------
+# --- Handlers ---
+# ----------------
 
 def handleUnpin(msg):
     chat_id = msg['chat']['id']
@@ -154,13 +139,23 @@ def handleUnpin(msg):
     t = getTimeStringOfMessage(msg)
     print('[+] {} Unpinned'.format(t))
 
-def handleBroadcastNotification(msg):
-    broadcastWarning(msg)
+    if chat_id == TESTGROUP_CHAT_ID:
+        if apiUnpinMsg(RUSIK_CHAT_ID):
+            apiSendMsg(RUSIK_CHAT_ID, 'ОТКРЕПЛЕНО')
+
+def handleCombotNotification(msg):
+    for chat_id in BODIES:
+        apiForwardMsg(msg['chat']['id'], chat_id, msg['message_id'])
     combatLogger(msg)
 
 def handlePin(msg):
-    msg = sendMsgAndPin(msg)
-    broadcastWarning(msg)
+    msg = sendMsgAndPin(msg['chat']['id'], 'КОМБАТЫ')
+    if msg:
+        for chat_id in BODIES:
+            apiForwardMsg(msg['chat']['id'], chat_id, msg['message_id'])
+
+    if msg['chat']['id'] == TESTGROUP_CHAT_ID:
+        sendMsgAndPin(RUSIK_CHAT_ID, 'КОМБАТЫ')
 
 def handlePing(msg):
     chat_id = msg['chat']['id']
@@ -204,6 +199,19 @@ def hwHandle(msg):
 # -----------------
 # --- API CALLS ---
 # -----------------
+
+def sendMsgAndPin(chat_id, text):
+
+    msg = apiSendMsg(chat_id, text)
+    if msg is None:
+        print('[!] sendMsgAndPin : result of apiSendMsg is None')
+        return None
+    apiPinMsg(chat_id, msg['message_id'])
+
+    t = getTimeStringOfMessage(msg)
+    print('[+] {} PINNED in chat {}:{}'.format(t, chat_id, msg['chat']['title']))
+
+    return msg
 
 def apiSendMsg(chat_id, msg):
     payload = {
@@ -353,7 +361,7 @@ def mainActivity():
             if chat_id in OBWAGA_CHAT_IDS:
                 try:
                     if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
-                        handleBroadcastNotification(msg)
+                        handleCombotNotification(msg)
                     elif msg['text'] == '/pin@CombatDetectorBot' or msg['text'] == '/pin':
                         handlePin(msg)
                     elif msg['text'] == '/unpin@CombatDetectorBot' or msg['text'] == '/unpin':
