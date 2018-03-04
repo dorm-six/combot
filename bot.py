@@ -35,19 +35,6 @@ MALICIOUS = [
     u'combat', u'cmbat', u'cambat', u'combta', u'combot',
 ]
 
-HW = [
-    'делаете', 'пидоры то такие', 'не учитесь',
-    'бухаете', 'пишите', 'творите', 'кушаете',
-    'не спите', 'можете?', 'имеете против меня?',
-    'такие динозавры', 'опять спамите эту хуйню',
-    'курите?', 'заебываете меня!!', '?? не пойти ли вам н@&yi?'
-    'такие дерзские?', 'комбатов не боитесь', 'выселения не боитесь',
-    'отчисления не боитесь', 'удивляетесь', 'доебались',
-    'приперлись, вас никто не ждал здесь',
-    '? почему вы ? да идите нахуй просто! Я бот, мне можно все.',
-    'понтуетесь?', 'шумите!!!', 'хотели-то?'
-]
-
 UPDATE_OFFSET = 0
 LAST_UPDATE_ID = 0
 
@@ -154,12 +141,24 @@ def handlePing(msg):
 # -----------
 
 def hwHandle_response(msg):
+
+    HW = [
+        'делаете', 'пидоры то такие', 'не учитесь',
+        'бухаете', 'пишите', 'творите', 'кушаете',
+        'не спите', 'можете?', 'имеете против меня?',
+        'такие динозавры', 'опять спамите эту хуйню',
+        'курите?', 'заебываете меня!!', '?? не пойти ли вам н@&yi?'
+        'такие дерзские?', 'комбатов не боитесь', 'выселения не боитесь',
+        'отчисления не боитесь', 'удивляетесь', 'доебались',
+        'приперлись, вас никто не ждал здесь',
+        '? почему вы ? да идите нахуй просто! Я бот, мне можно все.',
+        'понтуетесь?', 'шумите!!!', 'хотели-то?'
+    ]
+
     resp_msg = 'Huli Wi {}'.format(random.choice(HW))
     apiSendMsg(msg['chat']['id'], resp_msg)
 
 def hwHandle_body(msg):
-    _from = msg['from']
-    name = _from['first_name'] or _from['username'] or _from['last_name'] or 'Эй'
 
     candidates = [
         ', бро, хватит уже', ', бро, заебал',
@@ -167,11 +166,14 @@ def hwHandle_body(msg):
         ', прекрати', ', твоюжмать, хватит уже!'
     ]
 
+    _from = msg['from']
+    name = _from['first_name'] or _from['username'] or _from['last_name'] or 'Эй'
+
     resp_msg = name + random.choice(candidates)
     apiSendMsg(msg['chat']['id'], resp_msg)
 
 def hwHandle(msg):
-    if random.randint(0, 3) != 0:
+    if random.randint(0, 1) != 0:
         return
     if random.randint(0, 1) == 0:
         hwHandle_body(msg)
@@ -253,6 +255,7 @@ def apiUnpinMsg(chat_id):
 
 def handleAdminCommands(msg):
     text = msg['text']
+
     if text.find('pin: ') == 0:
         print('[PIN] {}'.format(text))
         # PIN MESSAGE
@@ -266,6 +269,22 @@ def handleAdminCommands(msg):
         # SEND MESSAGE
         text = text[5:]
         apiSendMsg(OBWAGA6_CHAT_ID, text)
+
+    elif text.find('msg') == 0:
+        colon_idx = text.find(':')
+        space_idx = text.find(' ')
+
+        cond1 = colon_idx > 4
+        cond2 = space_idx > 2
+        cond3 = space_idx < colon_idx
+
+        if cond1 and cond2 and cond3:
+            chat_id = text[space_idx+1:colon_idx]
+            if chat_id.isdigit():
+                if apiSendMsg(chat_id, text[colon_idx+1:]):
+                    apiSendMsg(msg['chat']['id'], 'SUCCESSFULLY SENT "{}" to "{}"'.format(text[colon_idx+1:], chat_id))
+                else:
+                    apiSendMsg(msg['chat']['id'], 'NOT SENT "{}" to "{}"'.format(text[colon_idx+1:], chat_id))
 
 # -------------------------
 # --- External messages ---
