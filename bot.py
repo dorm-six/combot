@@ -59,13 +59,8 @@ IS_ALIVE = True
 class HeartbeatThread(threading.Thread):
     def run(self):
         while IS_ALIVE is True:
-            payload = {
-                'chat_id': JEKA_DJ_CHAT_ID, # Jeka_DJ
-                'text': '[<3] Combot Heartbeat'
-            }
-            requests.get(BASE_URL + 'sendMessage', params=payload)
+            apiSendMsg(JEKA_DJ_CHAT_ID, '[<3] Combot Heartbeat')
             print('[<3] {} Heartbeat sent'.format(str(datetime.datetime.now())))
-
             time.sleep(15*60)
 
 # ------------
@@ -111,58 +106,38 @@ def getUpdatesOrExit():
 
         return data
 
-def filterByUpdateIdandChatId(res):
-    try:
-        cond1 = res['update_id'] > LAST_UPDATE_ID
-        cond21 = res['message']['chat']['id'] in OBWAGA_CHAT_IDS
-        cond22 = res['message']['chat']['id'] == 239745097
-        cond2 = cond21 or cond22
-        return cond1 and cond2
-    except KeyError:
-        return False
-
 def filterByUpdateId(res):
     try:
         return res['update_id'] > LAST_UPDATE_ID
     except KeyError:
         return False
 
-def combatLogger(message):
+def combatLogger(msg):
     t = datetime.datetime.fromtimestamp(
-            message['date']
+            msg['date']
         ).strftime('%Y-%m-%d %H:%M:%S')
-    chat_id = message['chat']['id']
-    chat_title = message['chat']['title']
+    chat_id = msg['chat']['id']
+    chat_title = msg['chat']['title']
 
     print("[!] {} COMBAT DETECTED!!! {} {}".format(t, chat_id, chat_title))
 
 def broadcastWarning(msg):
     for chat_id in BODIES:
-        payload = {
-            'chat_id': chat_id,
-            'from_chat_id': msg['chat']['id'],
-            'message_id': msg['message_id']
-        }
-        r = requests.get(BASE_URL + 'forwardMessage', params=payload)
+        apiForwardMsg(msg['chat']['id'], chat_id, msg['message_id'])
 
-def sendWarningAndPin(msg):
-    # print('sendWarningAndPin')
+def sendMsgAndPin(msg):
 
-    payload = {
-        'chat_id': msg['chat']['id'],
-        'text': 'КОМБАТЫ'
-    }
-    r = requests.get(BASE_URL + 'sendMessage', params=payload)
-    data = r.json()
+    chat_id = msg['chat']['id']
 
-    if data['ok'] == False:
+    msg = apiSendMsg(chat_id, 'КОМБАТЫ')
+    if msg is None:
+        print('[!] sendMsgAndPin : result of apiSendMsg is None')
         return
 
-    msg = data['result']
-    apiPinMsg(msg['chat']['id'], msg['message_id'])
+    apiPinMsg(chat_id, msg['message_id'])
 
     t = getTimeStringOfMessage(msg)
-    print('[+] {} PINNED in chat {}:{}'.format(t, msg['chat']['id'], msg['chat']['title']))
+    print('[+] {} PINNED in chat {}:{}'.format(t, chat_id, msg['chat']['title']))
 
     return msg
 
@@ -172,12 +147,10 @@ def getTimeStringOfMessage(msg):
         ).strftime('%Y-%m-%d %H:%M:%S')
 
 def handleUnpin(msg):
-    payload = {
-        'chat_id': msg['chat']['id'],
-    }
-    r = requests.get(BASE_URL + 'unpinChatMessage', params=payload)
-    if r.json()['ok'] is True:
-        apiSendMsg(msg['chat']['id'], 'ОТКРЕПЛЕНО')
+    chat_id = msg['chat']['id']
+    if apiUnpinMsg(chat_id):
+        apiSendMsg(chat_id, 'ОТКРЕПЛЕНО')
+
     t = getTimeStringOfMessage(msg)
     print('[+] {} Unpinned'.format(t))
 
@@ -186,7 +159,7 @@ def handleBroadcastNotification(msg):
     combatLogger(msg)
 
 def handlePin(msg):
-    msg = sendWarningAndPin(msg)
+    msg = sendMsgAndPin(msg)
     broadcastWarning(msg)
 
 def handlePing(msg):
@@ -218,12 +191,7 @@ def hwHandle_body(msg):
     ]
 
     resp_msg = name + random.choice(candidates)
-    payload = {
-        'chat_id': msg['chat']['id'],
-        'text': resp_msg
-    }
-    r = requests.get(BASE_URL + 'sendMessage', params=payload)
-
+    apiSendMsg(msg['chat']['id'], resp_msg)
 
 def hwHandle(msg):
     if random.randint(0, 3) != 0:
@@ -277,6 +245,18 @@ def apiForwardMsg(from_chat_id, to_chat_id, msg_id):
     else:
         return data['result']
 
+def apiUnpinMsg(chat_id):
+    payload = {
+        'chat_id': chat_id,
+    }
+    r = requests.get(BASE_URL + 'unpinChatMessage', params=payload)
+    data = r.json()
+
+    if data['ok'] == False:
+        return None
+    else:
+        return data['result']
+
 # ----------------------
 # --- ADMIN COMMANDS ---
 # ----------------------
@@ -305,7 +285,9 @@ def handleExternalMessage(msg):
     from_chat_id = msg['chat']['id']
     to_chat_id = JEKA_DJ_CHAT_ID
     msg_id = msg['message_id']
-    res = apiForwardMsg(from_chat_id, to_chat_id, msg_id)
+
+    apiSendMsg(JEKA_DJ_CHAT_ID, str(from_chat_id))
+    apiForwardMsg(from_chat_id, to_chat_id, msg_id)
     print('[+] handleExternalMessage. from:{}. to:{}. text:{}'.format(from_chat_id, to_chat_id, msg['text']))
 
 # --------------------
