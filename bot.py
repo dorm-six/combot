@@ -51,19 +51,6 @@ HW = [
 UPDATE_OFFSET = 0
 LAST_UPDATE_ID = 0
 
-# ------------------------
-# --- Heartbeat thread ---
-# ------------------------
-
-IS_ALIVE = True
-
-class HeartbeatThread(threading.Thread):
-    def run(self):
-        while IS_ALIVE is True:
-            apiSendMsg(JEKA_DJ_CHAT_ID, '[<3] Combot Heartbeat')
-            print('[<3] {} Heartbeat sent'.format(str(datetime.datetime.now())))
-            time.sleep(15*60)
-
 # ------------
 # --- Foos ---
 # ------------
@@ -139,9 +126,8 @@ def handleUnpin(msg):
     t = getTimeStringOfMessage(msg)
     print('[+] {} Unpinned'.format(t))
 
-    if chat_id == TESTGROUP_CHAT_ID:
-        if apiUnpinMsg(RUSIK_CHAT_ID):
-            apiSendMsg(RUSIK_CHAT_ID, 'ОТКРЕПЛЕНО')
+    if chat_id == OBWAGA6_CHAT_ID:
+        apiSendMsg(RUSIK_CHAT_ID, 'ОТКРЕПЛЕНО')
 
 def handleCombotNotification(msg):
     for chat_id in BODIES:
@@ -154,8 +140,8 @@ def handlePin(msg):
         for chat_id in BODIES:
             apiForwardMsg(msg['chat']['id'], chat_id, msg['message_id'])
 
-    if msg['chat']['id'] == TESTGROUP_CHAT_ID:
-        sendMsgAndPin(RUSIK_CHAT_ID, 'КОМБАТЫ')
+    if msg['chat']['id'] == OBWAGA6_CHAT_ID:
+        apiSendMsg(RUSIK_CHAT_ID, 'КОМБАТЫ')
 
 def handlePing(msg):
     chat_id = msg['chat']['id']
@@ -169,11 +155,7 @@ def handlePing(msg):
 
 def hwHandle_response(msg):
     resp_msg = 'Huli Wi {}'.format(random.choice(HW))
-    payload = {
-        'chat_id': msg['chat']['id'],
-        'text': resp_msg
-    }
-    r = requests.get(BASE_URL + 'sendMessage', params=payload)
+    apiSendMsg(msg['chat']['id'], resp_msg)
 
 def hwHandle_body(msg):
     _from = msg['from']
@@ -326,13 +308,6 @@ def mainActivity():
         UPDATE_OFFSET = data['result'][-1]['update_id']
         LAST_UPDATE_ID = UPDATE_OFFSET
 
-    # -----------------------------
-    # --- init heartbeat thread ---
-    # -----------------------------
-
-    heartbeat_thread = HeartbeatThread()  # ...Instantiate a thread and pass a unique ID to it
-    heartbeat_thread.start()
-
     # -----------------
     # --- main work ---
     # -----------------
@@ -386,9 +361,7 @@ if __name__ == "__main__":
         try:
             mainActivity()
         except KeyboardInterrupt:
-            IS_ALIVE = False
             break
         except Exception as e:
             print(e)
-            IS_ALIVE = False
             time.sleep(10)
