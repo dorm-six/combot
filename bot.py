@@ -356,7 +356,11 @@ def mainActivity():
             msg = res['message']
             chat_id = msg['chat']['id']
 
-            if chat_id in OBWAGA_CHAT_IDS:
+            print('MSG from:{}:{}. text:{}'.format(chat_id, msg['chat']['title'], msg['text']))
+
+            if msg['text'] == '/ping@CombatDetectorBot' or msg['text'] == '/ping':
+                handlePing(msg)
+            elif chat_id in OBWAGA_CHAT_IDS:
                 try:
                     if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
                         handleCombotNotification(msg)
@@ -366,8 +370,6 @@ def mainActivity():
                         handleUnpin(msg)
                     elif msg['text'] == '/hw':
                         hwHandle(msg)
-                    elif msg['text'] == '/ping@CombatDetectorBot' or msg['text'] == '/ping':
-                        handlePing(msg)
                 except KeyError:
                     pass
             elif chat_id == JEKA_DJ_CHAT_ID:
