@@ -294,8 +294,9 @@ def handleExternalMessage(msg):
     from_chat_id = msg['chat']['id']
     to_chat_id = JEKA_DJ_CHAT_ID
     msg_id = msg['message_id']
+    text = "{}:{}".format(from_chat_id, msg['chat']['title'])
 
-    apiSendMsg(JEKA_DJ_CHAT_ID, str(from_chat_id))
+    apiSendMsg(to_chat_id, text)
     apiForwardMsg(from_chat_id, to_chat_id, msg_id)
     print('[+] handleExternalMessage. from:{}. to:{}. text:{}'.format(from_chat_id, to_chat_id, msg['text']))
 
