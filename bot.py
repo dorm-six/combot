@@ -193,7 +193,7 @@ def sendMsgAndPin(chat_id, text):
     apiPinMsg(chat_id, msg['message_id'])
 
     t = getTimeStringOfMessage(msg)
-    print('[+] {} PINNED in chat {}:{}'.format(t, chat_id, msg['chat']['title']))
+    print('[+] {} PINNED in chat {}'.format(t, chat_id))
 
     return msg
 
@@ -297,9 +297,8 @@ def handleExternalMessage(msg):
     from_chat_id = msg['chat']['id']
     to_chat_id = JEKA_DJ_CHAT_ID
     msg_id = msg['message_id']
-    text = "{}:{}".format(from_chat_id, msg['chat']['title'])
 
-    apiSendMsg(to_chat_id, text)
+    apiSendMsg(to_chat_id, str(from_chat_id))
     apiForwardMsg(from_chat_id, to_chat_id, msg_id)
     print('[+] handleExternalMessage. from:{}. to:{}. text:{}'.format(from_chat_id, to_chat_id, msg['text']))
 
@@ -355,8 +354,6 @@ def mainActivity():
         for res in results:
             msg = res['message']
             chat_id = msg['chat']['id']
-
-            print('MSG from:{}:{}. text:{}'.format(chat_id, msg['chat']['title'], msg['text']))
 
             if msg['text'] == '/ping@CombatDetectorBot' or msg['text'] == '/ping':
                 handlePing(msg)
