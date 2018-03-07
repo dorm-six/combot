@@ -256,18 +256,18 @@ def apiUnpinMsg(chat_id):
 def handleAdminCommands(msg):
     text = msg['text']
 
-    if text.find('pin: ') == 0:
+    if text.find('pin:') == 0:
         print('[PIN] {}'.format(text))
         # PIN MESSAGE
-        text = text[5:]
+        text = text[4:]
         res = apiSendMsg(OBWAGA6_CHAT_ID, text)
         if res is not None:
             apiPinMsg(OBWAGA6_CHAT_ID, res['message_id'])
 
-    elif text.find('msg: ') == 0:
+    elif text.find('msg:') == 0:
         print('[MSG] {}'.format(text))
         # SEND MESSAGE
-        text = text[5:]
+        text = text[4:]
         apiSendMsg(OBWAGA6_CHAT_ID, text)
 
     elif text.find('msg') == 0:
@@ -285,6 +285,9 @@ def handleAdminCommands(msg):
                     apiSendMsg(msg['chat']['id'], 'SUCCESSFULLY SENT "{}" to "{}"'.format(text[colon_idx+1:], chat_id))
                 else:
                     apiSendMsg(msg['chat']['id'], 'NOT SENT "{}" to "{}"'.format(text[colon_idx+1:], chat_id))
+
+    else:
+        handleExternalMessage(msg)
 
 # -------------------------
 # --- External messages ---
