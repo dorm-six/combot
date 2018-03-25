@@ -324,14 +324,14 @@ def handleExternalMessage(msg):
 
 def babyHandle(msg):
     chicks = {
-        'Megan Fox' : 'http://sexrate.ru/web/wallpapers/megan-fox-3-zpp4z/1600x1200.jpg',
-        'Jessica Alba' : 'http://images6.fanpop.com/image/photos/40900000/Jessica-Alba-simpahtikoh-40906996-774-1000.jpg',
-        'Jessica Alba 2' : 'http://zagony.ru/admin_new/foto/2014-5-28/1401298123/dzhessika_alba_11_foto_10.jpg',
-        'Sasha Grey' : 'http://free.content.freepornofreeporn.com/images/P04284/photopromo/1024x768/M127/13.jpg',
-        'Scarlett Johansson' : 'https://i.redd.it/udmuzpn3e8gz.jpg',
-        'Margot Robbie' : 'https://veralline.com/uploads/images/00/21/50/2017/06/29/639027.jpg',
-        'Jennifer Lawrence' : 'http://smexigrex.ru/sites/default/files/pages/tumblr_mrgbihjpxt1r49h24o1_500_1.jpg',
-        'Amber Heard' : 'https://img.tsn.ua/cached/1511259476/tsn-db9ef401efc93a5fd1b676cd38abbef3/thumbs/x/34/f6/718caa55693ebb4eb49944a563e1f634.jpeg'
+        'Megan Fox' : 'https://pp.userapi.com/c840322/v840322120/45c9b/oiJ4RHqVYTI.jpg',
+        'Jessica Alba' : 'https://pp.userapi.com/c621705/v621705776/8224c/kNfdB8EJeXM.jpg',
+        'Jessica Alba 2' : 'https://pp.userapi.com/c840227/v840227855/8eea9/goF2Tcrk-To.jpg',
+        'Sasha Grey' : 'https://pp.userapi.com/c621511/v621511163/6a44e/NXEPY7GXl5c.jpg',
+        'Scarlett Johansson' : 'https://sun9-8.userapi.com/c840520/v840520285/6a6db/qxI7cbg5mjU.jpg',
+        'Margot Robbie' : 'https://sun9-9.userapi.com/c840426/v840426620/6b540/zPEXaRUC2ZQ.jpg',
+        'Jennifer Lawrence' : 'https://pp.userapi.com/c621511/v621511648/6cc89/yvQ1cIvO5FE.jpg',
+        'Amber Heard' : 'https://pp.userapi.com/c840221/v840221545/8f505/ey9_lJAWLC0.jpg'
     }
 
     chat_id = msg['chat']['id']
