@@ -210,6 +210,19 @@ def apiSendMsg(chat_id, msg):
     else:
         return data['result']
 
+def apiSendPhoto(chat_id, photo_url):
+    payload = {
+        'chat_id': chat_id,
+        'photo': photo_url
+    }
+    r = requests.get(BASE_URL + 'sendPhoto', params=payload)
+    data = r.json()
+
+    if data['ok'] == False:
+        return None
+    else:
+        return data['result']
+
 def apiPinMsg(chat_id, msg_id):
     payload = {
         'chat_id': chat_id,
@@ -302,6 +315,26 @@ def handleExternalMessage(msg):
     apiForwardMsg(from_chat_id, to_chat_id, msg_id)
     print('[+] handleExternalMessage. from:{}. to:{}. text:{}'.format(from_chat_id, to_chat_id, msg['text']))
 
+# -------------------------
+# --- External messages ---
+# -------------------------
+
+def babyHandle(msg):
+    chicks = {
+        'Megan Fox' : 'http://sexrate.ru/web/wallpapers/megan-fox-3-zpp4z/1600x1200.jpg',
+        'Jessica Alba' : 'http://images6.fanpop.com/image/photos/40900000/Jessica-Alba-simpahtikoh-40906996-774-1000.jpg',
+        'Jessica Alba 2' : 'http://zagony.ru/admin_new/foto/2014-5-28/1401298123/dzhessika_alba_11_foto_10.jpg',
+        'Sasha Grey' : 'http://free.content.freepornofreeporn.com/images/P04284/photopromo/1024x768/M127/13.jpg',
+        'Scarlett Johansson' : 'https://i.redd.it/udmuzpn3e8gz.jpg',
+        'Margot Robbie' : 'https://veralline.com/uploads/images/00/21/50/2017/06/29/639027.jpg',
+        'Jennifer Lawrence' : 'http://smexigrex.ru/sites/default/files/pages/tumblr_mrgbihjpxt1r49h24o1_500_1.jpg',
+        'Amber Heard' : 'https://img.tsn.ua/cached/1511259476/tsn-db9ef401efc93a5fd1b676cd38abbef3/thumbs/x/34/f6/718caa55693ebb4eb49944a563e1f634.jpeg'
+    }
+
+    _, photo_url = random.choice(list(chicks.items()))
+
+    apiSendPhoto(msg['chat']['id'], photo_url)
+
 # --------------------
 # --- mainActivity ---
 # --------------------
@@ -357,6 +390,8 @@ def mainActivity():
 
             if msg['text'] == '/ping@CombatDetectorBot' or msg['text'] == '/ping':
                 handlePing(msg)
+            elif msg['text'] == '/baby':
+                babyHandle(msg)
             elif chat_id in OBWAGA_CHAT_IDS:
                 try:
                     if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
