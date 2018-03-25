@@ -210,7 +210,7 @@ def apiSendMsg(chat_id, msg):
     else:
         return data['result']
 
-def apiSendPhoto(chat_id, photo_url):
+def apiSendPhoto(chat_id, photo_url, explicit_return=False):
     payload = {
         'chat_id': chat_id,
         'photo': photo_url
@@ -218,10 +218,13 @@ def apiSendPhoto(chat_id, photo_url):
     r = requests.get(BASE_URL + 'sendPhoto', params=payload)
     data = r.json()
 
-    if data['ok'] == False:
-        return None
+    if explicit_return:
+        return data
     else:
-        return data['result']
+        if data['ok'] == False:
+            return None
+        else:
+            return data['result']
 
 def apiPinMsg(chat_id, msg_id):
     payload = {
@@ -336,7 +339,8 @@ def babyHandle(msg):
 
     print('[+] babyHandle {} : {} : {}'.format(chat_id, baby, photo_url))
 
-    apiSendPhoto(chat_id, photo_url)
+    print(apiSendPhoto(chat_id, photo_url, explicit_return=True))
+        
 
 # --------------------
 # --- mainActivity ---
