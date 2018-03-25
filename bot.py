@@ -315,9 +315,9 @@ def handleExternalMessage(msg):
     apiForwardMsg(from_chat_id, to_chat_id, msg_id)
     print('[+] handleExternalMessage. from:{}. to:{}. text:{}'.format(from_chat_id, to_chat_id, msg['text']))
 
-# -------------------------
-# --- External messages ---
-# -------------------------
+# ---------------------
+# --- Baby messages ---
+# ---------------------
 
 def babyHandle(msg):
     chicks = {
@@ -331,9 +331,12 @@ def babyHandle(msg):
         'Amber Heard' : 'https://img.tsn.ua/cached/1511259476/tsn-db9ef401efc93a5fd1b676cd38abbef3/thumbs/x/34/f6/718caa55693ebb4eb49944a563e1f634.jpeg'
     }
 
-    _, photo_url = random.choice(list(chicks.items()))
+    chat_id = msg['chat']['id']
+    baby, photo_url = random.choice(list(chicks.items()))
 
-    apiSendPhoto(msg['chat']['id'], photo_url)
+    apiSendPhoto(chat_id, photo_url)
+
+    print('[+] babyHandle {}:{}:{}'.format(chat_id, baby, photo_url))
 
 # --------------------
 # --- mainActivity ---
@@ -420,5 +423,5 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             break
         except Exception as e:
-            print(e)
-            time.sleep(10)
+            print('Exception: {}'.format(e))
+            time.sleep(5)
