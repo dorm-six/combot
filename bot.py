@@ -331,7 +331,13 @@ def babyHandle(msg):
         'Scarlett Johansson' : 'https://sun9-8.userapi.com/c840520/v840520285/6a6db/qxI7cbg5mjU.jpg',
         'Margot Robbie' : 'https://sun9-9.userapi.com/c840426/v840426620/6b540/zPEXaRUC2ZQ.jpg',
         'Jennifer Lawrence' : 'https://pp.userapi.com/c621511/v621511648/6cc89/yvQ1cIvO5FE.jpg',
-        'Amber Heard' : 'https://pp.userapi.com/c840221/v840221545/8f505/ey9_lJAWLC0.jpg'
+        'Amber Heard' : 'https://pp.userapi.com/c840221/v840221545/8f505/ey9_lJAWLC0.jpg',
+        'Miranda Kerr' : 'https://pp.userapi.com/c621706/v621706850/7dc15/WlA3cQlL0qY.jpg',
+        'Rihanna' : 'https://sun9-7.userapi.com/c840526/v840526105/6ab69/34LcCIQdzqE.jpg',
+        'Lizzy Caplan' : 'https://pp.userapi.com/c840325/v840325631/6e827/BchgGnPyfis.jpg',
+        'Emma Watson' : 'https://sun9-5.userapi.com/c840433/v840433317/6cafd/aHgSpcrSTaU.jpg',
+        'Rachel Nicols' : 'https://pp.userapi.com/c840331/v840331377/7073d/L6SdkSOr04M.jpg',
+        'Fat Man' : 'https://pp.userapi.com/c840127/v840127496/8ffd9/X8IcN9CV-aA.jpg'
     }
 
     chat_id = msg['chat']['id']
