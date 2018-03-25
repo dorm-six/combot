@@ -334,9 +334,9 @@ def babyHandle(msg):
     chat_id = msg['chat']['id']
     baby, photo_url = random.choice(list(chicks.items()))
 
-    apiSendPhoto(chat_id, photo_url)
+    print('[+] babyHandle {} : {} : {}'.format(chat_id, baby, photo_url))
 
-    print('[+] babyHandle {}:{}:{}'.format(chat_id, baby, photo_url))
+    apiSendPhoto(chat_id, photo_url)
 
 # --------------------
 # --- mainActivity ---
