@@ -422,7 +422,7 @@ def mainActivity():
             else:
                 handleExternalMessage(msg)
 
-        LAST_UPDATE_ID = results[-1]['update_id']
+        LAST_UPDATE_ID = res[-1]['update_id']
 
         time.sleep(3)
 
@@ -434,4 +434,5 @@ if __name__ == "__main__":
             break
         except Exception as e:
             print('Exception: {}'.format(e))
+            print(e)
             time.sleep(5)
