@@ -345,7 +345,24 @@ def babyHandle(msg):
 
     print('[+] babyHandle {} : {} : {}'.format(chat_id, baby, photo_url))
 
-    print(apiSendPhoto(chat_id, photo_url, explicit_return=True))
+    apiSendPhoto(chat_id, photo_url, explicit_return=True)
+
+# ------------------
+# --- Bed linnin ---
+# ------------------
+
+def babyHandle(msg):
+
+    chat_id = msg['chat']['id']
+    msg = "Расписание смены постельного белья:\n"
+    msg += "пн: 8:30-12:00, 15:00-17:00\n"
+    msg += "ср: 8:30-12:00, 15:00-17:00\n"
+    msg += "чт: 8:30-12:00, 15:00-17:00\n"
+    msg += "пт: 8:30-12:00, 14:00-16:00\n"
+    msg += "Если расписание изменилось, напишите боту в личку"
+    
+    apiSendMsg(chat_id, msg)
+    print('[+] babyHandle.')
         
 
 # --------------------
@@ -415,6 +432,8 @@ def mainActivity():
                         handleUnpin(msg)
                     elif msg['text'] == '/hw':
                         hwHandle(msg)
+                    elif msg['text'] == '/bed':
+                        bedHandle(msg)
                 except KeyError:
                     pass
             elif chat_id == JEKA_DJ_CHAT_ID:
