@@ -205,6 +205,8 @@ def apiSendMsg(chat_id, msg):
     r = requests.get(BASE_URL + 'sendMessage', params=payload)
     data = r.json()
 
+    print(data)
+
     if data['ok'] == False:
         return None
     else:
@@ -441,7 +443,7 @@ def mainActivity():
             else:
                 handleExternalMessage(msg)
 
-        print(res[-1])
+        print(res)
         LAST_UPDATE_ID = res[-1]['update_id']
 
         time.sleep(3)
