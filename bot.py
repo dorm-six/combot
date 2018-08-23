@@ -441,6 +441,7 @@ def mainActivity():
             else:
                 handleExternalMessage(msg)
 
+        print(res[-1])
         LAST_UPDATE_ID = res[-1]['update_id']
 
         time.sleep(3)
