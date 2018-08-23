@@ -351,7 +351,7 @@ def babyHandle(msg):
 # --- Bed linnin ---
 # ------------------
 
-def babyHandle(msg):
+def bedHandle(msg):
 
     chat_id = msg['chat']['id']
     msg = "Расписание смены постельного белья:\n"
@@ -360,7 +360,7 @@ def babyHandle(msg):
     msg += "чт: 8:30-12:00, 15:00-17:00\n"
     msg += "пт: 8:30-12:00, 14:00-16:00\n"
     msg += "Если расписание изменилось, напишите боту в личку"
-    
+
     apiSendMsg(chat_id, msg)
     print('[+] babyHandle.')
         
