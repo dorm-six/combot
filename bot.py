@@ -205,8 +205,6 @@ def apiSendMsg(chat_id, msg):
     r = requests.get(BASE_URL + 'sendMessage', params=payload)
     data = r.json()
 
-    print(data)
-
     if data['ok'] == False:
         return None
     else:
