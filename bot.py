@@ -424,6 +424,8 @@ def mainActivity():
                 handlePing(msg)
             elif msg['text'] == '/baby':
                 babyHandle(msg)
+            elif msg['text'] == '/bed':
+                bedHandle(msg)
             elif chat_id in OBWAGA_CHAT_IDS:
                 try:
                     if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
@@ -443,8 +445,7 @@ def mainActivity():
             else:
                 handleExternalMessage(msg)
 
-        print('res: {}'.format(res))
-        LAST_UPDATE_ID = res[-1]['update_id']
+        LAST_UPDATE_ID = ress[-1]['update_id']
 
         time.sleep(3)
 
