@@ -452,6 +452,5 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             break
         except Exception as e:
-            print('Exception: {}'.format(e))
-            print(e)
+            print('Exception: type:{}. msg:{}'.format(type(e), e))
             time.sleep(5)
