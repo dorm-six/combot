@@ -443,7 +443,7 @@ def mainActivity():
             else:
                 handleExternalMessage(msg)
 
-        print(res)
+        print('res: {}'.format(res))
         LAST_UPDATE_ID = res[-1]['update_id']
 
         time.sleep(3)
