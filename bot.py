@@ -422,7 +422,7 @@ def mainActivity():
                 handlePing(msg)
             elif msg['text'] == '/baby':
                 babyHandle(msg)
-            elif msg['text'] == '/bed':
+            elif msg['text'] == '/bed' or msg['text'] == '/bed@CombatDetectorBot':
                 bedHandle(msg)
             elif chat_id in OBWAGA_CHAT_IDS:
                 try:
@@ -434,8 +434,6 @@ def mainActivity():
                         handleUnpin(msg)
                     elif msg['text'] == '/hw':
                         hwHandle(msg)
-                    elif msg['text'] == '/bed':
-                        bedHandle(msg)
                 except KeyError:
                     pass
             elif chat_id == JEKA_DJ_CHAT_ID:
