@@ -421,9 +421,12 @@ def buyHandle(msg):
     entries = session.query(CombotMall).all()
     session.close()
 
-    msg = ''
-    for entry in entries:
-        msg += '{}:@{} {}\n'.format(entry.seller_id, entry.seller_username, entry.description)
+    if len(entries) > 0:
+        msg = ''
+        for entry in entries:
+            msg += '{}:@{} {}\n'.format(entry.seller_id, entry.seller_username, entry.description)
+    else:
+        msg = 'No entries'
 
     apiSendMsg(chat_id, msg)
 
