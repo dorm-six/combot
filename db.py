@@ -9,8 +9,8 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from settings import DATABASE_URL
 
-LOCAL_DB = 'sqlite:///:memory:'
-DATABASE_URL = LOCAL_DB
+# LOCAL_DB = 'sqlite:///:memory:'
+# DATABASE_URL = LOCAL_DB
 
 engine = create_engine(DATABASE_URL, connect_args={'sslmode':'require'}, echo=True)
 

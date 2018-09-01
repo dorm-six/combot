@@ -4,19 +4,19 @@ import subprocess
 import os
 
 def fetchEnvVarFromHeroku(var_name):
-	process = subprocess.Popen(['heroku', 'config:get', var_name], stdout=subprocess.PIPE)
-	out, err = process.communicate()
-	if err:
-		print(err)
-		exit(1)
-	else:
-		return out[-1]
+    process = subprocess.Popen(['heroku', 'config:get', var_name], stdout=subprocess.PIPE)
+    out, err = process.communicate()
+    if err:
+        print(err)
+        exit(1)
+    else:
+        return out[:-1]
 
 def fetchEnvVar(var_name):
-	try:
-		return os.environ[var_name]
-	except KeyError:
-		return fetchEnvVarFromHeroku(var_name)
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        return fetchEnvVarFromHeroku(var_name)
 
 # Example of your code beginning
 #           Config vars

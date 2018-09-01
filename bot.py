@@ -372,10 +372,21 @@ def sellHandle(msg):
     # Get optional args
     try:
         user = msg['from']
-        description = msg['text']
+        text = msg['text']
     except KeyError:
         apiSendMsg(JEKA_DJ_CHAT_ID, 'ERROR: sellHandle: {}'.format(msg))
-        return
+        return True
+
+    # check text
+    splitted = text.split(' ', 1)
+
+    if not (splitted[0] == '/sell' or splitted[0] == '/sell@CombatDetectorBot'):
+        return False
+    if len(splitted) != 2 or not splitted[1].strip():
+        apiSendMsg(chat_id, 'Add description: /sell some_description')
+        return True
+
+    description = splitted[1]
 
     # Get args
     chat_id = msg['chat']['id']
@@ -400,7 +411,7 @@ def sellHandle(msg):
     # success notification
     apiSendMsg(chat_id, 'Done')
 
-    return
+    return True
         
 def buyHandle(msg):
 
@@ -412,7 +423,7 @@ def buyHandle(msg):
 
     msg = ''
     for entry in entries:
-        msg += '{}:{} {}\n'.format(entry.seller_id, entry.seller_username, entry.description)
+        msg += '{}:@{} {}\n'.format(entry.seller_id, entry.seller_username, entry.description)
 
     apiSendMsg(chat_id, msg)
 
@@ -477,9 +488,9 @@ def mainActivity():
                 babyHandle(msg)
             elif msg['text'] == '/bed' or msg['text'] == '/bed@CombatDetectorBot':
                 bedHandle(msg)
-            elif (msg['text'] == '/sell' or msg['text'] == '/sell@CombatDetectorBot') and chat_id not in OBWAGA_CHAT_IDS:
-                sellHandle(msg)
-            elif (msg['text'] == '/buy' or msg['text'] == '/buy@CombatDetectorBot') and chat_id not in OBWAGA_CHAT_IDS:
+            elif (msg['text'].find('/sell') == 0) and (chat_id not in OBWAGA_CHAT_IDS) and sellHandle(msg):
+                pass
+            elif (msg['text'] == '/buy' or msg['text'] == '/buy@CombatDetectorBot') and (chat_id not in OBWAGA_CHAT_IDS):
                 buyHandle(msg)
             elif chat_id in OBWAGA_CHAT_IDS:
                 try:
