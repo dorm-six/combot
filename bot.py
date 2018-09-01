@@ -431,7 +431,11 @@ def buyHandle(msg):
     if len(entries) > 0:
         msg = ''
         for entry in entries:
-            msg += '{}:@{} {}\n'.format(entry.seller_id, entry.seller_username, entry.description)
+            if entry.seller_username is not 'UNKNOWN':
+                seller_username = '@{}'.format(entry.seller_username)
+            else:
+                seller_username = entry.seller_username
+            msg += '{}:{} {}\n'.format(entry.seller_id, seller_username, entry.description)
     else:
         msg = 'No entries'
 
