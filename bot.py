@@ -6,6 +6,7 @@ import random
 import datetime
 import requests
 import threading
+import traceback
 from time import gmtime, strftime
 
 from db import new_session, CombotMall
@@ -288,7 +289,7 @@ def handleAdminCommands(msg):
     elif text.find('pinmsg:') == 0:
         print('[PINMSG] {}'.format(text))
         text = text[7:]
-        msg = sendMsgAndPin(OBWAGA6_CHAT_ID, text)
+        sendMsgAndPin(OBWAGA6_CHAT_ID, text)
 
     elif text.find('msg') == 0:
         colon_idx = text.find(':')
@@ -530,4 +531,10 @@ if __name__ == "__main__":
             break
         except Exception as e:
             print('Exception: type:{}. msg:{}'.format(type(e), e))
-            time.sleep(5)
+            print('--------------------')
+            try:
+                traceback.print_exc(e)
+            except Exception:
+                pass
+            print('--------------------')
+            time.sleep(3)
