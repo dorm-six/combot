@@ -285,6 +285,11 @@ def handleAdminCommands(msg):
         text = text[4:]
         apiSendMsg(OBWAGA6_CHAT_ID, text)
 
+    elif text.find('pinmsg:') == 0:
+        print('[PINMSG] {}'.format(text))
+        text = text[7:]
+        msg = sendMsgAndPin(OBWAGA6_CHAT_ID, text)
+
     elif text.find('msg') == 0:
         colon_idx = text.find(':')
         space_idx = text.find(' ')
@@ -370,7 +375,7 @@ def bedHandle(msg):
 def sellHandle(msg):
 
     chat_id = msg['chat']['id']
-    
+
     # Get optional args
     try:
         user = msg['from']
