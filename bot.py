@@ -369,6 +369,8 @@ def bedHandle(msg):
 
 def sellHandle(msg):
 
+    chat_id = msg['chat']['id']
+    
     # Get optional args
     try:
         user = msg['from']
@@ -389,7 +391,6 @@ def sellHandle(msg):
     description = splitted[1]
 
     # Get args
-    chat_id = msg['chat']['id']
     seller_id = user['id']
     seller_username = user.get('username', 'UNKNOWN')
 
