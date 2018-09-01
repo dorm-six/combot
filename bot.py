@@ -435,7 +435,7 @@ def buyHandle(msg):
                 seller_username = '@{}'.format(entry.seller_username)
             else:
                 seller_username = entry.seller_username
-            msg += 'sellid:{}. uid:{}. uname:{}. {}\n'.format(entry.id, entry.seller_id, seller_username, entry.description)
+            msg += 'sellid:{}. uid:{}. uname:{}.\n{}\n\n'.format(entry.id, entry.seller_id, seller_username, entry.description)
     else:
         msg = 'No entries'
 
