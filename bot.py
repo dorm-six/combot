@@ -534,6 +534,8 @@ if __name__ == "__main__":
             print('--------------------')
             try:
                 traceback.print_exc(e)
+                exc_trace = traceback.format_exc(e)
+                apiSendMsg(JEKA_DJ_CHAT_ID, exc_trace)
             except Exception:
                 pass
             print('--------------------')
