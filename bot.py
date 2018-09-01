@@ -501,6 +501,7 @@ def mainActivity():
             continue
 
         ress = data['result']
+        print(len(ress))
         results = list(filter(filterByUpdateId, ress))
 
         if len(results) == 0:
