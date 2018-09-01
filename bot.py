@@ -9,7 +9,7 @@ import threading
 import traceback
 from time import gmtime, strftime
 
-from db import new_session, CombotMall
+from db import new_session, CombotMall, delete_by_id
 from settings import BASE_URL
 
 
@@ -300,12 +300,27 @@ def handleAdminCommands(msg):
         cond3 = space_idx < colon_idx
 
         if cond1 and cond2 and cond3:
-            chat_id = text[space_idx+1:colon_idx]
-            if chat_id.isdigit():
-                if apiSendMsg(chat_id, text[colon_idx+1:]):
-                    apiSendMsg(msg['chat']['id'], 'SUCCESSFULLY SENT "{}" to "{}"'.format(text[colon_idx+1:], chat_id))
-                else:
-                    apiSendMsg(msg['chat']['id'], 'NOT SENT "{}" to "{}"'.format(text[colon_idx+1:], chat_id))
+            chat_id = text[space_idx+1:colon_idx].strip()
+            if chat_id.isdigit() and apiSendMsg(chat_id, text[colon_idx+1:]):
+                apiSendMsg(msg['chat']['id'], 'SUCCESSFULLY SENT "{}" to "{}"'.format(text[colon_idx+1:], chat_id))
+            else:
+                apiSendMsg(msg['chat']['id'], 'NOT SENT "{}" to "{}"'.format(text[colon_idx+1:], chat_id))
+
+    elif text.find('delsell') == 0:
+        colon_idx = text.find(':')
+        space_idx = text.find(' ')
+
+        cond1 = colon_idx > 7
+        cond2 = space_idx > 5
+        cond3 = space_idx < colon_idx
+
+        if cond1 and cond2 and cond3:
+            sell_id = text[space_idx+1:colon_idx].strip()
+            if sell_id.isdigit():
+                delete_by_id(sell_id)
+                apiSendMsg(JEKA_DJ_CHAT_ID, 'delsell: Done.')
+            else:
+                apiSendMsg(JEKA_DJ_CHAT_ID, 'delsell: Incorrect format.')
 
     else:
         handleExternalMessage(msg)
@@ -431,7 +446,7 @@ def buyHandle(msg):
     if len(entries) > 0:
         msg = ''
         for entry in entries:
-            if entry.seller_username is not 'UNKNOWN':
+            if entry.seller_username != 'UNKNOWN':
                 seller_username = '@{}'.format(entry.seller_username)
             else:
                 seller_username = entry.seller_username
