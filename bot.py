@@ -73,7 +73,7 @@ def getUpdatesOrExit():
         if data['ok'] == False:
             print('status "False" on getUpdates returned')
             print('Exiting...')
-            exit()
+            raise Exception
 
         CUTTING_IDX = 50
         if len(data['result']) > CUTTING_IDX:
@@ -501,7 +501,6 @@ def mainActivity():
             continue
 
         ress = data['result']
-        print(len(ress))
         results = list(filter(filterByUpdateId, ress))
 
         if len(results) == 0:
@@ -520,7 +519,7 @@ def mainActivity():
                 bedHandle(msg)
             elif (msg['text'].find('/sell') == 0) and (chat_id not in OBWAGA_CHAT_IDS) and sellHandle(msg):
                 pass
-            elif (msg['text'] == '/buy' or msg['text'] == '/buy@CombatDetectorBot') and (chat_id not in OBWAGA_CHAT_IDS):
+            elif (msg['text'] == '/buy' or msg['text'] == '/buy@CombatDetectorBot'): # and (chat_id not in OBWAGA_CHAT_IDS):
                 buyHandle(msg)
             elif chat_id in OBWAGA_CHAT_IDS:
                 try:
