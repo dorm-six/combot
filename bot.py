@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-import requests
-import time
-import datetime
-from time import gmtime, strftime
-import threading
-import random
-import os
+from __future__ import unicode_literals, absolute_import
 
-# Example of your code beginning
-#           Config vars
-TOKEN = os.environ['TELEGRAM_TOKEN']
-BASE_URL = 'https://api.telegram.org/bot' + TOKEN + '/'
+import time
+import random
+import datetime
+import requests
+import threading
+from time import gmtime, strftime
+
+from db import new_session, CombotMall
+from settings import BASE_URL
+
 
 RUSIK_CHAT_ID = -172022743
 JEKA_DJ_CHAT_ID = 239745097
@@ -363,7 +362,62 @@ def bedHandle(msg):
 
     apiSendMsg(chat_id, msg)
     print('[+] babyHandle.')
+
+# ----------------
+# --- The Mall ---
+# ----------------
+
+def sellHandle(msg):
+
+    # Get optional args
+    try:
+        user = msg['from']
+        description = msg['text']
+    except KeyError:
+        apiSendMsg(JEKA_DJ_CHAT_ID, 'ERROR: sellHandle: {}'.format(msg))
+        return
+
+    # Get args
+    chat_id = msg['chat']['id']
+    seller_id = user['id']
+    seller_username = user.get('username', 'UNKNOWN')
+
+    # open db connection
+    session = new_session()
+
+    # count actual value
+    count = session.query(CombotMall).filter(CombotMall.seller_id == seller_id).count()
+    if count >= 5:
+        apiSendMsg(chat_id, 'Too much sell entries for you')
+        return
+
+    # create new sell entry
+    cm = CombotMall(seller_id=seller_id, seller_username=seller_username, description=description)
+    session.add(cm)
+    session.commit()
+    session.close()
+
+    # success notification
+    apiSendMsg(chat_id, 'Done')
+
+    return
         
+def buyHandle(msg):
+
+    chat_id = msg['chat']['id']
+
+    session = new_session()
+    entries = session.query(CombotMall).all()
+    session.close()
+
+    msg = ''
+    for entry in entries:
+        msg += '{}:{} {}\n'.format(entry.seller_id, entry.seller_username, entry.description)
+
+    apiSendMsg(chat_id, msg)
+
+    return
+
 
 # --------------------
 # --- mainActivity ---
@@ -371,7 +425,6 @@ def bedHandle(msg):
 
 def mainActivity():
     global UPDATE_OFFSET
-    global BASE_URL
     global LAST_UPDATE_ID
 
     # --------------------
@@ -424,6 +477,10 @@ def mainActivity():
                 babyHandle(msg)
             elif msg['text'] == '/bed' or msg['text'] == '/bed@CombatDetectorBot':
                 bedHandle(msg)
+            elif (msg['text'] == '/sell' or msg['text'] == '/sell@CombatDetectorBot') and chat_id not in OBWAGA_CHAT_IDS:
+                sellHandle(msg)
+            elif (msg['text'] == '/buy' or msg['text'] == '/buy@CombatDetectorBot') and chat_id not in OBWAGA_CHAT_IDS:
+                buyHandle(msg)
             elif chat_id in OBWAGA_CHAT_IDS:
                 try:
                     if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
