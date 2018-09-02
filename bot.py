@@ -472,6 +472,45 @@ def buyHandle(msg):
     apiSendMsg(chat_id, msg, parse_mode='Markdown', disable_web_page_preview=True)
 
     return
+        
+def delsellHandle(msg):
+
+    try:
+        user = msg['from']
+    except KeyError:
+        apiSendMsg(JEKA_DJ_CHAT_ID, 'ERROR: delsellHandle: {}'.format(msg))
+        return
+
+    seller_id = user['id']
+    chat_id = msg['chat']['id']
+    text = msg['text']
+    cmd_obj = Command(text)
+
+    if not (cmd_obj.is_param() and cmd_obj.param.isdigit()):
+        apiSendMsg(chat_id, 'Неверный формат')
+        return
+
+
+    session = new_session()
+    entry = session.query(CombotMall).filter(CombotMall.id == int(cmd_obj.param)).first()
+    session.close()
+
+    if not entry:
+        apiSendMsg(chat_id, 'Неизвестный идентификатор')
+        return
+
+    if entry.seller_id != seller_id:
+        apiSendMsg(chat_id, 'У вас нет прав удалять позиции других людей')
+        return
+
+    session = new_session()
+    session.query(CombotMall).filter(CombotMall.id == int(cmd_obj.param)).delete()
+    session.commit()
+    session.close()
+
+    apiSendMsg(chat_id, 'Done.')
+
+    return
 
 
 # --------------------
@@ -539,6 +578,8 @@ def mainActivity():
                 #     buyHandle(msg)
             elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/buy'):
                 buyHandle(msg)
+            elif cmd_obj.is_param() and cmd_obj.is_cmd_eq('/delsell'):
+                delsellHandle(msg)
             elif chat_id in OBWAGA_CHAT_IDS:
                 try:
                     if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
