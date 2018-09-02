@@ -567,7 +567,7 @@ def mainActivity():
                     hwHandle(msg)
 
             else:
-                elif (msg['text'].find('/sell') == 0) and sellHandle(msg):
+                if (msg['text'].find('/sell') == 0) and sellHandle(msg):
                     pass
                 elif cmd_obj.is_cmd_eq('/delsell'):
                     delsellHandle(msg)
