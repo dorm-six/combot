@@ -415,9 +415,9 @@ def sellHandle(msg):
         msg = '/sell - позволяет выставить товар на продажу\n'
         msg += 'Формат: /sell \[описание]\n'
         msg += 'Пример: /sell Микроволновка 1000р.\n\n'
-        msg += 'Возможно использование Markdown разметки, [подробнее здесь](https://core.telegram.org/bots/api#markdown-style)\n'
-        msg += 'Пример: /sell \*Микроволновка\* 1000р. \[Описание](https://www.eldorado.ru/cat/detail/71073407/)\n'
-        msg += 'Результат: /sell *Микроволновка* 1000р. [Описание](https://www.eldorado.ru/cat/detail/71073407/)'
+        msg += 'Возможно использование Markdown разметки, [подробнее](https://core.telegram.org/bots/api#markdown-style)\n'
+        msg += 'Пример: /sell \*Микроволновка\* 1000р. \[Подробнее](https://www.eldorado.ru/cat/detail/71073407/)\n'
+        msg += 'Результат: /sell *Микроволновка* 1000р. [Подробнее](https://www.eldorado.ru/cat/detail/71073407/)'
         apiSendMsg(chat_id, msg, parse_mode='Markdown', disable_web_page_preview=True)
         return True
 
