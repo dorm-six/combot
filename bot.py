@@ -433,24 +433,27 @@ def buyHandle(msg):
     session.close()
 
     if len(entries) > 0:
-        msg = ''
+        message = ''
         for entry in entries:
 
             linked_uid = "[{}](tg://user?id={})".format(entry.seller_id, entry.seller_id)
-            msg += 'sellid: {}. uid: {}.'.format(entry.id, linked_uid)
+            message += 'sellid: {}. uid: {}.'.format(entry.id, linked_uid)
 
             if entry.seller_username != 'UNKNOWN':
                 if msg['chat']['type'] == 'private':
                     seller_username = '@{}'.format(entry.seller_username)
                 else:
                     seller_username = entry.seller_username
-                msg += ' uname: {}.'.format(seller_username)
+                message += ' uname: {}.'.format(seller_username)
 
-            msg += '\n{}\n\n'.format(entry.description)
+            message += '\n{}\n\n'.format(entry.description)
+
+        if msg['chat']['type'] != 'private':
+            message += 'Используйте в приватном чате для отображения ссылок на аккаунт.'
     else:
-        msg = 'No entries'
+        message = 'No entries'
 
-    apiSendMsg(chat_id, msg, parse_mode='Markdown', disable_web_page_preview=True)
+    apiSendMsg(chat_id, message, parse_mode='Markdown', disable_web_page_preview=True)
 
     return
         
