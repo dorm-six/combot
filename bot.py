@@ -440,8 +440,8 @@ def buyHandle(msg):
             msg += 'sellid:{}. uid:{}.'.format(entry.id, linked_uid)
 
             if entry.seller_username != 'UNKNOWN':
-                seller_username = '@{}'.format(entry.seller_username)
-                msg += ' uname:{}.'.format(seller_username)
+                # seller_username = '@{}'.format(entry.seller_username)
+                msg += ' uname:{}.'.format(entry.seller_username)
 
             msg += '\n{}\n\n'.format(entry.description)
     else:
