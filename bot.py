@@ -278,6 +278,7 @@ def apiUnpinMsg(chat_id):
 
 def handleAdminCommands(msg):
     text = msg['text']
+    chat_id = msg['chat']['id']
     cmd_obj = Command(text)
 
     if text.find('pin:') == 0:
@@ -296,20 +297,15 @@ def handleAdminCommands(msg):
         text = text[7:]
         sendMsgAndPin(OBWAGA6_CHAT_ID, text)
 
-    elif text.find('msg') == 0:
-        colon_idx = text.find(':')
-        space_idx = text.find(' ')
-
-        cond1 = colon_idx > 4
-        cond2 = space_idx > 2
-        cond3 = space_idx < colon_idx
-
-        if cond1 and cond2 and cond3:
-            chat_id = text[space_idx+1:colon_idx].strip()
-            if chat_id.isdigit() and apiSendMsg(chat_id, text[colon_idx+1:]):
-                apiSendMsg(msg['chat']['id'], 'SUCCESSFULLY SENT "{}" to "{}"'.format(text[colon_idx+1:], chat_id))
-            else:
-                apiSendMsg(msg['chat']['id'], 'NOT SENT "{}" to "{}"'.format(text[colon_idx+1:], chat_id))
+    elif (cmd_obj.is_param_semicolon() and \
+          cmd_obj.is_cmd_eq('msg') and \
+          cmd_obj.param.isdigit() and \
+          len(cmd_obj.value) > 0
+         ):
+        if apiSendMsg(chat_id, cmd_obj.value):
+            apiSendMsg(msg['chat']['id'], 'SUCCESSFULLY SENT "{}" to "{}"'.format(cmd_obj.value, chat_id))
+        else:
+            apiSendMsg(msg['chat']['id'], 'NOT SENT "{}" to "{}"'.format(cmd_obj.value, chat_id))
 
     elif text.find('delsell') == 0:
         colon_idx = text.find(':')
