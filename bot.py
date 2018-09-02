@@ -278,6 +278,7 @@ def apiUnpinMsg(chat_id):
 
 def handleAdminCommands(msg):
     text = msg['text']
+    cmd_obj = Command(text)
 
     if text.find('pin:') == 0:
         print('[PIN] {}'.format(text))
@@ -287,11 +288,8 @@ def handleAdminCommands(msg):
         if res is not None:
             apiPinMsg(OBWAGA6_CHAT_ID, res['message_id'])
 
-    elif text.find('msg:') == 0:
-        print('[MSG] {}'.format(text))
-        # SEND MESSAGE
-        text = text[4:]
-        apiSendMsg(OBWAGA6_CHAT_ID, text)
+    elif cmd_obj.is_semicolon() and cmd_obj.is_cmd_eq('msg'):
+        apiSendMsg(OBWAGA6_CHAT_ID, cmd_obj.value)
 
     elif text.find('pinmsg:') == 0:
         print('[PINMSG] {}'.format(text))
