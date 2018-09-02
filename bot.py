@@ -307,22 +307,6 @@ def handleAdminCommands(msg):
         else:
             apiSendMsg(msg['chat']['id'], 'NOT SENT "{}" to "{}"'.format(cmd_obj.value, chat_id))
 
-    elif text.find('delsell') == 0:
-        colon_idx = text.find(':')
-        space_idx = text.find(' ')
-
-        cond1 = colon_idx > 7
-        cond2 = space_idx > 5
-        cond3 = space_idx < colon_idx
-
-        if cond1 and cond2 and cond3:
-            sell_id = text[space_idx+1:colon_idx].strip()
-            if sell_id.isdigit():
-                delete_by_id(sell_id)
-                apiSendMsg(JEKA_DJ_CHAT_ID, 'delsell: Done.')
-            else:
-                apiSendMsg(JEKA_DJ_CHAT_ID, 'delsell: Incorrect format.')
-
     else:
         handleExternalMessage(msg)
 
@@ -498,7 +482,7 @@ def delsellHandle(msg):
         apiSendMsg(chat_id, 'Неизвестный идентификатор')
         return
 
-    if entry.seller_id != seller_id:
+    if entry.seller_id not in [seller_id, JEKA_DJ_CHAT_ID]:
         apiSendMsg(chat_id, 'У вас нет прав удалять позиции других людей')
         return
 
