@@ -468,7 +468,7 @@ def buyHandle(msg):
     else:
         msg = 'No entries'
 
-    apiSendMsg(chat_id, msg, parse_mode='Markdown')
+    apiSendMsg(chat_id, msg, parse_mode='Markdown', disable_web_page_preview=True)
 
     return
 
