@@ -488,7 +488,7 @@ def delsellHandle(msg):
 
     if not (cmd_obj.is_param() and cmd_obj.param.isdigit()):
         msg = "/delsell - команда для удаления позиций из магазина\n"
-        msg += "Формат /delsell [индетификатор позиции (sell_id)]\n"
+        msg += "Формат: /delsell [индетификатор позиции (sellid)]\n"
         msg += "Например: /delsell 7"
         apiSendMsg(chat_id, msg)
         return
