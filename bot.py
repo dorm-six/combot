@@ -452,7 +452,7 @@ def buyHandle(msg):
             message += '\n{}\n\n'.format(entry.description)
 
         if msg['chat']['type'] != 'private':
-            message += '```Используйте в приватном чате для отображения ссылок на аккаунты продавцов.```'
+            message += '`Используйте в приватном чате для отображения ссылок на аккаунты продавцов.`'
     else:
         message = 'No entries'
 
