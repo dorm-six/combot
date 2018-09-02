@@ -197,11 +197,15 @@ def sendMsgAndPin(chat_id, text):
 
     return msg
 
-def apiSendMsg(chat_id, msg):
+def apiSendMsg(chat_id, msg, parse_mode=None):
     payload = {
         'chat_id': chat_id,
         'text': msg
     }
+
+    if parse_mode:
+        payload['parse_mode'] = parse_mode
+
     r = requests.get(BASE_URL + 'sendMessage', params=payload)
     data = r.json()
 
@@ -450,11 +454,13 @@ def buyHandle(msg):
                 seller_username = '@{}'.format(entry.seller_username)
             else:
                 seller_username = entry.seller_username
-            msg += 'sellid:{}. uid:{}. uname:{}.\n{}\n\n'.format(entry.id, entry.seller_id, seller_username, entry.description)
+
+            linked_uid = "[{}](tg://user?id={})".format(entry.seller_id, entry.seller_id)
+            msg += 'sellid:{}. uid:{}. uname:{}.\n{}\n\n'.format(entry.id, linked_uid, seller_username, entry.description)
     else:
         msg = 'No entries'
 
-    apiSendMsg(chat_id, msg)
+    apiSendMsg(chat_id, msg, parse_mode='Markdown')
 
     return
 
