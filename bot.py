@@ -487,7 +487,10 @@ def delsellHandle(msg):
     cmd_obj = Command(text)
 
     if not (cmd_obj.is_param() and cmd_obj.param.isdigit()):
-        apiSendMsg(chat_id, 'Неверный формат')
+        msg = "/delsell - команда для удаления позиций из магазина\n"
+        msg += "Формат /delsell [индетификатор позиции (sell_id)]\n"
+        msg += "Например: /delsell 7"
+        apiSendMsg(chat_id, msg)
         return
 
 
@@ -578,7 +581,7 @@ def mainActivity():
                 #     buyHandle(msg)
             elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/buy'):
                 buyHandle(msg)
-            elif cmd_obj.is_param() and cmd_obj.is_cmd_eq('/delsell'):
+            elif cmd_obj.is_cmd_eq('/delsell') and (chat_id not in OBWAGA_CHAT_IDS):
                 delsellHandle(msg)
             elif chat_id in OBWAGA_CHAT_IDS:
                 try:
