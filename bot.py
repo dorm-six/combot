@@ -410,7 +410,12 @@ def sellHandle(msg):
     if not (splitted[0] == '/sell' or splitted[0] == '/sell@CombatDetectorBot'):
         return False
     if len(splitted) != 2 or not splitted[1].strip():
-        apiSendMsg(chat_id, 'Add description: /sell some_description')
+        msg = '/sell - позволяет выставить товар на продажу\n'
+        msg += 'Формат: /sell [описание]\n'
+        msg += 'Пример: /sell Кофемолка Bosch 1k\n\n'
+        msg += 'Возможно использование Markdown разметки, [подробнее здесь](https://core.telegram.org/bots/api#markdown-style)\n'
+        msg += 'Пример: /sell \*Кофемолка\* 1k'
+        apiSendMsg(chat_id, msg, 'Markdown')
         return True
 
     description = splitted[1]
