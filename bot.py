@@ -571,11 +571,11 @@ def mainActivity():
             chat_id = msg['chat']['id']
             cmd_obj = Command(msg['text'])
 
-            if msg['text'] == '/ping@CombatDetectorBot' or msg['text'] == '/ping':
+            if cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/ping'):
                 handlePing(msg)
-            elif msg['text'] == '/baby':
+            elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/baby'):
                 babyHandle(msg)
-            elif msg['text'] == '/bed' or msg['text'] == '/bed@CombatDetectorBot':
+            elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/bed'):
                 bedHandle(msg)
             elif (msg['text'].find('/sell') == 0) and (chat_id not in OBWAGA_CHAT_IDS) and sellHandle(msg):
                 pass
@@ -593,7 +593,7 @@ def mainActivity():
                         handlePin(msg)
                     elif msg['text'] == '/unpin@CombatDetectorBot' or msg['text'] == '/unpin':
                         handleUnpin(msg)
-                    elif msg['text'] == '/hw':
+                    elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/hw'):
                         hwHandle(msg)
                 except KeyError:
                     pass
