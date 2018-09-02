@@ -197,7 +197,7 @@ def sendMsgAndPin(chat_id, text):
 
     return msg
 
-def apiSendMsg(chat_id, msg, parse_mode=None):
+def apiSendMsg(chat_id, msg, parse_mode=None, disable_web_page_preview=False):
     payload = {
         'chat_id': chat_id,
         'text': msg
@@ -205,6 +205,8 @@ def apiSendMsg(chat_id, msg, parse_mode=None):
 
     if parse_mode:
         payload['parse_mode'] = parse_mode
+    if disable_web_page_preview is True:
+        payload['disable_web_page_preview'] = True
 
     r = requests.get(BASE_URL + 'sendMessage', params=payload)
     data = r.json()
@@ -411,11 +413,12 @@ def sellHandle(msg):
         return False
     if len(splitted) != 2 or not splitted[1].strip():
         msg = '/sell - позволяет выставить товар на продажу\n'
-        msg += 'Формат: /sell [описание]\n'
+        msg += 'Формат: /sell \[описание\]\n'
         msg += 'Пример: /sell Кофемолка Bosch 1k\n\n'
         msg += 'Возможно использование Markdown разметки, [подробнее здесь](https://core.telegram.org/bots/api#markdown-style)\n'
         msg += 'Пример: /sell \*Кофемолка\* 1k'
-        apiSendMsg(chat_id, msg, 'Markdown')
+        msg += 'Результат: /sell *Кофемолка* 1k'
+        apiSendMsg(chat_id, msg, parse_mode='Markdown', disable_web_page_preview=True)
         return True
 
     description = splitted[1]
