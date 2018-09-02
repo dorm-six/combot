@@ -459,13 +459,15 @@ def buyHandle(msg):
     if len(entries) > 0:
         msg = ''
         for entry in entries:
-            if entry.seller_username != 'UNKNOWN':
-                seller_username = '@{}'.format(entry.seller_username)
-            else:
-                seller_username = entry.seller_username
 
             linked_uid = "[{}](tg://user?id={})".format(entry.seller_id, entry.seller_id)
-            msg += 'sellid:{}. uid:{}. uname:{}.\n{}\n\n'.format(entry.id, linked_uid, seller_username, entry.description)
+            msg += 'sellid:{}. uid:{}.'.format(entry.id, linked_uid)
+
+            if entry.seller_username != 'UNKNOWN':
+                seller_username = '@{}'.format(entry.seller_username)
+                msg += ' uname:{}.'.format(seller_username)
+
+            msg += '\n{}\n\n'.format(entry.description)
     else:
         msg = 'No entries'
 
