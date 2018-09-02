@@ -547,7 +547,16 @@ def mainActivity():
             chat_id = msg['chat']['id']
             cmd_obj = Command(msg['text'])
 
-            if chat_id in OBWAGA_CHAT_IDS:
+            if cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/buy'):
+                buyHandle(msg)
+            elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/ping'):
+                handlePing(msg)
+            elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/baby'):
+                babyHandle(msg)
+            elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/bed'):
+                bedHandle(msg)
+
+            elif chat_id in OBWAGA_CHAT_IDS:
                 if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
                     handleCombotNotification(msg)
                 elif msg['text'] == '/pin@CombatDetectorBot' or msg['text'] == '/pin':
@@ -558,16 +567,8 @@ def mainActivity():
                     hwHandle(msg)
 
             else:
-                if cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/ping'):
-                    handlePing(msg)
-                elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/baby'):
-                    babyHandle(msg)
-                elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/bed'):
-                    bedHandle(msg)
                 elif (msg['text'].find('/sell') == 0) and sellHandle(msg):
                     pass
-                elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/buy'):
-                    buyHandle(msg)
                 elif cmd_obj.is_cmd_eq('/delsell'):
                     delsellHandle(msg)
 
