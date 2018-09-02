@@ -319,7 +319,7 @@ def handleExternalMessage(msg):
     to_chat_id = JEKA_DJ_CHAT_ID
     msg_id = msg['message_id']
 
-    apiSendMsg(to_chat_id, str(from_chat_id))
+    apiSendMsg(to_chat_id, 'chat_id: {}. msg_id: {}'.format(from_chat_id, msg_id))
     apiForwardMsg(from_chat_id, to_chat_id, msg_id)
     print('[+] handleExternalMessage. from:{}. to:{}. text:{}'.format(from_chat_id, to_chat_id, msg['text']))
 
@@ -348,8 +348,6 @@ def babyHandle(msg):
     chat_id = msg['chat']['id']
     baby, photo_url = random.choice(list(chicks.items()))
 
-    print('[+] babyHandle {} : {} : {}'.format(chat_id, baby, photo_url))
-
     apiSendPhoto(chat_id, photo_url, explicit_return=True)
 
 # ------------------
@@ -359,6 +357,7 @@ def babyHandle(msg):
 def bedHandle(msg):
 
     chat_id = msg['chat']['id']
+
     msg = "Расписание смены постельного белья:\n"
     msg += "пн: 8:30-12:00, 15:00-17:00\n"
     msg += "ср: 8:30-12:00, 15:00-17:00\n"
@@ -367,7 +366,6 @@ def bedHandle(msg):
     msg += "Если расписание изменилось, напишите боту в личку"
 
     apiSendMsg(chat_id, msg)
-    print('[+] babyHandle.')
 
 # ----------------
 # --- The Mall ---
