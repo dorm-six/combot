@@ -571,36 +571,35 @@ def mainActivity():
             chat_id = msg['chat']['id']
             cmd_obj = Command(msg['text'])
 
-            if cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/ping'):
-                handlePing(msg)
-            elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/baby'):
-                babyHandle(msg)
-            elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/bed'):
-                bedHandle(msg)
-            elif (msg['text'].find('/sell') == 0) and (chat_id not in OBWAGA_CHAT_IDS) and sellHandle(msg):
-                pass
-                # elif (msg['text'] == '/buy' or msg['text'] == '/buy@CombatDetectorBot'): # and (chat_id not in OBWAGA_CHAT_IDS):
-                #     buyHandle(msg)
-            elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/buy'):
-                buyHandle(msg)
-            elif cmd_obj.is_cmd_eq('/delsell') and (chat_id not in OBWAGA_CHAT_IDS):
-                delsellHandle(msg)
-            elif chat_id in OBWAGA_CHAT_IDS:
-                try:
-                    if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
-                        handleCombotNotification(msg)
-                    elif msg['text'] == '/pin@CombatDetectorBot' or msg['text'] == '/pin':
-                        handlePin(msg)
-                    elif msg['text'] == '/unpin@CombatDetectorBot' or msg['text'] == '/unpin':
-                        handleUnpin(msg)
-                    elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/hw'):
-                        hwHandle(msg)
-                except KeyError:
-                    pass
-            elif chat_id == JEKA_DJ_CHAT_ID:
-                handleAdminCommands(msg)
+            if chat_id in OBWAGA_CHAT_IDS:
+                if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
+                    handleCombotNotification(msg)
+                elif msg['text'] == '/pin@CombatDetectorBot' or msg['text'] == '/pin':
+                    handlePin(msg)
+                elif msg['text'] == '/unpin@CombatDetectorBot' or msg['text'] == '/unpin':
+                    handleUnpin(msg)
+                elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/hw'):
+                    hwHandle(msg)
+
             else:
-                handleExternalMessage(msg)
+                if cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/ping'):
+                    handlePing(msg)
+                elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/baby'):
+                    babyHandle(msg)
+                elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/bed'):
+                    bedHandle(msg)
+                elif (msg['text'].find('/sell') == 0) and sellHandle(msg):
+                    pass
+                elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/buy'):
+                    buyHandle(msg)
+                elif cmd_obj.is_cmd_eq('/delsell'):
+                    delsellHandle(msg)
+
+                # others
+                elif chat_id == JEKA_DJ_CHAT_ID:
+                    handleAdminCommands(msg)
+                else:
+                    handleExternalMessage(msg)
 
         LAST_UPDATE_ID = ress[-1]['update_id']
 
