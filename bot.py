@@ -414,10 +414,10 @@ def sellHandle(msg):
     if len(splitted) != 2 or not splitted[1].strip():
         msg = '/sell - позволяет выставить товар на продажу\n'
         msg += 'Формат: /sell \[описание]\n'
-        msg += 'Пример: /sell Кофемолка Bosch 1k\n\n'
+        msg += 'Пример: /sell Микроволновка 1000р.\n\n'
         msg += 'Возможно использование Markdown разметки, [подробнее здесь](https://core.telegram.org/bots/api#markdown-style)\n'
-        msg += 'Пример: /sell \*Кофемолка\* 1k\n'
-        msg += 'Результат: /sell *Кофемолка* 1k'
+        msg += 'Пример: /sell \*Микроволновка\* 1000р. \[Описание](https://www.eldorado.ru/cat/detail/71073407/)\n'
+        msg += 'Результат: /sell *Микроволновка* 1000р. [Описание](https://www.eldorado.ru/cat/detail/71073407/)'
         apiSendMsg(chat_id, msg, parse_mode='Markdown', disable_web_page_preview=True)
         return True
 
