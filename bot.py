@@ -443,17 +443,23 @@ def buyHandle(msg):
         message = ''
         for entry in entries:
 
+            fixed_username = ''
+            for c in entry.seller_username:
+                if c == '_':
+                    fixed_username += '\\'
+                fixed_username += c
+
             if msg['chat']['type'] == 'private':
                 linked_uid = "[{}](tg://user?id={})".format(entry.seller_id, entry.seller_id)
             else:
                 linked_uid = entry.seller_id
             message += 'sellid: {}. uid: {}.'.format(entry.id, linked_uid)
 
-            if entry.seller_username != 'UNKNOWN':
+            if fixed_username != 'UNKNOWN':
                 if msg['chat']['type'] == 'private':
-                    seller_username = '@{}'.format(entry.seller_username)
+                    seller_username = '@{}'.format(fixed_username)
                 else:
-                    seller_username = entry.seller_username
+                    seller_username = fixed_username
                 message += ' uname: {}.'.format(seller_username)
 
             message += '\n{}\n\n'.format(entry.description)
