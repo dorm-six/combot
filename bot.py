@@ -433,6 +433,9 @@ def buyHandle(msg):
     session.close()
 
     if len(entries) > 0:
+        
+        print(entries)
+
         message = ''
         for entry in entries:
 
