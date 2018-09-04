@@ -492,7 +492,7 @@ def editHandle(msg):
         apiSendMsg(chat_id, 'Неизвестный идентификатор')
         return
 
-    if entry.seller_id not in [seller_id, JEKA_DJ_CHAT_ID]:
+    if entry.seller_id not in [seller_id, 239745097]:
         apiSendMsg(chat_id, 'У вас нет прав удалять позиции других людей')
         return
 
@@ -535,8 +535,8 @@ def delsellHandle(msg):
         apiSendMsg(chat_id, 'Неизвестный идентификатор')
         return
 
-    if entry.seller_id not in [seller_id, JEKA_DJ_CHAT_ID]:
-        apiSendMsg(chat_id, 'У вас нет прав удалять позиции других людей')
+    if entry.seller_id not in [seller_id, 239745097]:
+        apiSendMsg(chat_id, 'У вас нет прав изменять позиции других людей')
         return
 
     session = new_session()
