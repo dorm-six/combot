@@ -471,6 +471,40 @@ def buyHandle(msg):
     print(res)
 
     return
+
+def editHandle(msg):
+    try:
+        user = msg['from']
+    except KeyError:
+        apiSendMsg(JEKA_DJ_CHAT_ID, 'ERROR: delsellHandle: {}'.format(msg))
+        return
+
+    seller_id = user['id']
+    chat_id = msg['chat']['id']
+    text = msg['text']
+    cmd_obj = Command(text)
+
+    session = new_session()
+    entry = session.query(CombotMall).filter(CombotMall.id == int(cmd_obj.param)).first()
+    session.close()
+
+    if not entry:
+        apiSendMsg(chat_id, 'Неизвестный идентификатор')
+        return
+
+    if entry.seller_id not in [seller_id, JEKA_DJ_CHAT_ID]:
+        apiSendMsg(chat_id, 'У вас нет прав удалять позиции других людей')
+        return
+
+    session = new_session()
+    session.query(CombotMall).filter(CombotMall.id == int(cmd_obj.param)).update({CombotMall.description: cmd_obj.value})
+    session.commit()
+    session.close()
+
+    apiSendMsg(chat_id, 'Done.')
+
+    return
+
         
 def delsellHandle(msg):
 
@@ -592,6 +626,8 @@ def mainActivity():
                     pass
                 elif cmd_obj.is_cmd_eq('/delsell'):
                     delsellHandle(msg)
+                elif cmd_obj.is_cmd_eq('/edit') and cmd_obj.is_param_semicolon():
+                    editHandle(msg)
 
                 # others
                 elif chat_id == JEKA_DJ_CHAT_ID:
