@@ -7,6 +7,7 @@ import datetime
 import requests
 import threading
 import traceback
+import json
 from time import gmtime, strftime
 
 from db import new_session, CombotMall, delete_by_id
@@ -203,6 +204,8 @@ def apiSendMsg(chat_id, msg, parse_mode=None, disable_web_page_preview=False, ex
         'chat_id': chat_id,
         'text': msg
     }
+
+    print(payload)
 
     if parse_mode:
         payload['parse_mode'] = parse_mode
