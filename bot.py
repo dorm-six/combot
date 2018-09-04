@@ -461,7 +461,8 @@ def buyHandle(msg):
 
     print(chat_id)
     print(message)
-    apiSendMsg(chat_id, message, parse_mode='Markdown', disable_web_page_preview=True)
+    res = apiSendMsg(chat_id, message, parse_mode='Markdown', disable_web_page_preview=True)
+    print(res)
 
     return
         
