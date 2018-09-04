@@ -198,7 +198,7 @@ def sendMsgAndPin(chat_id, text):
 
     return msg
 
-def apiSendMsg(chat_id, msg, parse_mode=None, disable_web_page_preview=False):
+def apiSendMsg(chat_id, msg, parse_mode=None, disable_web_page_preview=False, explicit_return=False):
     payload = {
         'chat_id': chat_id,
         'text': msg
@@ -212,10 +212,13 @@ def apiSendMsg(chat_id, msg, parse_mode=None, disable_web_page_preview=False):
     r = requests.get(BASE_URL + 'sendMessage', params=payload)
     data = r.json()
 
-    if data['ok'] == False:
-        return None
+    if explicit_return:
+        return data
     else:
-        return data['result']
+        if data['ok'] == False:
+            return None
+        else:
+            return data['result']
 
 def apiSendPhoto(chat_id, photo_url, explicit_return=False):
     payload = {
@@ -461,7 +464,7 @@ def buyHandle(msg):
 
     print(chat_id)
     print(message)
-    res = apiSendMsg(chat_id, message, parse_mode='Markdown', disable_web_page_preview=True)
+    res = apiSendMsg(chat_id, message, parse_mode='Markdown', disable_web_page_preview=True, explicit_return=True)
     print(res)
 
     return
