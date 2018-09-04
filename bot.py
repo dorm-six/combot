@@ -209,7 +209,7 @@ def apiSendMsg(chat_id, msg, parse_mode=None, disable_web_page_preview=False, ex
     if disable_web_page_preview is True:
         payload['disable_web_page_preview'] = True
 
-    r = requests.get(BASE_URL + 'sendMessage', params=payload)
+    r = requests.get(BASE_URL + 'sendMessage', json=payload)
     data = r.json()
 
     if explicit_return:
