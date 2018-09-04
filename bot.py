@@ -434,8 +434,6 @@ def buyHandle(msg):
 
     if len(entries) > 0:
 
-        print(entries)
-
         message = ''
         for entry in entries:
 
@@ -454,13 +452,15 @@ def buyHandle(msg):
 
             message += '\n{}\n\n'.format(entry.description)
 
-            print(message)
+            
 
         if msg['chat']['type'] != 'private':
             message += '`Используйте в приватном чате для отображения ссылок на аккаунты продавцов.`'
     else:
         message = 'No entries'
 
+    print(chat_id)
+    print(message)
     apiSendMsg(chat_id, message, parse_mode='Markdown', disable_web_page_preview=True)
 
     return
