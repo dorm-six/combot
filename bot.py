@@ -433,7 +433,7 @@ def buyHandle(msg):
     session.close()
 
     if len(entries) > 0:
-        
+
         print(entries)
 
         message = ''
@@ -453,6 +453,8 @@ def buyHandle(msg):
                 message += ' uname: {}.'.format(seller_username)
 
             message += '\n{}\n\n'.format(entry.description)
+
+            print(message)
 
         if msg['chat']['type'] != 'private':
             message += '`Используйте в приватном чате для отображения ссылок на аккаунты продавцов.`'
