@@ -364,6 +364,11 @@ def babyHandle(msg):
     chat_id = msg['chat']['id']
     baby_name, photo_url = random.choice(list(chicks.items()))
 
+    # remove number rom the end
+    splitted = baby_name.strip().rsplit(' ', 1)
+    if len(splitted) == 2 and splitted[1].isdigit():
+        baby_name = splitted[0]
+
     apiSendPhoto(chat_id, photo_url, caption=baby_name, explicit_return=True)
 
 # ------------------
