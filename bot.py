@@ -223,11 +223,14 @@ def apiSendMsg(chat_id, msg, parse_mode=None, disable_web_page_preview=False, ex
         else:
             return data['result']
 
-def apiSendPhoto(chat_id, photo_url, explicit_return=False):
+def apiSendPhoto(chat_id, photo_url, caption=None, explicit_return=False):
     payload = {
         'chat_id': chat_id,
         'photo': photo_url
     }
+    if caption:
+        payload['caption'] = caption
+
     r = requests.get(BASE_URL + 'sendPhoto', params=payload)
     data = r.json()
 
@@ -359,9 +362,9 @@ def babyHandle(msg):
     }
 
     chat_id = msg['chat']['id']
-    baby, photo_url = random.choice(list(chicks.items()))
+    baby_name, photo_url = random.choice(list(chicks.items()))
 
-    apiSendPhoto(chat_id, photo_url, explicit_return=True)
+    apiSendPhoto(chat_id, photo_url, caption=baby_name, explicit_return=True)
 
 # ------------------
 # --- Bed linnin ---
