@@ -348,7 +348,14 @@ def babyHandle(msg):
         'Lizzy Caplan' : 'https://pp.userapi.com/c840325/v840325631/6e827/BchgGnPyfis.jpg',
         'Emma Watson' : 'https://sun9-5.userapi.com/c840433/v840433317/6cafd/aHgSpcrSTaU.jpg',
         'Rachel Nicols' : 'https://pp.userapi.com/c840331/v840331377/7073d/L6SdkSOr04M.jpg',
-        'Fat Man' : 'https://pp.userapi.com/c840127/v840127496/8ffd9/X8IcN9CV-aA.jpg'
+        'Fat Man' : 'https://pp.userapi.com/c840127/v840127496/8ffd9/X8IcN9CV-aA.jpg',
+
+        'Emily Ratajkowski': 'https://pp.userapi.com/c849420/v849420949/6ba61/tM4djwe3uBE.jpg',
+        'Rihanna 2' : 'https://pp.userapi.com/c849420/v849420426/6d6d7/Tdvtt-mIoDo.jpg',
+        'Irina Shayk' : 'https://pp.userapi.com/c849420/v849420426/6d6f6/YmZQe1uMG7w.jpg',
+        'Candice Swanepoel' : 'https://pp.userapi.com/c849420/v849420949/6ba1a/hR1m9p9Cfhg.jpg',
+        'Mila Kunis' : 'https://pp.userapi.com/c850236/v850236810/24ed4/aqRvgk6Y5jM.jpg',
+        'Nina Dobrev' : 'https://pp.userapi.com/c850236/v850236810/24eed/zNFQUK63Obo.jpg'
     }
 
     chat_id = msg['chat']['id']
