@@ -382,18 +382,22 @@ def babyHandle(msg):
 # --- Bed linnin ---
 # ------------------
 
-def bedHandle(msg):
+def scheduleHandle(msg):
 
     chat_id = msg['chat']['id']
 
-    msg = "Расписание смены постельного белья:\n"
+    msg = "*Расписание смены постельного белья:*\n"
     msg += "пн: 9:00-12:00, 15:00-17:30\n"
     msg += "ср: 9:00-12:00, 15:00-17:30\n"
     msg += "чт: 9:00-12:00, 15:00-17:30\n"
     msg += "пт: 9:00-12:00, 14:00-16:30\n"
+    msg += "*Душ:*\n"
+    msg += "6:00-12:00 15:00-24:00\n"
+    msg += "Санитарный день:\n"
+    msg += "10:00-18:00 (6ф - четверг, 6м - среда)\n"
     msg += "Если расписание изменилось, напишите боту в личку"
 
-    apiSendMsg(chat_id, msg)
+    apiSendMsg(chat_id, msg, parse_mode='Markdown')
 
 # ----------------
 # --- The Mall ---
@@ -635,8 +639,8 @@ def mainActivity():
                 handlePing(msg)
             elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/baby'):
                 babyHandle(msg)
-            elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/bed'):
-                bedHandle(msg)
+            elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/schedule'):
+                scheduleHandle(msg)
 
             elif chat_id in OBWAGA_CHAT_IDS:
                 if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
