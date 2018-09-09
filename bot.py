@@ -358,7 +358,14 @@ def babyHandle(msg):
         'Irina Shayk' : 'https://pp.userapi.com/c849420/v849420426/6d6f6/YmZQe1uMG7w.jpg',
         'Candice Swanepoel' : 'https://pp.userapi.com/c849420/v849420949/6ba1a/hR1m9p9Cfhg.jpg',
         'Mila Kunis' : 'https://pp.userapi.com/c850236/v850236810/24ed4/aqRvgk6Y5jM.jpg',
-        'Nina Dobrev' : 'https://pp.userapi.com/c850236/v850236810/24eed/zNFQUK63Obo.jpg'
+        'Nina Dobrev' : 'https://pp.userapi.com/c850236/v850236810/24eed/zNFQUK63Obo.jpg',
+
+        'Kaley Cuoco' : 'https://pp.userapi.com/c849536/v849536635/6d2b1/AmMt9Wt6CJw.jpg',
+        'Anna Kendrick' : 'https://pp.userapi.com/c845523/v845523102/e9901/DeSn09KLGh4.jpg',
+        'Laura Vandervoort' : 'https://pp.userapi.com/c846322/v846322635/e634c/ybxh7VxCR2w.jpg',
+        'Laura Vandervoort 2' : 'https://pp.userapi.com/c847020/v847020635/e448f/Ih1xBEPrXwY.jpg',
+        'Sarah Jones' : 'https://pp.userapi.com/c847016/v847016635/e39f2/CmWvYPl9WR0.jpg',
+        'Elisha Cuthbert' : 'https://pp.userapi.com/c845523/v845523102/e9915/LnL4P0D1zSE.jpg'
     }
 
     chat_id = msg['chat']['id']
