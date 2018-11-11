@@ -14,29 +14,12 @@ from app.plugins.chicks import Chicks
 from app.db import new_session, CombotMall, delete_by_id
 from app.command import Command
 from app.settings import BASE_URL
+from app.settings import RUSIK_CHAT_ID, JEKA_DJ_CHAT_ID, DENIS_EMINEM_CHAT_ID, VLAD_KULAK_CHAT_ID, BODIES
+from app.settings import OBWAGA6_CHAT_ID, TESTGROUP_CHAT_ID, OBWAGA_CHAT_IDS
 
-
-RUSIK_CHAT_ID = -172022743
-JEKA_DJ_CHAT_ID = 239745097
-DENIS_EMINEM_CHAT_ID = 129085681
-VLAD_KULAK_CHAT_ID = 1591398
-BODIES = [
-    JEKA_DJ_CHAT_ID,        # Jeka_DJ
-    DENIS_EMINEM_CHAT_ID,   # Denis_Eminem
-    VLAD_KULAK_CHAT_ID,     # Vlad_Kulak
-]
-
-OBWAGA6_CHAT_ID = -1001131239095
-TESTGROUP_CHAT_ID = -1001176853573
-OBWAGA_CHAT_IDS = [
-    TESTGROUP_CHAT_ID,     # testgroup
-    OBWAGA6_CHAT_ID,       # 
-]
-
-MALICIOUS = [
-    u'комбат', u'кмбат', u'камбат', u'комбта', u'комбот',
-    u'combat', u'cmbat', u'cambat', u'combta', u'combot',
-]
+# ---------------
+# --- GLOBALS ---
+# ---------------
 
 UPDATE_OFFSET = 0
 LAST_UPDATE_ID = 0
@@ -48,7 +31,12 @@ LAST_UPDATE_ID = 0
 def combatFinder(msg):
     msg = msg.lower()
 
-    for word in MALICIOUS:
+    malicious_words = [
+        u'комбат', u'кмбат', u'камбат', u'комбта', u'комбот',
+        u'combat', u'cmbat', u'cambat', u'combta', u'combot',
+    ]
+
+    for word in malicious_words:
         if word in msg:
             return True
 
@@ -359,14 +347,17 @@ def scheduleHandle(msg):
     msg += "ср: 9:00-12:00, 15:00-17:30\n"
     msg += "чт: 9:00-12:00, 15:00-17:30\n"
     msg += "пт: 9:00-12:00, 14:00-16:30\n\n"
+
     msg += "*Душ:*\n"
     msg += "6:00-12:00, 15:00-24:00\n"
     msg += "Санитарный день (не работает):\n"
     msg += "10:00-18:00 (6ф - четверг, 6м - среда)\n\n"
+
     msg += "*Коменда:*\n"
     msg += "пн-чт: 9:00-17:30\n"
     msg += "пт: 9:00-16:30\n"
     msg += "обед: 13:00-13:30\n\n"
+
     msg += "`Если расписание изменилось, напишите боту в личку`"
 
     apiSendMsg(chat_id, msg, parse_mode='Markdown')
