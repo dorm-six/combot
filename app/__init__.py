@@ -10,6 +10,7 @@ import threading
 import traceback
 from time import gmtime, strftime
 
+from app.api import API
 from app.plugins.chicks import Chicks
 from app.db import new_session, CombotMall, delete_by_id
 from app.command import Command
@@ -360,7 +361,8 @@ def scheduleHandle(msg):
 
     msg += "`Если расписание изменилось, напишите боту в личку`"
 
-    apiSendMsg(chat_id, msg, parse_mode='Markdown')
+    API.sendMsg(chat_id, msg, parse_mode='Markdown')
+    # apiSendMsg(chat_id, msg, parse_mode='Markdown')
 
 # ----------------
 # --- The Mall ---
@@ -452,8 +454,6 @@ def buyHandle(msg):
                 message += ' uname: {}.'.format(seller_username)
 
             message += '\n{}\n\n'.format(entry.description)
-
-            
 
         if msg['chat']['type'] != 'private':
             message += '`Используйте в приватном чате для отображения ссылок на аккаунты продавцов.`'
