@@ -2,18 +2,18 @@
 from __future__ import unicode_literals, absolute_import
 
 import time
+import json
 import random
 import datetime
 import requests
 import threading
 import traceback
-import json
 from time import gmtime, strftime
 
-from plugins.chicks import Chicks
-from db import new_session, CombotMall, delete_by_id
-from command import Command
-from settings import BASE_URL
+from app.plugins.chicks import Chicks
+from app.db import new_session, CombotMall, delete_by_id
+from app.command import Command
+from app.settings import BASE_URL
 
 
 RUSIK_CHAT_ID = -172022743
@@ -641,7 +641,8 @@ def mainActivity():
 
         time.sleep(3)
 
-if __name__ == "__main__":
+
+def run():
     while True:
         try:
             mainActivity()
@@ -658,3 +659,6 @@ if __name__ == "__main__":
                 pass
             print('--------------------')
             time.sleep(3)
+
+if __name__ == "__main__":
+    run()

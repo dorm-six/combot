@@ -7,7 +7,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-from settings import DATABASE_URL
+from app.settings import DATABASE_URL
 
 # LOCAL_DB = 'sqlite:///:memory:'
 # DATABASE_URL = LOCAL_DB
