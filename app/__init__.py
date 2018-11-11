@@ -99,33 +99,33 @@ def getTimeStringOfMessage(msg):
 
 def handleUnpin(msg):
     chat_id = msg['chat']['id']
-    if apiUnpinMsg(chat_id):
-        apiSendMsg(chat_id, 'ОТКРЕПЛЕНО')
+    if API.unpinMsg(chat_id):
+        API.sendMsg(chat_id, 'ОТКРЕПЛЕНО')
 
     t = getTimeStringOfMessage(msg)
     # print('[+] {} Unpinned'.format(t))
 
     if chat_id == OBWAGA6_CHAT_ID:
-        apiSendMsg(RUSIK_CHAT_ID, 'ОТКРЕПЛЕНО')
+        API.sendMsg(RUSIK_CHAT_ID, 'ОТКРЕПЛЕНО')
 
 def handleCombotNotification(msg):
     for chat_id in BODIES:
-        apiForwardMsg(msg['chat']['id'], chat_id, msg['message_id'])
+        API.forwardMsg(msg['chat']['id'], chat_id, msg['message_id'])
     combatLogger(msg)
 
 def handlePin(msg):
-    msg = sendMsgAndPin(msg['chat']['id'], 'КОМБАТЫ')
+    msg = API.sendMsgAndPin(msg['chat']['id'], 'КОМБАТЫ')
     if msg:
         for chat_id in BODIES:
-            apiForwardMsg(msg['chat']['id'], chat_id, msg['message_id'])
+            API.forwardMsg(msg['chat']['id'], chat_id, msg['message_id'])
 
     if msg['chat']['id'] == OBWAGA6_CHAT_ID:
-        apiSendMsg(RUSIK_CHAT_ID, 'КОМБАТЫ')
+        API.sendMsg(RUSIK_CHAT_ID, 'КОМБАТЫ')
 
 def handlePing(msg):
     chat_id = msg['chat']['id']
     text = 'I am Alive, сучка'
-    apiSendMsg(chat_id, text)
+    API.sendMsg(chat_id, text)
     # print('[+] handlePing')
 
 # -----------
@@ -148,7 +148,7 @@ def hwHandle_response(msg):
     ]
 
     resp_msg = 'Huli Wi {}'.format(random.choice(HW))
-    apiSendMsg(msg['chat']['id'], resp_msg)
+    API.sendMsg(msg['chat']['id'], resp_msg)
 
 def hwHandle_body(msg):
 
@@ -162,7 +162,7 @@ def hwHandle_body(msg):
     name = _from['first_name'] or _from['username'] or _from['last_name'] or 'Эй'
 
     resp_msg = name + random.choice(candidates)
-    apiSendMsg(msg['chat']['id'], resp_msg)
+    API.sendMsg(msg['chat']['id'], resp_msg)
 
 def hwHandle(msg):
     if random.randint(0, 1) != 0:
@@ -172,104 +172,6 @@ def hwHandle(msg):
     else:
         hwHandle_response(msg)
 
-# -----------------
-# --- API CALLS ---
-# -----------------
-
-def sendMsgAndPin(chat_id, text):
-
-    msg = apiSendMsg(chat_id, text)
-    if msg is None:
-        # print('[!] sendMsgAndPin : result of apiSendMsg is None')
-        return None
-    apiPinMsg(chat_id, msg['message_id'])
-
-    t = getTimeStringOfMessage(msg)
-    # print('[+] {} PINNED in chat {}'.format(t, chat_id))
-
-    return msg
-
-def apiSendMsg(chat_id, msg, parse_mode=None, disable_web_page_preview=False, explicit_return=False):
-    payload = {
-        'chat_id': chat_id,
-        'text': msg
-    }
-
-    # print(payload)
-
-    if parse_mode:
-        payload['parse_mode'] = parse_mode
-    if disable_web_page_preview is True:
-        payload['disable_web_page_preview'] = True
-
-    r = requests.get(BASE_URL + 'sendMessage', json=payload)
-    data = r.json()
-
-    if explicit_return:
-        return data
-    else:
-        if data['ok'] == False:
-            return None
-        else:
-            return data['result']
-
-def apiSendPhoto(chat_id, photo_url, caption=None, explicit_return=False):
-    payload = {
-        'chat_id': chat_id,
-        'photo': photo_url
-    }
-    if caption:
-        payload['caption'] = caption
-
-    r = requests.get(BASE_URL + 'sendPhoto', params=payload)
-    data = r.json()
-
-    if explicit_return:
-        return data
-    else:
-        if data['ok'] == False:
-            return None
-        else:
-            return data['result']
-
-def apiPinMsg(chat_id, msg_id):
-    payload = {
-        'chat_id': chat_id,
-        'message_id': msg_id
-    }
-    r = requests.get(BASE_URL + 'pinChatMessage', params=payload)
-    data = r.json()
-
-    if data['ok'] == False:
-        return None
-    else:
-        return data['result']
-
-def apiForwardMsg(from_chat_id, to_chat_id, msg_id):
-    payload = {
-        'chat_id': to_chat_id,
-        'from_chat_id': from_chat_id,
-        'message_id': msg_id
-    }
-    r = requests.get(BASE_URL + 'forwardMessage', params=payload)
-    data = r.json()
-
-    if data['ok'] == False:
-        return None
-    else:
-        return data['result']
-
-def apiUnpinMsg(chat_id):
-    payload = {
-        'chat_id': chat_id,
-    }
-    r = requests.get(BASE_URL + 'unpinChatMessage', params=payload)
-    data = r.json()
-
-    if data['ok'] == False:
-        return None
-    else:
-        return data['result']
 
 # ----------------------
 # --- ADMIN COMMANDS ---
@@ -284,27 +186,27 @@ def handleAdminCommands(msg):
         # print('[PIN] {}'.format(text))
         # PIN MESSAGE
         text = text[4:]
-        res = apiSendMsg(OBWAGA6_CHAT_ID, text)
+        res = API.sendMsg(OBWAGA6_CHAT_ID, text)
         if res is not None:
-            apiPinMsg(OBWAGA6_CHAT_ID, res['message_id'])
+            API.pinMsg(OBWAGA6_CHAT_ID, res['message_id'])
 
     elif cmd_obj.is_semicolon() and cmd_obj.is_cmd_eq('msg'):
-        apiSendMsg(OBWAGA6_CHAT_ID, cmd_obj.value)
+        API.sendMsg(OBWAGA6_CHAT_ID, cmd_obj.value)
 
     elif text.find('pinmsg:') == 0:
         # print('[PINMSG] {}'.format(text))
         text = text[7:]
-        sendMsgAndPin(OBWAGA6_CHAT_ID, text)
+        API.sendMsgAndPin(OBWAGA6_CHAT_ID, text)
 
     elif (cmd_obj.is_param_semicolon() and \
           cmd_obj.is_cmd_eq('msg') and \
           cmd_obj.param.isdigit() and \
           len(cmd_obj.value) > 0
          ):
-        if apiSendMsg(chat_id, cmd_obj.value):
-            apiSendMsg(msg['chat']['id'], 'SUCCESSFULLY SENT "{}" to "{}"'.format(cmd_obj.value, chat_id))
+        if API.sendMsg(chat_id, cmd_obj.value):
+            API.sendMsg(msg['chat']['id'], 'SUCCESSFULLY SENT "{}" to "{}"'.format(cmd_obj.value, chat_id))
         else:
-            apiSendMsg(msg['chat']['id'], 'NOT SENT "{}" to "{}"'.format(cmd_obj.value, chat_id))
+            API.sendMsg(msg['chat']['id'], 'NOT SENT "{}" to "{}"'.format(cmd_obj.value, chat_id))
 
     else:
         handleExternalMessage(msg)
@@ -318,8 +220,8 @@ def handleExternalMessage(msg):
     to_chat_id = JEKA_DJ_CHAT_ID
     msg_id = msg['message_id']
 
-    apiSendMsg(to_chat_id, 'chat_id: {}. msg_id: {}'.format(from_chat_id, msg_id))
-    apiForwardMsg(from_chat_id, to_chat_id, msg_id)
+    API.sendMsg(to_chat_id, 'chat_id: {}. msg_id: {}'.format(from_chat_id, msg_id))
+    API.forwardMsg(from_chat_id, to_chat_id, msg_id)
     # print('[+] handleExternalMessage. from:{}. to:{}. text:{}'.format(from_chat_id, to_chat_id, msg['text']))
 
 # ---------------------
@@ -333,7 +235,7 @@ def babyHandle(msg):
     chicks = Chicks()
     name, url = chicks.get_random_chick()
 
-    apiSendPhoto(chat_id, url, caption=name)
+    API.sendPhoto(chat_id, url, caption=name)
 
 # ------------------
 # --- Bed linnin ---
@@ -362,7 +264,6 @@ def scheduleHandle(msg):
     msg += "`Если расписание изменилось, напишите боту в личку`"
 
     API.sendMsg(chat_id, msg, parse_mode='Markdown')
-    # apiSendMsg(chat_id, msg, parse_mode='Markdown')
 
 # ----------------
 # --- The Mall ---
@@ -377,7 +278,7 @@ def sellHandle(msg):
         user = msg['from']
         text = msg['text']
     except KeyError:
-        apiSendMsg(JEKA_DJ_CHAT_ID, 'ERROR: sellHandle: {}'.format(msg))
+        API.sendMsg(JEKA_DJ_CHAT_ID, 'ERROR: sellHandle: {}'.format(msg))
         return True
 
     # check text
@@ -392,7 +293,7 @@ def sellHandle(msg):
         msg += 'Возможно использование Markdown разметки, [подробнее](https://core.telegram.org/bots/api#markdown-style)\n'
         msg += 'Пример: /sell \*Микроволновка\* 1000р. \[Подробнее](https://www.eldorado.ru/cat/detail/71073407/)\n'
         msg += 'Результат: /sell *Микроволновка* 1000р. [Подробнее](https://www.eldorado.ru/cat/detail/71073407/)'
-        apiSendMsg(chat_id, msg, parse_mode='Markdown', disable_web_page_preview=True)
+        API.sendMsg(chat_id, msg, parse_mode='Markdown', disable_web_page_preview=True)
         return True
 
     description = splitted[1]
@@ -407,7 +308,7 @@ def sellHandle(msg):
     # count actual value
     count = session.query(CombotMall).filter(CombotMall.seller_id == seller_id).count()
     if count >= 5:
-        apiSendMsg(chat_id, 'Too much sell entries for you')
+        API.sendMsg(chat_id, 'Too much sell entries for you')
         return
 
     # create new sell entry
@@ -417,7 +318,7 @@ def sellHandle(msg):
     session.close()
 
     # success notification
-    apiSendMsg(chat_id, 'Done')
+    API.sendMsg(chat_id, 'Done')
 
     return True
         
@@ -460,9 +361,9 @@ def buyHandle(msg):
     else:
         message = 'No entries'
 
-    res = apiSendMsg(chat_id, message, parse_mode='Markdown', disable_web_page_preview=True)
+    res = API.sendMsg(chat_id, message, parse_mode='Markdown', disable_web_page_preview=True)
     if not res:
-        apiSendMsg(chat_id, message, disable_web_page_preview=True)
+        API.sendMsg(chat_id, message, disable_web_page_preview=True)
 
     return
 
@@ -470,7 +371,7 @@ def editHandle(msg):
     try:
         user = msg['from']
     except KeyError:
-        apiSendMsg(JEKA_DJ_CHAT_ID, 'ERROR: delsellHandle: {}'.format(msg))
+        API.sendMsg(JEKA_DJ_CHAT_ID, 'ERROR: delsellHandle: {}'.format(msg))
         return
 
     seller_id = user['id']
@@ -483,11 +384,11 @@ def editHandle(msg):
     session.close()
 
     if not entry:
-        apiSendMsg(chat_id, 'Неизвестный идентификатор')
+        API.sendMsg(chat_id, 'Неизвестный идентификатор')
         return
 
     if seller_id not in [entry.seller_id, JEKA_DJ_CHAT_ID]:
-        apiSendMsg(chat_id, 'У вас нет прав удалять позиции других людей')
+        API.sendMsg(chat_id, 'У вас нет прав удалять позиции других людей')
         return
 
     session = new_session()
@@ -495,7 +396,7 @@ def editHandle(msg):
     session.commit()
     session.close()
 
-    apiSendMsg(chat_id, 'Done.')
+    API.sendMsg(chat_id, 'Done.')
 
     return
 
@@ -505,7 +406,7 @@ def delsellHandle(msg):
     try:
         user = msg['from']
     except KeyError:
-        apiSendMsg(JEKA_DJ_CHAT_ID, 'ERROR: delsellHandle: {}'.format(msg))
+        API.sendMsg(JEKA_DJ_CHAT_ID, 'ERROR: delsellHandle: {}'.format(msg))
         return
 
     seller_id = user['id']
@@ -517,7 +418,7 @@ def delsellHandle(msg):
         msg = "/delsell - команда для удаления позиций из магазина\n"
         msg += "Формат: /delsell [индетификатор позиции (sellid)]\n"
         msg += "Например: /delsell 7"
-        apiSendMsg(chat_id, msg)
+        API.sendMsg(chat_id, msg)
         return
 
     session = new_session()
@@ -525,11 +426,11 @@ def delsellHandle(msg):
     session.close()
 
     if not entry:
-        apiSendMsg(chat_id, 'Неизвестный идентификатор')
+        API.sendMsg(chat_id, 'Неизвестный идентификатор')
         return
 
     if seller_id not in [entry.seller_id, JEKA_DJ_CHAT_ID]:
-        apiSendMsg(chat_id, 'У вас нет прав изменять позиции других людей')
+        API.sendMsg(chat_id, 'У вас нет прав изменять позиции других людей')
         return
 
     session = new_session()
@@ -537,7 +438,7 @@ def delsellHandle(msg):
     session.commit()
     session.close()
 
-    apiSendMsg(chat_id, 'Done.')
+    API.sendMsg(chat_id, 'Done.')
 
     return
 
@@ -645,7 +546,7 @@ def run():
             try:
                 traceback.print_exc(e)
                 exc_trace = traceback.format_exc(e)
-                apiSendMsg(JEKA_DJ_CHAT_ID, exc_trace)
+                API.sendMsg(JEKA_DJ_CHAT_ID, exc_trace)
             except Exception:
                 pass
             print('--------------------')
