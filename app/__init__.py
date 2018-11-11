@@ -12,6 +12,7 @@ from time import gmtime, strftime
 
 from app.api import API
 from app.plugins.chicks import Chicks
+from app.plugins.mall import Mall
 from app.db import new_session, CombotMall, delete_by_id
 from app.command import Command
 from app.settings import BASE_URL
@@ -516,8 +517,10 @@ def mainActivity():
                     hwHandle(msg)
 
             else:
-                if (msg['text'].find('/sell') == 0) and sellHandle(msg):
-                    pass
+                # if (msg['text'].find('/sell') == 0) and sellHandle(msg):
+                #     pass
+                if cmd_obj.is_cmd_eq('/sell'):
+                    Mall.sell(msg)
                 elif cmd_obj.is_cmd_eq('/delsell'):
                     delsellHandle(msg)
                 elif cmd_obj.is_cmd_eq('/edit') and cmd_obj.is_param_semicolon():
