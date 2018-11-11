@@ -2,8 +2,10 @@ from __future__ import unicode_literals, absolute_import, print_function
 
 from app.command import Command
 from app.api import API
-from app.db import new_session, CombotMall
 from app.settings import JEKA_DJ_CHAT_ID
+from app.plugins.mall.db import CombotMall
+from app.db import new_session
+
 
 class Mall:
 
