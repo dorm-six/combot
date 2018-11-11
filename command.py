@@ -3,7 +3,7 @@ from __future__ import unicode_literals, absolute_import
 TYPE_SINGLE_CMD = 1         # /pin
 TYPE_PARAM = 2              # /delsell 4
 TYPE_SEMICOLON = 3          # /msg : Hello
-TYPE_PARAM_SEMICOLON = 4    # /msg 123: Hello, 123
+TYPE_PARAM_SEMICOLON = 4    # /msg 123: Hello
 
 class Command():
 
@@ -40,6 +40,9 @@ class Command():
             self.value = None
 
         return
+
+    def _print_meta(self):
+        print("cmd={}. param={}. value={}. type={}".format(self.cmd, self.param, self.value, self.type))
 
     def is_single_cmd(self):
         return self.type == TYPE_SINGLE_CMD
