@@ -135,8 +135,7 @@ class Mall:
             return
 
         session = new_session()
-        session.query(CombotMall).filter(CombotMall.id == int(cmd_obj.param))
-                                 .update({CombotMall.description: cmd_obj.value})
+        session.query(CombotMall).filter(CombotMall.id == int(cmd_obj.param)).update({CombotMall.description: cmd_obj.value})
         session.commit()
         session.close()
 
