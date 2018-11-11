@@ -66,3 +66,4 @@ def drop_tables():
 def refresh_tables():
     drop_tables()
     init_tables()
+    

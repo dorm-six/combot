@@ -393,8 +393,11 @@ def scheduleHandle(msg):
     msg += "пт: 9:00-12:00, 14:00-16:30\n"
     msg += "*Душ:*\n"
     msg += "6:00-12:00, 15:00-24:00\n"
-    msg += "Санитарный день:\n"
-    msg += "10:00-18:00 (6ф - четверг, 6м - среда)\n\n"
+    msg += "Санитарный день (не работает):\n"
+    msg += "10:00-18:00 (6ф - четверг, 6м - среда)\n"
+    msg += "*Коменда:*\n"
+    msg += "пт: 9:00-16:30\n"
+    msg += "пн-чт: 9:00-17:30\n\n"
     msg += "`Если расписание изменилось, напишите боту в личку`"
 
     apiSendMsg(chat_id, msg, parse_mode='Markdown')
@@ -556,7 +559,6 @@ def delsellHandle(msg):
         msg += "Например: /delsell 7"
         apiSendMsg(chat_id, msg)
         return
-
 
     session = new_session()
     entry = session.query(CombotMall).filter(CombotMall.id == int(cmd_obj.param)).first()
