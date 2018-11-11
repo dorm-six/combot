@@ -445,7 +445,7 @@ def mainActivity():
             cmd_obj = Command(msg['text'])
 
             if cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/buy'):
-                buyHandle(msg)
+                Mall.buy(msg)
             elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/ping'):
                 handlePing(msg)
             elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/baby'):
@@ -464,16 +464,12 @@ def mainActivity():
                     hwHandle(msg)
 
             else:
-                # if (msg['text'].find('/sell') == 0) and sellHandle(msg):
-                #     pass
                 if cmd_obj.is_cmd_eq('/sell'):
                     Mall.sell(msg)
                 elif cmd_obj.is_cmd_eq('/delsell'):
                     Mall.dell(msg)
-                    # delsellHandle(msg)
                 elif cmd_obj.is_cmd_eq('/edit') and cmd_obj.is_param_semicolon():
                     Mall.edit(msg)
-                    # editHandle(msg)
 
                 # others
                 elif chat_id == JEKA_DJ_CHAT_ID:

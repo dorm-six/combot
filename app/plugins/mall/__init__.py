@@ -142,3 +142,45 @@ class Mall:
         API.sendMsg(chat_id, 'Done.')
 
         return
+
+    @staticmethod
+    def delsellHandle(msg):
+
+        try:
+            user = msg['from']
+        except KeyError:
+            API.sendMsg(JEKA_DJ_CHAT_ID, 'ERROR: delsellHandle: {}'.format(msg))
+            return
+
+        seller_id = user['id']
+        chat_id = msg['chat']['id']
+        text = msg['text']
+        cmd_obj = Command(text)
+
+        if not (cmd_obj.is_param() and cmd_obj.param.isdigit()):
+            msg = "/delsell - команда для удаления позиций из магазина\n"
+            msg += "Формат: /delsell [индетификатор позиции (sellid)]\n"
+            msg += "Например: /delsell 7"
+            API.sendMsg(chat_id, msg)
+            return
+
+        session = new_session()
+        entry = session.query(CombotMall).filter(CombotMall.id == int(cmd_obj.param)).first()
+        session.close()
+
+        if not entry:
+            API.sendMsg(chat_id, 'Неизвестный идентификатор')
+            return
+
+        if seller_id not in [entry.seller_id, JEKA_DJ_CHAT_ID]:
+            API.sendMsg(chat_id, 'У вас нет прав изменять позиции других людей')
+            return
+
+        session = new_session()
+        session.query(CombotMall).filter(CombotMall.id == int(cmd_obj.param)).delete()
+        session.commit()
+        session.close()
+
+        API.sendMsg(chat_id, 'Done.')
+
+        return
