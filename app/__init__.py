@@ -472,7 +472,7 @@ def mainActivity():
                     Mall.dell(msg)
                     # delsellHandle(msg)
                 elif cmd_obj.is_cmd_eq('/edit') and cmd_obj.is_param_semicolon():
-                    Mall.sell(msg)
+                    Mall.edit(msg)
                     # editHandle(msg)
 
                 # others
