@@ -144,7 +144,7 @@ class Mall:
         return
 
     @staticmethod
-    def delsellHandle(msg):
+    def delete(msg):
 
         try:
             user = msg['from']

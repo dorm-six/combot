@@ -467,7 +467,7 @@ def mainActivity():
                 if cmd_obj.is_cmd_eq('/sell'):
                     Mall.sell(msg)
                 elif cmd_obj.is_cmd_eq('/delsell'):
-                    Mall.dell(msg)
+                    Mall.delete(msg)
                 elif cmd_obj.is_cmd_eq('/edit') and cmd_obj.is_param_semicolon():
                     Mall.edit(msg)
 
