@@ -270,59 +270,6 @@ def scheduleHandle(msg):
 # --- The Mall ---
 # ----------------
 
-def sellHandle(msg):
-
-    chat_id = msg['chat']['id']
-
-    # Get optional args
-    try:
-        user = msg['from']
-        text = msg['text']
-    except KeyError:
-        API.sendMsg(JEKA_DJ_CHAT_ID, 'ERROR: sellHandle: {}'.format(msg))
-        return True
-
-    # check text
-    splitted = text.split(' ', 1)
-
-    if not (splitted[0] == '/sell' or splitted[0] == '/sell@CombatDetectorBot'):
-        return False
-    if len(splitted) != 2 or not splitted[1].strip():
-        msg = '/sell - позволяет выставить товар на продажу\n'
-        msg += 'Формат: /sell \[описание]\n'
-        msg += 'Пример: /sell Микроволновка 1000р.\n\n'
-        msg += 'Возможно использование Markdown разметки, [подробнее](https://core.telegram.org/bots/api#markdown-style)\n'
-        msg += 'Пример: /sell \*Микроволновка\* 1000р. \[Подробнее](https://www.eldorado.ru/cat/detail/71073407/)\n'
-        msg += 'Результат: /sell *Микроволновка* 1000р. [Подробнее](https://www.eldorado.ru/cat/detail/71073407/)'
-        API.sendMsg(chat_id, msg, parse_mode='Markdown', disable_web_page_preview=True)
-        return True
-
-    description = splitted[1]
-
-    # Get args
-    seller_id = user['id']
-    seller_username = user.get('username', 'UNKNOWN')
-
-    # open db connection
-    session = new_session()
-
-    # count actual value
-    count = session.query(CombotMall).filter(CombotMall.seller_id == seller_id).count()
-    if count >= 5:
-        API.sendMsg(chat_id, 'Too much sell entries for you')
-        return
-
-    # create new sell entry
-    cm = CombotMall(seller_id=seller_id, seller_username=seller_username, description=description)
-    session.add(cm)
-    session.commit()
-    session.close()
-
-    # success notification
-    API.sendMsg(chat_id, 'Done')
-
-    return True
-        
 def buyHandle(msg):
 
     chat_id = msg['chat']['id']
@@ -522,9 +469,11 @@ def mainActivity():
                 if cmd_obj.is_cmd_eq('/sell'):
                     Mall.sell(msg)
                 elif cmd_obj.is_cmd_eq('/delsell'):
-                    delsellHandle(msg)
+                    Mall.dell(msg)
+                    # delsellHandle(msg)
                 elif cmd_obj.is_cmd_eq('/edit') and cmd_obj.is_param_semicolon():
-                    editHandle(msg)
+                    Mall.sell(msg)
+                    # editHandle(msg)
 
                 # others
                 elif chat_id == JEKA_DJ_CHAT_ID:
