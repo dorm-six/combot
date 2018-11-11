@@ -54,12 +54,12 @@ class API:
     def sendMsgAndPin(chat_id, text):
 
         # send msg
-        msg = API.apiSendMsg(chat_id, text)
+        msg = API.sendMsg(chat_id, text)
         if msg is None:
             return None
 
         # pin msg
-        API.apiPinMsg(chat_id, msg['message_id'])
+        API.pinMsg(chat_id, msg['message_id'])
 
         # return
         return msg
