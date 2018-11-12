@@ -43,20 +43,15 @@ def getUpdatesOrExit():
         try:
             r = requests.get(BASE_URL + 'getUpdates', params=payload)
         except (requests.exceptions.ConnectionError, requests.exceptions.SSLError) as e:
-            t = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-            print('[!] {} Exception in getUpdatesOrExit()'.format(t))
             traceback.print_exc()
             exc_trace = traceback.format_exc()
             API.sendMsg(JEKA_DJ_CHAT_ID, exc_trace)
-            print('[!] {} Sleeping for 30 seconds...'.format(t))
             time.sleep(30)
-            print('[!] {} Trying to getUpdates again...'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
             continue
 
         data = r.json()
         if data['ok'] == False:
             print('status "False" on getUpdates returned')
-            print('Exiting...')
             raise Exception
 
         CUTTING_IDX = 50
@@ -79,7 +74,6 @@ def handlePing(msg):
     chat_id = msg['chat']['id']
     text = 'I am Alive, сучка'
     API.sendMsg(chat_id, text)
-    # print('[+] handlePing')
 
 # -------------------------
 # --- External messages ---
@@ -92,7 +86,6 @@ def handleExternalMessage(msg):
 
     API.sendMsg(to_chat_id, 'chat_id: {}. msg_id: {}'.format(from_chat_id, msg_id))
     API.forwardMsg(from_chat_id, to_chat_id, msg_id)
-    # print('[+] handleExternalMessage. from:{}. to:{}. text:{}'.format(from_chat_id, to_chat_id, msg['text']))
 
 # --------------------
 # --- mainActivity ---
@@ -196,7 +189,7 @@ def run():
             mainActivity()
         except KeyboardInterrupt:
             break
-        except Exception as e:
+        except Exceptlion as e:
             print('Exception: type:{}. msg:{}'.format(type(e), e))
             print('--------------------')
             try:
