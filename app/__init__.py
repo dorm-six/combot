@@ -55,7 +55,9 @@ def getUpdatesOrExit():
         except (requests.exceptions.ConnectionError, requests.exceptions.SSLError) as e:
             t = strftime("%Y-%m-%d %H:%M:%S", gmtime())
             print('[!] {} Exception in getUpdatesOrExit()'.format(t))
-            print(e)
+            traceback.print_exc()
+            exc_trace = traceback.format_exc()
+            API.sendMsg(JEKA_DJ_CHAT_ID, exc_trace)
             print('[!] {} Sleeping for 30 seconds...'.format(t))
             time.sleep(30)
             print('[!] {} Trying to getUpdates again...'.format(strftime("%Y-%m-%d %H:%M:%S", gmtime())))
@@ -303,7 +305,9 @@ def mainActivity():
         try:
             data = getUpdatesOrExit()
         except ValueError as e:
-            print(e)
+            traceback.print_exc()
+            exc_trace = traceback.format_exc()
+            API.sendMsg(JEKA_DJ_CHAT_ID, exc_trace)
             time.sleep(1)
             continue
 
@@ -367,8 +371,8 @@ def run():
             print('Exception: type:{}. msg:{}'.format(type(e), e))
             print('--------------------')
             try:
-                traceback.print_exc(e)
-                exc_trace = traceback.format_exc(e)
+                traceback.print_exc()
+                exc_trace = traceback.format_exc()
                 API.sendMsg(JEKA_DJ_CHAT_ID, exc_trace)
             except Exception:
                 pass
