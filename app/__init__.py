@@ -319,7 +319,14 @@ def mainActivity():
             continue
 
         for res in results:
-            msg = res['message']
+            try:
+                msg = res['message']
+            except KeyError:
+                msg = '-'*30 + '\n' + str(res) + '\n'
+                msg += traceback.format_exc() + '\n' + '-'*30
+                API.sendMsg(JEKA_DJ_CHAT_ID, msg)
+                continue
+
             chat_id = msg['chat']['id']
             try:
                 cmd_obj = Command(msg['text'])
