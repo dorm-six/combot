@@ -11,9 +11,9 @@ import traceback
 from time import gmtime, strftime
 
 from app.api import API
+from app.plugins.schedule import Schedule
 from app.plugins.chicks import Chicks
 from app.plugins.mall import Mall
-from app.plugins.schedule import Schedule
 from app.command import Command
 from app.settings import BASE_URL
 from app.settings import RUSIK_CHAT_ID, JEKA_DJ_CHAT_ID, DENIS_EMINEM_CHAT_ID, VLAD_KULAK_CHAT_ID, BODIES
