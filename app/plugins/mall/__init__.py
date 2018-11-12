@@ -5,8 +5,6 @@ from app.api import API
 from app.settings import JEKA_DJ_CHAT_ID
 from app.plugins.mall.db import CombotMall
 from app.db import new_session
-# from app.db import CombotMall
-
 
 class Mall:
 

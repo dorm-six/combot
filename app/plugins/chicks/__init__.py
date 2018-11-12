@@ -50,4 +50,3 @@ class Chicks:
             name = ' '.join(splitted[:-1])
 
         return name, url
-

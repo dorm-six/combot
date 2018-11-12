@@ -321,7 +321,12 @@ def mainActivity():
         for res in results:
             msg = res['message']
             chat_id = msg['chat']['id']
-            cmd_obj = Command(msg['text'])
+            try:
+                cmd_obj = Command(msg['text'])
+            except KeyError:
+                API.sendMsg(JEKA_DJ_CHAT_ID, '-'*30+'\n'+msg)
+                API.sendMsg(JEKA_DJ_CHAT_ID, traceback.format_exc()+'\n'+'-'*30)
+
 
             if cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/buy'):
                 Mall.buy(msg)
