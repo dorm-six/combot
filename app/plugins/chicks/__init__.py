@@ -4,7 +4,6 @@ import random
 from app.api import API
 
 
-
 class Chicks:
     _chicks = {
         'Megan Fox' : 'https://pp.userapi.com/c840322/v840322120/45c9b/oiJ4RHqVYTI.jpg',

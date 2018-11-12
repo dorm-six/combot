@@ -6,6 +6,7 @@ from app.settings import JEKA_DJ_CHAT_ID
 from app.plugins.mall.db import CombotMall
 from app.db import new_session
 
+
 class Mall:
 
     @staticmethod

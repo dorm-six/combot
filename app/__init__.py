@@ -13,6 +13,7 @@ from time import gmtime, strftime
 from app.api import API
 from app.plugins.chicks import Chicks
 from app.plugins.mall import Mall
+from app.plugins.schedule import Schedule
 from app.command import Command
 from app.settings import BASE_URL
 from app.settings import RUSIK_CHAT_ID, JEKA_DJ_CHAT_ID, DENIS_EMINEM_CHAT_ID, VLAD_KULAK_CHAT_ID, BODIES
@@ -226,35 +227,6 @@ def handleExternalMessage(msg):
     API.forwardMsg(from_chat_id, to_chat_id, msg_id)
     # print('[+] handleExternalMessage. from:{}. to:{}. text:{}'.format(from_chat_id, to_chat_id, msg['text']))
 
-# ------------------
-# --- Bed linnin ---
-# ------------------
-
-def scheduleHandle(msg):
-
-    chat_id = msg['chat']['id']
-
-    msg = "*Расписание смены постельного белья:*\n"
-    msg += "пн: 9:00-12:00, 15:00-17:30\n"
-    msg += "ср: 9:00-12:00, 15:00-17:30\n"
-    msg += "чт: 9:00-12:00, 15:00-17:30\n"
-    msg += "пт: 9:00-12:00, 14:00-16:30\n\n"
-
-    msg += "*Душ:*\n"
-    msg += "6:00-12:00, 15:00-24:00\n"
-    msg += "Санитарный день (не работает):\n"
-    msg += "10:00-18:00 (6ф - четверг, 6м - среда)\n\n"
-
-    msg += "*Коменда:*\n"
-    msg += "пн-чт: 9:00-17:30\n"
-    msg += "пт: 9:00-16:30\n"
-    msg += "обед: 13:00-13:30\n\n"
-
-    msg += "`Если расписание изменилось, напишите боту в личку`"
-
-    API.sendMsg(chat_id, msg, parse_mode='Markdown')
-
-
 # --------------------
 # --- mainActivity ---
 # --------------------
@@ -327,7 +299,7 @@ def mainActivity():
             elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/baby'):
                 Chicks.do(msg)
             elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/schedule'):
-                scheduleHandle(msg)
+                Schedule.do(msg)
 
             elif chat_id in OBWAGA_CHAT_IDS:
                 if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
