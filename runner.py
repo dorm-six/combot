@@ -1,4 +1,4 @@
-from __future__ import unicode_literals, absolute_import
+from __future__ import unicode_literals, absolute_import, print_function
 
 from app import run
 
