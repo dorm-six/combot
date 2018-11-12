@@ -232,6 +232,8 @@ def handleExternalMessage(msg):
 
 def babyHandle(msg):
 
+    raise NotImplementedError
+
     chat_id = msg['chat']['id']
 
     chicks = Chicks()
