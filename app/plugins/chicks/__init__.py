@@ -37,6 +37,8 @@ class Chicks:
             
             'Anna Korsun': 'https://pp.userapi.com/c852320/v852320640/194c4/7L44OkTQB6g.jpg',
             'Alica Ѕchmidt': 'https://pp.userapi.com/c850636/v850636587/41fb4/rE5kD9SDj-w.jpg',
+            'Alice Matos': 'https://pp.userapi.com/c849216/v849216967/b3f7f/0a-AWPK0qOo.jpg',
+            'Ana Cheri': 'https://pp.userapi.com/c849216/v849216967/b3f87/x2T1RON5Ph0.jpg',
         }
 
     def get_random_chick(self):
