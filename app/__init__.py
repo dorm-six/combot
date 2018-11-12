@@ -10,15 +10,16 @@ import threading
 import traceback
 from time import gmtime, strftime
 
-from app.api import API
-from app.plugins.schedule import Schedule
-from app.plugins.chicks import Chicks
-from app.plugins.mall import Mall
 from app.plugins.hw import HW
+from app.plugins.mall import Mall
+from app.plugins.chicks import Chicks
+from app.plugins.schedule import Schedule
+from app.plugins.combat_protector import Combat_Protector
+
+from app.api import API
 from app.command import Command
-from app.settings import BASE_URL
 from app.settings import RUSIK_CHAT_ID, JEKA_DJ_CHAT_ID, DENIS_EMINEM_CHAT_ID, VLAD_KULAK_CHAT_ID, BODIES
-from app.settings import OBWAGA6_CHAT_ID, TESTGROUP_CHAT_ID, OBWAGA_CHAT_IDS
+from app.settings import BASE_URL, OBWAGA6_CHAT_ID, TESTGROUP_CHAT_ID, OBWAGA_CHAT_IDS
 
 # ---------------
 # --- GLOBALS ---
@@ -258,15 +259,21 @@ def mainActivity():
                 Schedule.do(msg)
 
             elif chat_id in OBWAGA_CHAT_IDS:
-                if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
-                    handleCombotNotification(msg)
+                # if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
+                #     handleCombotNotification(msg)
+                # elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/pin'):
+                #     handlePin(msg)
+                # elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/unpin'):
+                #     handleUnpin(msg)
+                if Combat_Protector.scanForCombat(msg):
+                    Combat_Protector.notificationForwarding(msg)
                 elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/pin'):
-                    handlePin(msg)
+                    Combat_Protector.pin(msg)
                 elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/unpin'):
-                    handleUnpin(msg)
+                    Combat_Protector.unpin(msg)
                 elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/hw'):
                     HW.do(msg)
-
+                
             else:
                 if cmd_obj.is_cmd_eq('/sell'):
                     Mall.sell(msg)
