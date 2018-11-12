@@ -81,39 +81,6 @@ def handlePing(msg):
     API.sendMsg(chat_id, text)
     # print('[+] handlePing')
 
-# ----------------------
-# --- ADMIN COMMANDS ---
-# ----------------------
-
-def handleAdminCommands(msg):
-    cmd_obj = Command(msg['text'])
-
-    if cmd_obj.is_semicolon() and cmd_obj.is_cmd_eq('pin'):
-        res = API.sendMsg(OBWAGA6_CHAT_ID, cmd_obj.value)
-        if res is not None:
-            API.pinMsg(OBWAGA6_CHAT_ID, res['message_id'])
-        return True
-
-    elif cmd_obj.is_semicolon() and cmd_obj.is_cmd_eq('msg'):
-        API.sendMsg(OBWAGA6_CHAT_ID, cmd_obj.value)
-        return True
-
-    elif cmd_obj.is_semicolon() and cmd_obj.is_cmd_eq('pinmsg'):
-        API.sendMsgAndPin(OBWAGA6_CHAT_ID, cmd_obj.value)
-        return True
-
-    elif (cmd_obj.is_param_semicolon() and cmd_obj.is_cmd_eq('msg') and \
-          cmd_obj.param.isdigit() and len(cmd_obj.value) > 0):
-
-        send_to_chat_id = int(cmd_obj.param)
-        if API.sendMsg(send_to_chat_id, cmd_obj.value):
-            API.sendMsg(JEKA_DJ_CHAT_ID, 'SUCCESSFULLY SENT "{}" to "{}"'.format(cmd_obj.value, send_to_chat_id))
-        else:
-            API.sendMsg(JEKA_DJ_CHAT_ID, 'NOT SENT "{}" to "{}"'.format(cmd_obj.value, send_to_chat_id))
-        return True
-
-    return False
-
 # -------------------------
 # --- External messages ---
 # -------------------------
@@ -215,9 +182,6 @@ def mainActivity():
                 # others
                 elif AdminCommands.is_ok(msg):
                     AdminCommands.do(msg)
-
-                # elif chat_id == JEKA_DJ_CHAT_ID and handleAdminCommands(msg):
-                #     pass
                 else:
                     handleExternalMessage(msg)
 
