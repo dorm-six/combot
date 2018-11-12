@@ -226,19 +226,6 @@ def handleExternalMessage(msg):
     API.forwardMsg(from_chat_id, to_chat_id, msg_id)
     # print('[+] handleExternalMessage. from:{}. to:{}. text:{}'.format(from_chat_id, to_chat_id, msg['text']))
 
-# ---------------------
-# --- Baby messages ---
-# ---------------------
-
-def babyHandle(msg):
-
-    chat_id = msg['chat']['id']
-
-    chicks = Chicks()
-    name, url = chicks.get_random_chick()
-
-    API.sendPhoto(chat_id, url, caption=name)
-
 # ------------------
 # --- Bed linnin ---
 # ------------------
@@ -338,16 +325,16 @@ def mainActivity():
             elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/ping'):
                 handlePing(msg)
             elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/baby'):
-                babyHandle(msg)
+                Chicks.do(msg)
             elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/schedule'):
                 scheduleHandle(msg)
 
             elif chat_id in OBWAGA_CHAT_IDS:
                 if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
                     handleCombotNotification(msg)
-                elif msg['text'] == '/pin@CombatDetectorBot' or msg['text'] == '/pin':
+                elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/pin'):
                     handlePin(msg)
-                elif msg['text'] == '/unpin@CombatDetectorBot' or msg['text'] == '/unpin':
+                elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/unpin'):
                     handleUnpin(msg)
                 elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/hw'):
                     hwHandle(msg)
