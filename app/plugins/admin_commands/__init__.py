@@ -2,7 +2,7 @@ from __future__ import unicode_literals, absolute_import, print_function
 
 import random
 from app.api import API
-from api.command import Command
+from app.command import Command
 from api.settings import OBWAGA6_CHAT_ID, JEKA_DJ_CHAT_ID
 
 
@@ -13,7 +13,7 @@ class AdminCommands:
     def is_ok(msg):
         cmd_obj = Command(msg['text'])
         chat_id = msg['chat']['id']
-        
+
         if chat_id != JEKA_DJ_CHAT_ID:
             return False
 
