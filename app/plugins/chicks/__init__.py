@@ -32,7 +32,7 @@ class Chicks:
             'Anna Kendrick' : 'https://pp.userapi.com/c845523/v845523102/e9901/DeSn09KLGh4.jpg',
             'Laura Vandervoort' : 'https://pp.userapi.com/c846322/v846322635/e634c/ybxh7VxCR2w.jpg',
             'Laura Vandervoort 2' : 'https://pp.userapi.com/c849124/v849124555/74ee6/bG138EgEt2s.jpg',
-            'Sarah Jones' : 'https://pp.userapi.com/c847016/v847016635/e39f2/CmWvYPl9WR0.jpg',
+            'Laura Vandervoort 3' : 'https://pp.userapi.com/c847016/v847016635/e39f2/CmWvYPl9WR0.jpg',
             'Elisha Cuthbert' : 'https://pp.userapi.com/c845523/v845523102/e9915/LnL4P0D1zSE.jpg',
             
             'Anna Korsun': 'https://pp.userapi.com/c852320/v852320640/194c4/7L44OkTQB6g.jpg',
