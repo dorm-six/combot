@@ -324,7 +324,7 @@ def mainActivity():
             try:
                 cmd_obj = Command(msg['text'])
             except KeyError:
-                API.sendMsg(JEKA_DJ_CHAT_ID, '-'*30+'\n'+msg)
+                API.sendMsg(JEKA_DJ_CHAT_ID, '-'*30+'\n'+str(msg))
                 API.sendMsg(JEKA_DJ_CHAT_ID, traceback.format_exc()+'\n'+'-'*30)
 
 
