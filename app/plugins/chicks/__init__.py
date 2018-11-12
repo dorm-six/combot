@@ -41,6 +41,7 @@ class Chicks:
         'Ana Cheri': 'https://pp.userapi.com/c849216/v849216967/b3f87/x2T1RON5Ph0.jpg',
     }
 
+    @staticmethod
     def _get_random_chick():
         name, url = random.choice(list(Chicks._chicks.items()))
 
@@ -51,6 +52,7 @@ class Chicks:
 
         return name, url
 
+    @staticmethod
     def do(msg):
         chat_id = msg['chat']['id']
         name, url = Chicks._get_random_chick()

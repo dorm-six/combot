@@ -12,6 +12,7 @@ class Combat_Protector:
             u'combat', u'cmbat', u'cambat', u'combta', u'combot',
     ]
 
+    @staticmethod
     def pin(msg):
         chat_id = msg['chat']['id']
         msg = API.sendMsgAndPin(chat_id, 'КОМБАТЫ')
@@ -22,6 +23,7 @@ class Combat_Protector:
         if chat_id == OBWAGA6_CHAT_ID:
             API.sendMsg(RUSIK_CHAT_ID, 'КОМБАТЫ')
 
+    @staticmethod
     def unpin(msg):
         chat_id = msg['chat']['id']
         if API.unpinMsg(chat_id):
@@ -30,6 +32,7 @@ class Combat_Protector:
         if chat_id == OBWAGA6_CHAT_ID:
             API.sendMsg(RUSIK_CHAT_ID, 'ОТКРЕПЛЕНО')
 
+    @staticmethod
     def scanForCombat(msg):
         if '@CombatDetectorBot' in msg['text']:
             return False
@@ -42,6 +45,7 @@ class Combat_Protector:
 
         return False
 
+    @staticmethod
     def notificationForwarding(msg):
         for chat_id in BODIES:
             API.forwardMsg(msg['chat']['id'], chat_id, msg['message_id'])

@@ -14,6 +14,7 @@ from app.plugins.hw import HW
 from app.plugins.mall import Mall
 from app.plugins.chicks import Chicks
 from app.plugins.schedule import Schedule
+from app.plugins.admin_commands import AdminCommands
 from app.plugins.combat_protector import Combat_Protector
 
 from app.api import API
@@ -179,14 +180,7 @@ def mainActivity():
         for res in results:
             try:
                 msg = res['message']
-            except KeyError:
-                msg = '-'*30 + '\n' + str(res) + '\n'
-                msg += traceback.format_exc() + '\n' + '-'*30
-                API.sendMsg(JEKA_DJ_CHAT_ID, msg)
-                continue
-
-            chat_id = msg['chat']['id']
-            try:
+                chat_id = msg['chat']['id']
                 cmd_obj = Command(msg['text'])
             except KeyError:
                 continue
@@ -219,8 +213,11 @@ def mainActivity():
                     Mall.edit(msg)
 
                 # others
-                elif chat_id == JEKA_DJ_CHAT_ID and handleAdminCommands(msg):
-                    pass
+                elif AdminCommands.is_ok(msg):
+                    AdminCommands.do(msg)
+
+                # elif chat_id == JEKA_DJ_CHAT_ID and handleAdminCommands(msg):
+                #     pass
                 else:
                     handleExternalMessage(msg)
 

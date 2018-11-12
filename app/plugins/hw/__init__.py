@@ -24,6 +24,7 @@ class HW:
         ', прекрати', ', твоюжмать, хватит уже!'
     ]
 
+    @staticmethod
     def do(msg):
         if random.randint(0, 1) != 0:
             return

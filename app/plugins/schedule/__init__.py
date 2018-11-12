@@ -5,6 +5,7 @@ from app.api import API
 
 class Schedule:
 
+    @staticmethod
     def do(msg):
         def get_msg():
             msg = "*Расписание смены постельного белья:*\n"
