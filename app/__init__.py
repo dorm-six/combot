@@ -32,20 +32,6 @@ LAST_UPDATE_ID = 0
 # --- Foos ---
 # ------------
 
-def combatFinder(msg):
-    msg = msg.lower()
-
-    malicious_words = [
-        u'комбат', u'кмбат', u'камбат', u'комбта', u'комбот',
-        u'combat', u'cmbat', u'cambat', u'combta', u'combot',
-    ]
-
-    for word in malicious_words:
-        if word in msg:
-            return True
-
-    return False
-
 def getUpdatesOrExit():
     global UPDATE_OFFSET
 
@@ -84,48 +70,9 @@ def filterByUpdateId(res):
     except KeyError:
         return False
 
-def combatLogger(msg):
-    t = datetime.datetime.fromtimestamp(
-            msg['date']
-        ).strftime('%Y-%m-%d %H:%M:%S')
-    chat_id = msg['chat']['id']
-    chat_title = msg['chat']['title']
-
-    print("[!] {} COMBAT DETECTED!!! {} {}".format(t, chat_id, chat_title))
-
-def getTimeStringOfMessage(msg):
-    return datetime.datetime.fromtimestamp(
-            msg['date']
-        ).strftime('%Y-%m-%d %H:%M:%S')
-
 # ----------------
 # --- Handlers ---
 # ----------------
-
-def handleUnpin(msg):
-    chat_id = msg['chat']['id']
-    if API.unpinMsg(chat_id):
-        API.sendMsg(chat_id, 'ОТКРЕПЛЕНО')
-
-    t = getTimeStringOfMessage(msg)
-    # print('[+] {} Unpinned'.format(t))
-
-    if chat_id == OBWAGA6_CHAT_ID:
-        API.sendMsg(RUSIK_CHAT_ID, 'ОТКРЕПЛЕНО')
-
-def handleCombotNotification(msg):
-    for chat_id in BODIES:
-        API.forwardMsg(msg['chat']['id'], chat_id, msg['message_id'])
-    combatLogger(msg)
-
-def handlePin(msg):
-    msg = API.sendMsgAndPin(msg['chat']['id'], 'КОМБАТЫ')
-    if msg:
-        for chat_id in BODIES:
-            API.forwardMsg(msg['chat']['id'], chat_id, msg['message_id'])
-
-    if msg['chat']['id'] == OBWAGA6_CHAT_ID:
-        API.sendMsg(RUSIK_CHAT_ID, 'КОМБАТЫ')
 
 def handlePing(msg):
     chat_id = msg['chat']['id']
@@ -259,12 +206,6 @@ def mainActivity():
                 Schedule.do(msg)
 
             elif chat_id in OBWAGA_CHAT_IDS:
-                # if combatFinder(msg['text']) == True and '@CombatDetectorBot' not in msg['text']:
-                #     handleCombotNotification(msg)
-                # elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/pin'):
-                #     handlePin(msg)
-                # elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/unpin'):
-                #     handleUnpin(msg)
                 if Combat_Protector.scanForCombat(msg):
                     Combat_Protector.notificationForwarding(msg)
                 elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/pin'):
