@@ -2,7 +2,7 @@ from __future__ import unicode_literals, absolute_import, print_function
 
 import random
 from app.api import API
-from app.settings import BODIES, OBWAGA6_CHAT_ID
+from app.settings import BODIES, OBWAGA6_CHAT_ID, RUSIK_CHAT_ID
 
 
 class Combat_Protector:

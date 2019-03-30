@@ -19,7 +19,7 @@ from app.plugins.combat_protector import Combat_Protector
 
 from app.api import API
 from app.command import Command
-from app.settings import RUSIK_CHAT_ID, JEKA_DJ_CHAT_ID, DENIS_EMINEM_CHAT_ID, VLAD_KULAK_CHAT_ID, BODIES
+from app.settings import JEKA_DJ_CHAT_ID, DENIS_EMINEM_CHAT_ID, VLAD_KULAK_CHAT_ID, BODIES
 from app.settings import BASE_URL, OBWAGA6_CHAT_ID, TESTGROUP_CHAT_ID, OBWAGA_CHAT_IDS
 
 # ---------------
@@ -189,7 +189,7 @@ def run():
             mainActivity()
         except KeyboardInterrupt:
             break
-        except Exceptlion as e:
+        except Exception as e:
             print('Exception: type:{}. msg:{}'.format(type(e), e))
             print('--------------------')
             try:
