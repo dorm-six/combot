@@ -39,6 +39,10 @@ class Chicks:
         'Alica Ѕchmidt': 'https://pp.userapi.com/c850636/v850636587/41fb4/rE5kD9SDj-w.jpg',
         'Alice Matos': 'https://pp.userapi.com/c849216/v849216967/b3f7f/0a-AWPK0qOo.jpg',
         'Ana Cheri': 'https://pp.userapi.com/c849216/v849216967/b3f87/x2T1RON5Ph0.jpg',
+
+        'Marie Avgeropoulos': 'https://pp.userapi.com/c855120/v855120126/aac26/EJf3eFVZtIs.jpg',
+        'Gal Gadot': 'https://pp.userapi.com/c855532/v855532529/afc9e/d0cp3OSJmLQ.jpg',
+        'Hayden Panettiere': 'https://pp.userapi.com/c850420/v850420414/17ce96/z4gcEMDuP74.jpg',
     }
 
     @staticmethod
