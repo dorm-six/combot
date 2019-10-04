@@ -43,6 +43,10 @@ class Chicks:
         'Marie Avgeropoulos': 'https://pp.userapi.com/c855120/v855120126/aac26/EJf3eFVZtIs.jpg',
         'Gal Gadot': 'https://pp.userapi.com/c855532/v855532529/afc9e/d0cp3OSJmLQ.jpg',
         'Hayden Panettiere': 'https://pp.userapi.com/c850420/v850420414/17ce96/z4gcEMDuP74.jpg',
+
+        # 04.10.19
+        'Vanessa Kirby': 'https://sun9-21.userapi.com/c857520/v857520573/35c2d/BfkdvQJaT8g.jpg',
+        'Lindsey Morgan': 'https://sun9-29.userapi.com/c854320/v854320374/111c66/KCuNNFQeXaw.jpg',
     }
 
     @staticmethod
