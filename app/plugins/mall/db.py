@@ -3,7 +3,7 @@ from __future__ import unicode_literals, absolute_import, print_function
 import datetime
 from sqlalchemy import Column, Integer, String, DateTime
 
-from app.db import Base
+from app.db import Base, new_session
 
 
 class CombotMall(Base):

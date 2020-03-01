@@ -1,8 +1,9 @@
 from __future__ import unicode_literals, absolute_import, print_function
 
+from sqlalchemy import desc
 from app.command import Command
 from app.api import API
-from app.settings import JEKA_DJ_CHAT_ID
+from app.settings import JEKA_DJ_CHAT_ID, OBWAGA6_CHAT_ID
 from app.plugins.mall.db import CombotMall
 from app.db import new_session
 
@@ -71,12 +72,16 @@ class Mall:
         chat_id = msg['chat']['id']
 
         session = new_session()
-        entries = session.query(CombotMall).all()
+        entries = session.query(CombotMall).order_by(CombotMall.id).all()
         session.close()
+
+        if chat_id == OBWAGA6_CHAT_ID:
+            entries = entries[-3:]
 
         if len(entries) > 0:
 
-            message = ''
+            message = '`В групповом чате показывается только 3 последние продажи.'
+            message += ' Чтобы получить все, пиши в лс боту.`\n\n' 
             for entry in entries:
 
                 fixed_username = ''
@@ -116,7 +121,7 @@ class Mall:
         try:
             user = msg['from']
         except KeyError:
-            API.sendMsg(JEKA_DJ_CHAT_ID, 'ERROR: delsellHandle: {}'.format(msg))
+            API.sendMsg(JEKA_DJ_CHAT_ID, 'ERROR: editHandle: {}'.format(msg))
             return
 
         seller_id = user['id']
