@@ -47,6 +47,18 @@ class Chicks:
         # 04.10.19
         'Vanessa Kirby': 'https://sun9-21.userapi.com/c857520/v857520573/35c2d/BfkdvQJaT8g.jpg',
         'Lindsey Morgan': 'https://sun9-29.userapi.com/c854320/v854320374/111c66/KCuNNFQeXaw.jpg',
+
+        # 28.03.20
+        "Kylie Jenner": "https://sun9-21.userapi.com/c858336/v858336839/1ad7b9/xL5sN2jamiI.jpg",
+        "Camila Cabello": "https://sun9-63.userapi.com/c857428/v857428001/1b3fae/Sh7o_gTcNxk.jpg",
+        "Alexandra Daddario": "https://sun9-25.userapi.com/c857728/v857728673/1a9429/8GzwXQlecVs.jpg",
+        "Alexandra Daddario 2": "https://sun9-4.userapi.com/c857132/v857132900/138305/bciL-jUP7Pk.jpg",
+        "Kelly Rohrbach": "https://sun9-31.userapi.com/c858124/v858124650/1bf162/mA1AxZCd9j0.jpg",
+        "Kelly Rohrbach 2": "https://sun9-22.userapi.com/c850608/v850608187/10d41b/VLCiO3pzOpE.jpg",
+        "Priyanka Chopra": "https://sun9-45.userapi.com/c858528/v858528650/135587/3PDUgu7zNPU.jpg",
+        "Priyanka Chopra 2": "https://sun9-35.userapi.com/c205628/v205628668/c0060/baU7nuvLXgI.jpg",
+        "Lily Collins": "https://sun9-69.userapi.com/c205528/v205528107/c1646/laWcwdnErCw.jpg",
+        "Lily Collins 2": "https://sun9-60.userapi.com/c858324/v858324662/1bae34/4LvZSJuPSnA.jpg",
     }
 
     @staticmethod
