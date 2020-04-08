@@ -36,9 +36,9 @@ class Chicks:
         'Elisha Cuthbert' : 'https://pp.userapi.com/c845523/v845523102/e9915/LnL4P0D1zSE.jpg',
         
         'Anna Korsun': 'https://pp.userapi.com/c852320/v852320640/194c4/7L44OkTQB6g.jpg',
-        'Alica Ѕchmidt': 'https://pp.userapi.com/c850636/v850636587/41fb4/rE5kD9SDj-w.jpg',
+        # 'Alica Ѕchmidt': 'https://pp.userapi.com/c850636/v850636587/41fb4/rE5kD9SDj-w.jpg',
         'Alice Matos': 'https://pp.userapi.com/c849216/v849216967/b3f7f/0a-AWPK0qOo.jpg',
-        'Ana Cheri': 'https://pp.userapi.com/c849216/v849216967/b3f87/x2T1RON5Ph0.jpg',
+        # 'Ana Cheri': 'https://pp.userapi.com/c849216/v849216967/b3f87/x2T1RON5Ph0.jpg',
 
         'Marie Avgeropoulos': 'https://pp.userapi.com/c855120/v855120126/aac26/EJf3eFVZtIs.jpg',
         'Gal Gadot': 'https://pp.userapi.com/c855532/v855532529/afc9e/d0cp3OSJmLQ.jpg',
@@ -50,6 +50,7 @@ class Chicks:
 
         # 28.03.20
         "Kylie Jenner": "https://sun9-21.userapi.com/c858336/v858336839/1ad7b9/xL5sN2jamiI.jpg",
+        "Kylie Jenner 2": "https://sun9-26.userapi.com/c813024/v813024751/5c468/MQdddOXhKs4.jpg",
         "Camila Cabello": "https://sun9-63.userapi.com/c857428/v857428001/1b3fae/Sh7o_gTcNxk.jpg",
         "Alexandra Daddario": "https://sun9-25.userapi.com/c857728/v857728673/1a9429/8GzwXQlecVs.jpg",
         "Alexandra Daddario 2": "https://sun9-4.userapi.com/c857132/v857132900/138305/bciL-jUP7Pk.jpg",
@@ -59,6 +60,11 @@ class Chicks:
         "Priyanka Chopra 2": "https://sun9-35.userapi.com/c205628/v205628668/c0060/baU7nuvLXgI.jpg",
         "Lily Collins": "https://sun9-69.userapi.com/c205528/v205528107/c1646/laWcwdnErCw.jpg",
         "Lily Collins 2": "https://sun9-60.userapi.com/c858324/v858324662/1bae34/4LvZSJuPSnA.jpg",
+        "Ana de Armas": "https://sun9-52.userapi.com/c205528/v205528359/c2ad2/Ufhq9SQnJwM.jpg",
+        "Ana de Armas 2": "https://sun9-37.userapi.com/c205628/v205628103/c3cb3/LmDzPZbgc78.jpg",
+        "Ana de Armas 3": "https://sun9-2.userapi.com/c205816/v205816274/b8ce4/bfauFa97EOU.jpg",
+        "Zoe Kravitz": "https://st.kp.yandex.net/im/kadr/3/3/3/kinopoisk.ru-Zoe-Kravitz-3338878.jpg",
+        "Zoe Kravitz 2": "https://st.kp.yandex.net/im/kadr/3/2/8/kinopoisk.ru-Zoe-Kravitz-3283733.jpg",
     }
 
     @staticmethod
