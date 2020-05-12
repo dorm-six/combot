@@ -3,6 +3,11 @@ from __future__ import unicode_literals, absolute_import, print_function
 import subprocess
 import os
 
+try:
+    from secrets import SECRETS
+except ImportError:
+    SECRETS = dict()
+
 # ---------------
 # --- GLOBALS ---
 # ---------------
@@ -40,6 +45,8 @@ def fetchEnvVarFromHeroku(var_name):
         return out[:-1]
 
 def fetchEnvVar(var_name):
+    if var_name in SECRETS:
+        return SECRETS["var_name"]
     try:
         return os.environ[var_name]
     except KeyError:
