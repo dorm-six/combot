@@ -4,7 +4,7 @@ import subprocess
 import os
 
 try:
-    from secrets import SECRETS
+    from app.secrets import SECRETS
 except ImportError:
     SECRETS = dict()
 
@@ -46,7 +46,7 @@ def fetchEnvVarFromHeroku(var_name):
 
 def fetchEnvVar(var_name):
     if var_name in SECRETS:
-        return SECRETS["var_name"]
+        return SECRETS[var_name]
     try:
         return os.environ[var_name]
     except KeyError:
