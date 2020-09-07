@@ -20,7 +20,6 @@ POKATILO_CHAT_ID = 97725486
 BODIES = [
     JEKA_DJ_CHAT_ID,        # Jeka_DJ
     DENIS_EMINEM_CHAT_ID,   # Denis_Eminem
-    VLAD_KULAK_CHAT_ID,     # Vlad_Kulak
     POKATILO_CHAT_ID,       # Pasha Pokatilo
 ]
 
