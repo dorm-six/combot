@@ -43,5 +43,5 @@ class Schedule:
 
             return msg
 
-        chat_id = msg['chat']['id']
-        API.sendMsg(chat_id, get_msg(), parse_mode='Markdown')
+        chat_id = msg["chat"]["id"]
+        API.sendMsg(chat_id, get_msg(), parse_mode="Markdown")

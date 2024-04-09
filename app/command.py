@@ -1,11 +1,12 @@
 from __future__ import unicode_literals, absolute_import, print_function
 
-TYPE_SINGLE_CMD = 1         # /pin
-TYPE_PARAM = 2              # /delsell 4
-TYPE_SEMICOLON = 3          # /msg : Hello
-TYPE_PARAM_SEMICOLON = 4    # /msg 123: Hello
+TYPE_SINGLE_CMD = 1  # /pin
+TYPE_PARAM = 2  # /delsell 4
+TYPE_SEMICOLON = 3  # /msg : Hello
+TYPE_PARAM_SEMICOLON = 4  # /msg 123: Hello
 
-class Command():
+
+class Command:
 
     def __init__(self, text):
         """
@@ -16,12 +17,12 @@ class Command():
             self.type
         """
         stripped = text.strip()
-        splitted = stripped.split(':', 1)
+        splitted = stripped.split(":", 1)
 
         # Process left part
-        cmd_par = splitted[0].strip().split(' ', 1)
+        cmd_par = splitted[0].strip().split(" ", 1)
         self.cmd = cmd_par[0].strip()
-        
+
         if len(cmd_par) == 2:
             self.param = cmd_par[1].strip()
             self.type = TYPE_PARAM
@@ -42,7 +43,11 @@ class Command():
         return
 
     def _print_meta(self):
-        print("cmd={}. param={}. value={}. type={}".format(self.cmd, self.param, self.value, self.type))
+        print(
+            "cmd={}. param={}. value={}. type={}".format(
+                self.cmd, self.param, self.value, self.type
+            )
+        )
 
     def is_single_cmd(self):
         return self.type == TYPE_SINGLE_CMD
@@ -57,5 +62,4 @@ class Command():
         return self.type == TYPE_PARAM_SEMICOLON
 
     def is_cmd_eq(self, cmd):
-        return self.cmd in [cmd, '{}@CombatDetectorBot'.format(cmd)]
-        
+        return self.cmd in [cmd, "{}@CombatDetectorBot".format(cmd)]

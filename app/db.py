@@ -12,10 +12,12 @@ from app.settings import DATABASE_URL
 # --- ENGINE ---
 # --------------
 
-if 'sqlite:///:memory:' == DATABASE_URL:
+if "sqlite:///:memory:" == DATABASE_URL:
     engine = create_engine(DATABASE_URL, echo=True)
 else:
-    engine = create_engine(DATABASE_URL, connect_args={'connect_timeout': 10}, echo=True)
+    engine = create_engine(
+        DATABASE_URL, connect_args={"connect_timeout": 10}, echo=True
+    )
 
 # ------- #
 # Session #
@@ -23,9 +25,11 @@ else:
 
 Session = sessionmaker(bind=engine)
 
+
 def new_session():
-    """ Creates new sqlalchemy session """
+    """Creates new sqlalchemy session"""
     return Session()
+
 
 # ------------
 # --- Base ---
@@ -37,13 +41,15 @@ Base = declarative_base()
 # --- Utils ---
 # -------------
 
+
 def init_tables():
     Base.metadata.create_all(engine)
+
 
 def drop_tables():
     Base.metadata.drop_all(engine)
 
+
 def refresh_tables():
     drop_tables()
     init_tables()
-    

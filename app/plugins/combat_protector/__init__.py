@@ -8,11 +8,11 @@ from app.settings import CHAT_ID_DORM_CHAT
 class Combat_Protector:
     @staticmethod
     def pin(msg):
-        chat_id = msg['chat']['id']
-        API.sendMsgAndPin(chat_id, 'КОМБАТЫ')
+        chat_id = msg["chat"]["id"]
+        API.sendMsgAndPin(chat_id, "КОМБАТЫ")
 
     @staticmethod
     def unpin(msg):
-        chat_id = msg['chat']['id']
+        chat_id = msg["chat"]["id"]
         if API.unpinMsg(chat_id):
-            API.sendMsg(chat_id, 'ОТКРЕПЛЕНО')
+            API.sendMsg(chat_id, "ОТКРЕПЛЕНО")
