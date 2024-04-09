@@ -159,7 +159,7 @@ def mainActivity():
                         HW.do(msg)
             elif AdminCommands.is_ok(msg):
                 AdminCommands.do(msg)
-            else:
+            elif chat_id not in DORM_CHAT_IDS:
                 handleExternalMessage(msg)
 
         if results:
