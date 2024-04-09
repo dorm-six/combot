@@ -18,7 +18,7 @@ from app.plugins.combat_protector import Combat_Protector
 
 from app.api import API
 from app.command import Command
-from app.settings import JEKA_DJ_CHAT_ID, DENIS_EMINEM_CHAT_ID, VLAD_KULAK_CHAT_ID, BODIES
+from app.settings import JEKA_DJ_CHAT_ID
 from app.settings import BASE_URL, OBWAGA6_CHAT_ID, TESTGROUP_CHAT_ID, OBWAGA_CHAT_IDS
 
 # ---------------
@@ -151,14 +151,12 @@ def mainActivity():
             elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/schedule'):
                 Schedule.do(msg)
 
-            elif chat_id in OBWAGA_CHAT_IDS:
-                if Combat_Protector.scanForCombat(msg):
-                    Combat_Protector.notificationForwarding(msg)
-                elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/pin'):
+            elif chat_id in OBWAGA_CHAT_IDS and cmd_obj.is_single_cmd():
+                if cmd_obj.is_cmd_eq('/pin'):
                     Combat_Protector.pin(msg)
-                elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/unpin'):
+                elif cmd_obj.is_cmd_eq('/unpin'):
                     Combat_Protector.unpin(msg)
-                elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/hw'):
+                elif cmd_obj.is_cmd_eq('/hw'):
                     HW.do(msg)
                 
             else:
