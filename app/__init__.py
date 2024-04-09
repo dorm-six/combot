@@ -1,26 +1,19 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, absolute_import, print_function
-
-import time
 import json
-import random
 import logging
-import datetime
-import requests
-import threading
+import time
 import traceback
-from time import gmtime, strftime
 
-from app.plugins.hw import HW
-from app.plugins.chicks import Chicks
-from app.plugins.schedule import Schedule
-from app.plugins.admin_commands import AdminCommands
-from app.plugins.combat_protector import Combat_Protector
+import requests
 
 from app.api import API
 from app.command import Command
-from app.settings import CHAT_ID_SUPERUSER
+from app.plugins.admin_commands import AdminCommands
+from app.plugins.chicks import Chicks
+from app.plugins.combat_protector import Combat_Protector
+from app.plugins.hw import HW
+from app.plugins.schedule import Schedule
 from app.settings import BASE_URL, CHAT_ID_DORM_CHAT, CHAT_ID_TEST_CHAT, DORM_CHAT_IDS
+from app.settings import CHAT_ID_SUPERUSER
 
 # ---------------
 # --- GLOBALS ---

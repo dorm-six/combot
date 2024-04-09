@@ -1,5 +1,3 @@
-from __future__ import unicode_literals, absolute_import, print_function
-
 TYPE_SINGLE_CMD = 1  # /pin
 TYPE_PARAM = 2  # /delsell 4
 TYPE_SEMICOLON = 3  # /msg : Hello

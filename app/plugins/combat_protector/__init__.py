@@ -1,8 +1,4 @@
-from __future__ import unicode_literals, absolute_import, print_function
-
-import random
 from app.api import API
-from app.settings import CHAT_ID_DORM_CHAT
 
 
 class Combat_Protector:

@@ -1,6 +1,3 @@
-from __future__ import unicode_literals, absolute_import, print_function
-
-import random
 from app.api import API
 from app.command import Command
 from app.settings import CHAT_ID_DORM_CHAT, CHAT_ID_SUPERUSER
