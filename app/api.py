@@ -8,7 +8,7 @@ from app.settings import BASE_URL
 class API:
     
     @staticmethod
-    def sendMsg(chat_id, msg, parse_mode=None, disable_web_page_preview=False, explicit_return=False):
+    def sendMsg(chat_id, msg, parse_mode=None, disable_web_page_preview=False, explicit_return=False, reply_to=None):
 
         # prepare payload for request
         payload = {
@@ -19,6 +19,8 @@ class API:
             payload['parse_mode'] = parse_mode
         if disable_web_page_preview is True:
             payload['disable_web_page_preview'] = True
+        if reply_to is not None:
+            payload['reply_to_message_id'] = reply_to
 
         # make request
         r = requests.get(BASE_URL + 'sendMessage', json=payload)
