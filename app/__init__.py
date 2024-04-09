@@ -4,6 +4,7 @@ from __future__ import unicode_literals, absolute_import, print_function
 import time
 import json
 import random
+import logging
 import datetime
 import requests
 import threading
@@ -50,12 +51,17 @@ def getUpdatesOrExit():
 
         data = r.json()
         if data['ok'] == False:
-            print('status "False" on getUpdates returned')
-            raise Exception
+            logging.error(
+                'status "False" on getUpdates returned. Response body: %s',
+                json.dumps(body, sort_keys=True, indent=4)
+            )
+            raise Exception()
 
         CUTTING_IDX = 50
         if len(data['result']) > CUTTING_IDX:
             UPDATE_OFFSET = data['result'][CUTTING_IDX]['update_id']
+
+        logging.debug(data)
 
         return data
 
@@ -98,16 +104,18 @@ def mainActivity():
     # --- initializing ---
     # --------------------
     
-    print('Initializing...')
+    logging.info('Initializing...')
 
     payload = {'allowed_updates': ['message'], 'offset': UPDATE_OFFSET}
     r = requests.get(BASE_URL + 'getUpdates', params=payload)
     data = r.json()
 
     if data['ok'] == False:
-        print('status "False" on getUpdates returned')
-        print('Exiting...')
-        exit()
+        logging.error(
+            'status "False" on getUpdates returned. Response body: %s',
+            json.dumps(body, sort_keys=True, indent=4)
+        )
+        exit(1)
 
     if len(data['result']) > 0:
         UPDATE_OFFSET = data['result'][-1]['update_id']
@@ -117,7 +125,7 @@ def mainActivity():
     # --- main work ---
     # -----------------
     
-    print('Main Work started...')
+    logging.info('Main Work started...')
 
     while True:
         try:
@@ -170,21 +178,19 @@ def mainActivity():
 
 
 def run():
+    logging.basicConfig(level=logging.DEBUG)
     while True:
         try:
             mainActivity()
         except KeyboardInterrupt:
             break
         except Exception as e:
-            print('Exception: type:{}. msg:{}'.format(type(e), e))
-            print('--------------------')
+            logging.exception("run() exception caught")
             try:
-                traceback.print_exc()
                 exc_trace = traceback.format_exc()
                 API.sendMsg(CHAT_ID_SUPERUSER, exc_trace)
             except Exception:
                 pass
-            print('--------------------')
             time.sleep(3)
 
 if __name__ == "__main__":
