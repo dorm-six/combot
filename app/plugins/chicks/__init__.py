@@ -1,6 +1,7 @@
 from __future__ import unicode_literals, absolute_import, print_function
 
 import random
+from datetime import datetime, timedelta
 from app.api import API
 
 
@@ -81,5 +82,23 @@ class Chicks:
     @staticmethod
     def do(msg):
         chat_id = msg['chat']['id']
+        user_id = msg['from']['id']
+
+        if API.getChatMember(chat_id, user_id)["status"] in ["creator", "administrator"]:
+            if random.randint(0, 100) < 30:
+                API.sendMsg(chat_id, "Типичный пример малолетнего дебила.")
+            elif random.randint(0, 100) < 50:
+                API.sendPhoto(chat_id, "https://www.reed.edu/biology/courses/BIO342/2012_syllabus/2012_WEBSITES/CSLP%20Nov%2020%20Monkey%20and%20Addiction/images/rhesus-monkey%20self.jpg", caption="{} {}".format(msg['from']['first_name'], msg['from'].get('last_name', "")).strip())
+            return
+
+        restricted = False
+        if random.randint(0, 100) < 80:
+            API.restrictUser(chat_id, user_id, {
+                "can_send_messages": False
+            }, int((datetime.utcnow() + timedelta(minutes=random.randint(9000, 14400))).timestamp()))
+            restricted = True
+
         name, url = Chicks._get_random_chick()
+        if restricted:
+            name += "."
         API.sendPhoto(chat_id, url, caption=name)
