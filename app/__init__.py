@@ -18,8 +18,8 @@ from app.plugins.combat_protector import Combat_Protector
 
 from app.api import API
 from app.command import Command
-from app.settings import JEKA_DJ_CHAT_ID
-from app.settings import BASE_URL, OBWAGA6_CHAT_ID, TESTGROUP_CHAT_ID, OBWAGA_CHAT_IDS
+from app.settings import CHAT_ID_SUPERUSER
+from app.settings import BASE_URL, CHAT_ID_DORM_CHAT, CHAT_ID_TEST_CHAT, DORM_CHAT_IDS
 
 # ---------------
 # --- GLOBALS ---
@@ -44,7 +44,7 @@ def getUpdatesOrExit():
         except (requests.exceptions.ConnectionError, requests.exceptions.SSLError) as e:
             traceback.print_exc()
             exc_trace = traceback.format_exc()
-            API.sendMsg(JEKA_DJ_CHAT_ID, exc_trace)
+            API.sendMsg(CHAT_ID_SUPERUSER, exc_trace)
             time.sleep(30)
             continue
 
@@ -80,7 +80,7 @@ def handlePing(msg):
 
 def handleExternalMessage(msg):
     from_chat_id = msg['chat']['id']
-    to_chat_id = JEKA_DJ_CHAT_ID
+    to_chat_id = CHAT_ID_SUPERUSER
     msg_id = msg['message_id']
 
     API.sendMsg(to_chat_id, 'chat_id: {}. msg_id: {}'.format(from_chat_id, msg_id))
@@ -125,7 +125,7 @@ def mainActivity():
         except ValueError as e:
             traceback.print_exc()
             exc_trace = traceback.format_exc()
-            API.sendMsg(JEKA_DJ_CHAT_ID, exc_trace)
+            API.sendMsg(CHAT_ID_SUPERUSER, exc_trace)
             time.sleep(1)
             continue
 
@@ -152,7 +152,7 @@ def mainActivity():
                 elif cmd_obj.is_cmd_eq('/schedule'):
                     Schedule.do(msg)
 
-                elif chat_id in OBWAGA_CHAT_IDS:
+                elif chat_id in DORM_CHAT_IDS:
                     if cmd_obj.is_cmd_eq('/pin'):
                         Combat_Protector.pin(msg)
                     elif cmd_obj.is_cmd_eq('/unpin'):
@@ -181,7 +181,7 @@ def run():
             try:
                 traceback.print_exc()
                 exc_trace = traceback.format_exc()
-                API.sendMsg(JEKA_DJ_CHAT_ID, exc_trace)
+                API.sendMsg(CHAT_ID_SUPERUSER, exc_trace)
             except Exception:
                 pass
             print('--------------------')

@@ -3,7 +3,7 @@ from __future__ import unicode_literals, absolute_import, print_function
 import random
 from app.api import API
 from app.command import Command
-from app.settings import OBWAGA6_CHAT_ID, JEKA_DJ_CHAT_ID
+from app.settings import CHAT_ID_DORM_CHAT, CHAT_ID_SUPERUSER
 
 
 class AdminCommands:
@@ -14,7 +14,7 @@ class AdminCommands:
         cmd_obj = Command(msg['text'])
         chat_id = msg['chat']['id']
 
-        if chat_id != JEKA_DJ_CHAT_ID:
+        if chat_id != CHAT_ID_SUPERUSER:
             return False
 
         if cmd_obj.is_semicolon() and cmd_obj.is_cmd_eq('pin'):
@@ -34,21 +34,21 @@ class AdminCommands:
         cmd_obj = Command(msg['text'])
         chat_id = msg['chat']['id']
         
-        if chat_id != JEKA_DJ_CHAT_ID:
+        if chat_id != CHAT_ID_SUPERUSER:
             return False
 
         if cmd_obj.is_semicolon() and cmd_obj.is_cmd_eq('pin'):
-            res = API.sendMsg(OBWAGA6_CHAT_ID, cmd_obj.value)
+            res = API.sendMsg(CHAT_ID_DORM_CHAT, cmd_obj.value)
             if res is not None:
-                API.pinMsg(OBWAGA6_CHAT_ID, res['message_id'])
+                API.pinMsg(CHAT_ID_DORM_CHAT, res['message_id'])
             return True
 
         elif cmd_obj.is_semicolon() and cmd_obj.is_cmd_eq('msg'):
-            API.sendMsg(OBWAGA6_CHAT_ID, cmd_obj.value)
+            API.sendMsg(CHAT_ID_DORM_CHAT, cmd_obj.value)
             return True
 
         elif cmd_obj.is_semicolon() and cmd_obj.is_cmd_eq('pinmsg'):
-            API.sendMsgAndPin(OBWAGA6_CHAT_ID, cmd_obj.value)
+            API.sendMsgAndPin(CHAT_ID_DORM_CHAT, cmd_obj.value)
             return True
 
         elif (cmd_obj.is_param_semicolon() and cmd_obj.is_cmd_eq('msg') and \
@@ -56,9 +56,9 @@ class AdminCommands:
 
             send_to_chat_id = int(cmd_obj.param)
             if API.sendMsg(send_to_chat_id, cmd_obj.value):
-                API.sendMsg(JEKA_DJ_CHAT_ID, 'SUCCESSFULLY SENT "{}" to "{}"'.format(cmd_obj.value, send_to_chat_id))
+                API.sendMsg(CHAT_ID_SUPERUSER, 'SUCCESSFULLY SENT "{}" to "{}"'.format(cmd_obj.value, send_to_chat_id))
             else:
-                API.sendMsg(JEKA_DJ_CHAT_ID, 'NOT SENT "{}" to "{}"'.format(cmd_obj.value, send_to_chat_id))
+                API.sendMsg(CHAT_ID_SUPERUSER, 'NOT SENT "{}" to "{}"'.format(cmd_obj.value, send_to_chat_id))
             return True
 
         return False
