@@ -144,27 +144,25 @@ def mainActivity():
             except KeyError:
                 continue
 
-            if cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/ping'):
-                handlePing(msg)
-            elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/baby'):
-                Chicks.do(msg)
-            elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/schedule'):
-                Schedule.do(msg)
+            if cmd_obj.is_single_cmd():
+                if cmd_obj.is_cmd_eq('/ping'):
+                    handlePing(msg)
+                elif cmd_obj.is_cmd_eq('/baby'):
+                    Chicks.do(msg)
+                elif cmd_obj.is_cmd_eq('/schedule'):
+                    Schedule.do(msg)
 
-            elif chat_id in OBWAGA_CHAT_IDS and cmd_obj.is_single_cmd():
-                if cmd_obj.is_cmd_eq('/pin'):
-                    Combat_Protector.pin(msg)
-                elif cmd_obj.is_cmd_eq('/unpin'):
-                    Combat_Protector.unpin(msg)
-                elif cmd_obj.is_cmd_eq('/hw'):
-                    HW.do(msg)
-                
+                elif chat_id in OBWAGA_CHAT_IDS:
+                    if cmd_obj.is_cmd_eq('/pin'):
+                        Combat_Protector.pin(msg)
+                    elif cmd_obj.is_cmd_eq('/unpin'):
+                        Combat_Protector.unpin(msg)
+                    elif cmd_obj.is_cmd_eq('/hw'):
+                        HW.do(msg)
+            elif AdminCommands.is_ok(msg):
+                AdminCommands.do(msg)
             else:
-                # others
-                if AdminCommands.is_ok(msg):
-                    AdminCommands.do(msg)
-                else:
-                    handleExternalMessage(msg)
+                handleExternalMessage(msg)
 
         LAST_UPDATE_ID = ress[-1]['update_id']
 
