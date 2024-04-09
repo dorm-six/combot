@@ -11,7 +11,6 @@ import traceback
 from time import gmtime, strftime
 
 from app.plugins.hw import HW
-from app.plugins.mall import Mall
 from app.plugins.chicks import Chicks
 from app.plugins.schedule import Schedule
 from app.plugins.admin_commands import AdminCommands
@@ -145,9 +144,7 @@ def mainActivity():
             except KeyError:
                 continue
 
-            if cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/buy'):
-                Mall.buy(msg)
-            elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/ping'):
+            if cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/ping'):
                 handlePing(msg)
             elif cmd_obj.is_single_cmd() and cmd_obj.is_cmd_eq('/baby'):
                 Chicks.do(msg)
@@ -165,15 +162,8 @@ def mainActivity():
                     HW.do(msg)
                 
             else:
-                if cmd_obj.is_cmd_eq('/sell'):
-                    Mall.sell(msg)
-                elif cmd_obj.is_cmd_eq('/delsell'):
-                    Mall.delete(msg)
-                elif cmd_obj.is_cmd_eq('/edit') and cmd_obj.is_param_semicolon():
-                    Mall.edit(msg)
-
                 # others
-                elif AdminCommands.is_ok(msg):
+                if AdminCommands.is_ok(msg):
                     AdminCommands.do(msg)
                 else:
                     handleExternalMessage(msg)
