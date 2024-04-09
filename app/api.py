@@ -1,5 +1,6 @@
 from __future__ import unicode_literals, absolute_import, print_function
 
+import json
 import requests
 
 from app.settings import BASE_URL
@@ -117,6 +118,21 @@ class API:
         
         # make request
         r = requests.get(BASE_URL + 'unpinChatMessage', params=payload)
+        data = r.json()
+
+        # return
+        return data['result'] if data['ok'] is True else None
+
+    @staticmethod
+    def restrictUser(chat_id, user_id, permissions_json, until_date):
+        payload = {
+            'chat_id': chat_id,
+            'user_id': user_id,
+            'permissions': json.dumps(permissions_json),
+            'until_date': until_date
+        }
+
+        r = requests.get(BASE_URL + 'restrictChatMember', params=payload)
         data = r.json()
 
         # return
