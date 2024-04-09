@@ -37,11 +37,10 @@ def getUpdatesOrExit():
     global UPDATE_OFFSET
 
     while True:
-
-        payload = {'allowed_updates': ['message'], 'offset': UPDATE_OFFSET}
+        payload = {'allowed_updates': ['message'], 'offset': UPDATE_OFFSET + 1, 'timeout': 55}
 
         try:
-            r = requests.get(BASE_URL + 'getUpdates', params=payload)
+            r = requests.get(BASE_URL + 'getUpdates', params=payload, timeout=60)
         except (requests.exceptions.ConnectionError, requests.exceptions.SSLError) as e:
             traceback.print_exc()
             exc_trace = traceback.format_exc()
@@ -64,12 +63,6 @@ def getUpdatesOrExit():
         logging.debug(data)
 
         return data
-
-def filterByUpdateId(res):
-    try:
-        return res['update_id'] > LAST_UPDATE_ID
-    except KeyError:
-        return False
 
 # ----------------
 # --- Handlers ---
@@ -98,7 +91,6 @@ def handleExternalMessage(msg):
 
 def mainActivity():
     global UPDATE_OFFSET
-    global LAST_UPDATE_ID
 
     # --------------------
     # --- initializing ---
@@ -106,8 +98,8 @@ def mainActivity():
     
     logging.info('Initializing...')
 
-    payload = {'allowed_updates': ['message'], 'offset': UPDATE_OFFSET}
-    r = requests.get(BASE_URL + 'getUpdates', params=payload)
+    payload = {'allowed_updates': ['message'], 'offset': UPDATE_OFFSET, 'timeout': 55}
+    r = requests.get(BASE_URL + 'getUpdates', params=payload, timeout=60)
     data = r.json()
 
     if data['ok'] == False:
@@ -119,7 +111,6 @@ def mainActivity():
 
     if len(data['result']) > 0:
         UPDATE_OFFSET = data['result'][-1]['update_id']
-        LAST_UPDATE_ID = UPDATE_OFFSET
 
     # -----------------
     # --- main work ---
@@ -137,12 +128,7 @@ def mainActivity():
             time.sleep(1)
             continue
 
-        ress = data['result']
-        results = list(filter(filterByUpdateId, ress))
-
-        if len(results) == 0:
-            time.sleep(3)
-            continue
+        results = data['result']
 
         for res in results:
             try:
@@ -172,9 +158,8 @@ def mainActivity():
             else:
                 handleExternalMessage(msg)
 
-        LAST_UPDATE_ID = ress[-1]['update_id']
-
-        time.sleep(3)
+        if results:
+            UPDATE_OFFSET = results[-1]['update_id']
 
 
 def run():
