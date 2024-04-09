@@ -15,7 +15,7 @@ from app.settings import DATABASE_URL
 if 'sqlite:///:memory:' == DATABASE_URL:
     engine = create_engine(DATABASE_URL, echo=True)
 else:
-    engine = create_engine(DATABASE_URL, connect_args={'sslmode':'require'}, echo=True)
+    engine = create_engine(DATABASE_URL, connect_args={'connect_timeout': 10}, echo=True)
 
 # ------- #
 # Session #
