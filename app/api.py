@@ -121,3 +121,17 @@ class API:
 
         # return
         return data['result'] if data['ok'] is True else None
+
+    @staticmethod
+    def getChatMember(chat_id, user_id):
+        payload = {
+            'chat_id': chat_id,
+            'user_id': user_id
+        }
+
+        r = requests.get(BASE_URL + 'getChatMember', params=payload)
+        data = r.json()
+
+        return data['result'] if data['ok'] is True else None
+
+
