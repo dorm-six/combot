@@ -5,7 +5,7 @@ from app.bot import Bot
 from app.bot.utils import user_and_chat_info
 from app.command import Command
 from app.db.session import dbsession
-from app.plugins import combat_protector, hw
+from app.plugins import combat_protector, hw, experience
 from app.plugins.chicks import Chicks
 from app.plugins.static_commands import StaticCommands
 from app.settings import (
@@ -64,14 +64,17 @@ class ComBot(Bot):
         with user_and_chat_info(update, session) as uci:
             chat_info, user_info = uci
 
+            # Keep track of experience
+            experience.experience_handler(self, update, chat_info, user_info)
+
             if cmd_obj.is_single_cmd():
+                #
+                # Original commands
+                #
                 if cmd_obj.is_cmd_eq("/ping", self._username):
                     self.handle_ping(msg)
                 elif cmd_obj.is_cmd_eq("/baby", self._username):
                     chicks.handle(self, msg, chat_info, user_info)
-                elif static_commands.handle(self, update, chat_info, cmd_obj.cmd):
-                    # `handle` will return true if static command was found
-                    pass
                 elif chat_id in DORM_CHAT_IDS:
                     if cmd_obj.is_cmd_eq("/pin", self._username):
                         combat_protector.pin(self, msg)
@@ -79,6 +82,15 @@ class ComBot(Bot):
                         combat_protector.unpin(self, msg)
                     elif cmd_obj.is_cmd_eq("/hw", self._username):
                         hw.handle(self, msg)
+                #
+                # DormBot plugin commands
+                #
+                elif static_commands.handle(self, update, chat_info, cmd_obj.cmd):
+                    # `handle` will return true if static command was found
+                    pass
+                elif experience.handle(self, msg, chat_info, user_info, cmd_obj.cmd):
+                    # `handle` will return true if the command was handled
+                    pass
             elif chat_id not in DORM_CHAT_IDS:
                 self.handle_personal_message(msg)
 
