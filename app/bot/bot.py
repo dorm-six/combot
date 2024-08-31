@@ -3,7 +3,7 @@ import logging
 import random
 import string
 import traceback
-from typing import Optional
+from typing import Optional, Callable
 
 import requests
 
@@ -119,29 +119,28 @@ class Bot(abc.ABC):
         )
         return r
 
-    def _get_method(self, method: str, params: dict = None, **kwargs) -> dict:
+    def _call_method(self, get_response: Callable, method: str, params: dict = None, **kwargs) -> dict:
         url = self._api_url(method)
         request_id = "".join(random.choices(string.ascii_letters, k=7))
+
         self._logger.debug(f"{method}#{request_id}: {pretty_json(params)}")
 
         return self._process_telegram_response(
-            response=self._session.get(url, params=params, **kwargs),
+            response=get_response(url, params=params, **kwargs),
             method=method,
             request_id=request_id,
             params=params,
         )
+
+    def _get_method(self, method: str, params: dict = None, **kwargs) -> dict:
+        def get_response(url: str, params: dict, **kwargs):
+            return self._session.get(url, params=params, **kwargs)
+        return self._call_method(get_response, method, params, **kwargs)
 
     def _post_method(self, method: str, params: dict, **kwargs) -> dict:
-        url = self._api_url(method)
-        request_id = "".join(random.choices(string.ascii_letters, k=7))
-        self._logger.debug(f"{method}#{request_id}: {pretty_json(params)}")
-
-        return self._process_telegram_response(
-            response=self._session.post(url, json=params, **kwargs),
-            method=method,
-            request_id=request_id,
-            params=params,
-        )
+        def get_response(url: str, params: dict, **kwargs):
+            return self._session.post(url, json=params, **kwargs)
+        return self._call_method(get_response, method, params, **kwargs)
 
     def _update_me(self) -> None:
         self._me = self._get_method("getMe")["result"]
