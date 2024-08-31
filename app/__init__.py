@@ -1,187 +1,101 @@
-import json
 import logging
-import time
-import traceback
 
-import requests
 
-from app.api import API
+from app.bot import Bot
+from app.bot.utils import user_and_chat_info
 from app.command import Command
-from app.plugins.admin_commands import AdminCommands
+from app.db.session import dbsession
+from app.plugins import combat_protector, hw
 from app.plugins.chicks import Chicks
-from app.plugins.combat_protector import Combat_Protector
-from app.plugins.hw import HW
-from app.plugins.schedule import Schedule
-from app.settings import BASE_URL, CHAT_ID_DORM_CHAT, CHAT_ID_TEST_CHAT, DORM_CHAT_IDS
+from app.plugins.static_commands import StaticCommands
+from app.settings import (
+    TELEGRAM_TOKEN,
+    CHAT_ID_DORM_CHAT,
+    CHAT_ID_TEST_CHAT,
+    DORM_CHAT_IDS,
+)
 from app.settings import CHAT_ID_SUPERUSER
 
-# ---------------
-# --- GLOBALS ---
-# ---------------
-
-UPDATE_OFFSET = 0
-LAST_UPDATE_ID = 0
-
-# ------------
-# --- Foos ---
-# ------------
+chicks = Chicks()
+static_commands = StaticCommands()
 
 
-def getUpdatesOrExit():
-    global UPDATE_OFFSET
+class ComBot(Bot):
+    _dorm_chat_ids = []
 
-    while True:
-        payload = {
-            "allowed_updates": ["message"],
-            "offset": UPDATE_OFFSET + 1,
-            "timeout": 55,
-        }
+    def __init__(
+        self, api_key: str, superuser_id: int, dorm_chat_ids: list[int], proxy=None
+    ):
+        self._dorm_chat_ids = dorm_chat_ids
+        super().__init__(api_key, superuser_id, proxy)
 
-        try:
-            r = requests.get(BASE_URL + "getUpdates", params=payload, timeout=60)
-        except (requests.exceptions.ConnectionError, requests.exceptions.SSLError) as e:
-            traceback.print_exc()
-            exc_trace = traceback.format_exc()
-            API.sendMsg(CHAT_ID_SUPERUSER, exc_trace)
-            time.sleep(30)
-            continue
+    def delete_deferred(
+        self, chat_ids: list[int], message_ids: list[int], delay: int = 0
+    ) -> dict:
+        pass
 
-        data = r.json()
-        if data["ok"] == False:
-            logging.error(
-                'status "False" on getUpdates returned. Response body: %s',
-                json.dumps(body, sort_keys=True, indent=4),
-            )
-            raise Exception()
+    def handle_ping(self, msg):
+        chat_id = msg["chat"]["id"]
+        self.send_message(chat_id=chat_id, text="I am Alive, сучка")
 
-        CUTTING_IDX = 50
-        if len(data["result"]) > CUTTING_IDX:
-            UPDATE_OFFSET = data["result"][CUTTING_IDX]["update_id"]
+    def handle_personal_message(self, msg):
+        from_chat_id = msg["chat"]["id"]
+        if from_chat_id < 0:
+            # I'm tired of group chats
+            return
+        to_chat_id = self._superuser_id
+        msg_id = msg["message_id"]
 
-        logging.debug(data)
-
-        return data
-
-
-# ----------------
-# --- Handlers ---
-# ----------------
-
-
-def handlePing(msg):
-    chat_id = msg["chat"]["id"]
-    text = "I am Alive, сучка"
-    API.sendMsg(chat_id, text)
-
-
-# -------------------------
-# --- External messages ---
-# -------------------------
-
-
-def handleExternalMessage(msg):
-    from_chat_id = msg["chat"]["id"]
-    to_chat_id = CHAT_ID_SUPERUSER
-    msg_id = msg["message_id"]
-
-    API.sendMsg(to_chat_id, "chat_id: {}. msg_id: {}".format(from_chat_id, msg_id))
-    API.forwardMsg(from_chat_id, to_chat_id, msg_id)
-
-
-# --------------------
-# --- mainActivity ---
-# --------------------
-
-
-def mainActivity():
-    global UPDATE_OFFSET
-
-    # --------------------
-    # --- initializing ---
-    # --------------------
-
-    logging.info("Initializing...")
-
-    payload = {"allowed_updates": ["message"], "offset": UPDATE_OFFSET, "timeout": 55}
-    r = requests.get(BASE_URL + "getUpdates", params=payload, timeout=60)
-    data = r.json()
-
-    if data["ok"] == False:
-        logging.error(
-            'status "False" on getUpdates returned. Response body: %s',
-            json.dumps(body, sort_keys=True, indent=4),
+        self.send_message(
+            chat_id=to_chat_id, text=f"chat_id: {from_chat_id}. msg_id: {msg_id}"
         )
-        exit(1)
+        # TODO Save forwarded => original message ID mapping so that one could reply
+        self.forward_message(chat_id=from_chat_id, msg_id=msg_id, to_id=to_chat_id)
 
-    if len(data["result"]) > 0:
-        UPDATE_OFFSET = data["result"][-1]["update_id"]
-
-    # -----------------
-    # --- main work ---
-    # -----------------
-
-    logging.info("Main Work started...")
-
-    while True:
+    @dbsession
+    def handle(self, update: dict, session=None) -> None:
         try:
-            data = getUpdatesOrExit()
-        except ValueError as e:
-            traceback.print_exc()
-            exc_trace = traceback.format_exc()
-            API.sendMsg(CHAT_ID_SUPERUSER, exc_trace)
-            time.sleep(1)
-            continue
+            msg = update["message"]
+            chat_id = msg["chat"]["id"]
+            cmd_obj = Command(msg["text"])
+        except KeyError:
+            return
 
-        results = data["result"]
-
-        for res in results:
-            try:
-                msg = res["message"]
-                chat_id = msg["chat"]["id"]
-                cmd_obj = Command(msg["text"])
-            except KeyError:
-                continue
+        with user_and_chat_info(update, session) as uci:
+            chat_info, user_info, user = uci
 
             if cmd_obj.is_single_cmd():
-                if cmd_obj.is_cmd_eq("/ping"):
-                    handlePing(msg)
-                elif cmd_obj.is_cmd_eq("/baby"):
-                    Chicks.do(msg)
-                elif cmd_obj.is_cmd_eq("/schedule"):
-                    Schedule.do(msg)
-
+                if cmd_obj.is_cmd_eq("/ping", self._username):
+                    self.handle_ping(msg)
+                elif cmd_obj.is_cmd_eq("/baby", self._username):
+                    chicks.handle(self, msg, chat_info, user_info)
+                elif static_commands.handle(self, update, chat_info, cmd_obj.cmd):
+                    # `handle` will return true if static command was found
+                    pass
                 elif chat_id in DORM_CHAT_IDS:
-                    if cmd_obj.is_cmd_eq("/pin"):
-                        Combat_Protector.pin(msg)
-                    elif cmd_obj.is_cmd_eq("/unpin"):
-                        Combat_Protector.unpin(msg)
-                    elif cmd_obj.is_cmd_eq("/hw"):
-                        HW.do(msg)
-            elif AdminCommands.is_ok(msg):
-                AdminCommands.do(msg)
+                    if cmd_obj.is_cmd_eq("/pin", self._username):
+                        combat_protector.pin(self, msg)
+                    elif cmd_obj.is_cmd_eq("/unpin", self._username):
+                        combat_protector.unpin(self, msg)
+                    elif cmd_obj.is_cmd_eq("/hw", self._username):
+                        hw.handle(self, msg)
             elif chat_id not in DORM_CHAT_IDS:
-                handleExternalMessage(msg)
-
-        if results:
-            UPDATE_OFFSET = results[-1]["update_id"]
+                self.handle_personal_message(msg)
 
 
-def run():
+def main():
     logging.basicConfig(level=logging.DEBUG)
+    combot = ComBot(
+        api_key=TELEGRAM_TOKEN,
+        superuser_id=CHAT_ID_SUPERUSER,
+        dorm_chat_ids=[CHAT_ID_DORM_CHAT, CHAT_ID_TEST_CHAT],
+    )
     while True:
         try:
-            mainActivity()
+            combot.get_and_process_updates()
         except KeyboardInterrupt:
             break
-        except Exception as e:
-            logging.exception("run() exception caught")
-            try:
-                exc_trace = traceback.format_exc()
-                API.sendMsg(CHAT_ID_SUPERUSER, exc_trace)
-            except Exception:
-                pass
-            time.sleep(3)
 
 
 if __name__ == "__main__":
-    run()
+    main()

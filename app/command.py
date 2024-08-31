@@ -5,7 +5,6 @@ TYPE_PARAM_SEMICOLON = 4  # /msg 123: Hello
 
 
 class Command:
-
     def __init__(self, text):
         """
         prepares:
@@ -59,5 +58,5 @@ class Command:
     def is_param_semicolon(self):
         return self.type == TYPE_PARAM_SEMICOLON
 
-    def is_cmd_eq(self, cmd):
-        return self.cmd in [cmd, "{}@CombatDetectorBot".format(cmd)]
+    def is_cmd_eq(self, cmd, handle):
+        return self.cmd in [cmd, f"{cmd}@{handle}"]
