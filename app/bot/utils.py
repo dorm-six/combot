@@ -33,16 +33,15 @@ def user_and_chat_info(update, session):
         )
         if chat_info is None:
             chat_info = ChatInfo(id=update["message"]["chat"]["id"])
+        chat_info.handle = update["message"]["chat"].get("username", None)
 
     user_id, first_name, last_name, _, username = extract_user(update)
     user_info = session.query(UserInfo).filter(UserInfo.id == user_id).one_or_none()
     if user_info is None:
-        user_info = UserInfo(
-            id=user_id,
-            first_name=first_name,
-            last_name=last_name,
-            username=username,
-        )
+        user_info = UserInfo(id=user_id)
+    user_info.first_name = first_name
+    user_info.last_name = last_name
+    user_info.username = username
 
     try:
         yield chat_info, user_info

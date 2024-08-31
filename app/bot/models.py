@@ -31,7 +31,7 @@ class ChatInfo(Base):
     __tablename__ = "chat_info"
 
     id = Column(BigInteger, primary_key=True)
-    # TODO channel_id = Column(BigInteger, default=None)
+    handle = Column(String, nullable=True)
 
 
 class UserInfo(Base):
