@@ -62,7 +62,7 @@ class ComBot(Bot):
             return
 
         with user_and_chat_info(update, session) as uci:
-            chat_info, user_info, user = uci
+            chat_info, user_info = uci
 
             if cmd_obj.is_single_cmd():
                 if cmd_obj.is_cmd_eq("/ping", self._username):

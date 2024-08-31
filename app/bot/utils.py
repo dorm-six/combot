@@ -1,7 +1,7 @@
 import contextlib
 import json
 import re
-from typing import NamedTuple, Optional
+from typing import Optional
 
 from .models import ChatInfo, UserInfo
 
@@ -12,21 +12,14 @@ def escape_md(text: str) -> str:
     return result
 
 
-class TgUser(NamedTuple):
-    id: int
-    first_name: str
-    last_name: Optional[str]
-    username: Optional[str]
-
-
-def extract_user(update):
-    f = update["from"]
-    return TgUser(
-        id=f["id"],
-        first_name=f["first_name"],
-        last_name=f.get("last_name", ""),
-        username=f.get("username", ""),
-    )
+def extract_user(msg: dict) -> tuple[int, str, str, str, str]:
+    f = msg["from"]
+    user_id = f["id"]
+    first_name = f["first_name"]
+    last_name = f.get("last_name", "")
+    username = f.get("username", "")
+    full_name = f"{first_name} {last_name}".strip()
+    return user_id, first_name, last_name, full_name, username
 
 
 @contextlib.contextmanager
@@ -40,18 +33,19 @@ def user_and_chat_info(update, session):
         )
         if chat_info is None:
             chat_info = ChatInfo(id=update["message"]["chat"]["id"])
-    user = extract_user(update["message"])
-    user_info = session.query(UserInfo).filter(UserInfo.id == user.id).one_or_none()
+
+    user_id, first_name, last_name, _, username = extract_user(update)
+    user_info = session.query(UserInfo).filter(UserInfo.id == user_id).one_or_none()
     if user_info is None:
         user_info = UserInfo(
-            id=user.id,
-            first_name=user.first_name,
-            last_name=user.last_name,
-            username=user.username,
+            id=user_id,
+            first_name=first_name,
+            last_name=last_name,
+            username=username,
         )
 
     try:
-        yield chat_info, user_info, user
+        yield chat_info, user_info
     finally:
         if chat_info is not None:
             session.add(chat_info)

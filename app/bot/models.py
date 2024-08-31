@@ -42,6 +42,10 @@ class UserInfo(Base):
     last_name = Column(String, nullable=True)
     username = Column(String, nullable=True)
 
+    @property
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name or ""}".strip()
+
 
 class PinnedMsg(Base):
     __tablename__ = "pinned_msg"
