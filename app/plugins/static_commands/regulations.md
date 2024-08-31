@@ -1,0 +1,1 @@
+Правила внутреннего распорядка: https://www.spbstu.ru/upload/campus/hostel_intern_regulation.pdf
