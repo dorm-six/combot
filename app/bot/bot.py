@@ -56,6 +56,9 @@ class Bot(abc.ABC):
         self._configure_requests_session()
         self._update_me()
         self._username = self._me["username"]
+        self._pre_hooks: dict[str, list[Callable[[dict], None]]] = defaultdict(list)
+        self._post_hooks: dict[str, list[Callable[[dict, dict], None]]] = defaultdict(list)
+        self._session: Optional[requests.Session] = None
 
     def _configure_requests_session(self) -> None:
         if self._session:
@@ -67,6 +70,12 @@ class Bot(abc.ABC):
             self._session.proxies = {"http": self._proxy, "https": self._proxy}
             self._logger.debug(f"Session proxies: {self._session.proxies}")
         self._logger.debug("Session configured")
+
+    def register_pre_hook(self, method: string, callback: Callable[[dict], None]):
+        self._pre_hooks[method].append(callback)
+
+    def register_post_hook(self, method: string, callback: Callable[[dict, dict], None]):
+        self._post_hooks[method].append(callback)
 
     def _api_url(self, method: str) -> str:
         return f"https://api.telegram.org/bot{self._api_key}/{method}"
@@ -105,24 +114,34 @@ class Bot(abc.ABC):
             )
             self._logger.error(e)
             self.send_message(chat_id=self._superuser_id, text=e)
-
-        self._logger.debug(
-            f"{method}#{request_id} succeeded\n\n" f"Response: {pretty_json(r)}"
-        )
         return r
 
     def _call_method(self, get_response: Callable, method: str, params: dict = None, **kwargs) -> dict:
         url = self._api_url(method)
         request_id = "".join(random.choices(string.ascii_letters, k=7))
 
+        if method in self._pre_hooks:
+            for m in self._pre_hooks[method]:
+                m(params)
+
         self._logger.debug(f"{method}#{request_id}: {pretty_json(params)}")
 
-        return self._process_telegram_response(
+        result = self._process_telegram_response(
             response=get_response(url, params=params, **kwargs),
             method=method,
             request_id=request_id,
             params=params,
         )
+
+        if method in self._post_hooks:
+            for m in self._post_hooks[method]:
+                m(params, result)
+
+        self._logger.debug(
+            f"{method}#{request_id} succeeded\n\n" f"Response: {pretty_json(result)}"
+        )
+
+        return result
 
     def _get_method(self, method: str, params: dict = None, **kwargs) -> dict:
         def get_response(url: str, params: dict, **kwargs):
