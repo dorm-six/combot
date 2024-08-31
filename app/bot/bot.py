@@ -3,6 +3,7 @@ import logging
 import random
 import string
 import traceback
+from collections import defaultdict
 from typing import Optional, Callable
 
 import requests
@@ -42,16 +43,7 @@ class UnexpectedTelegramResponseType(Exception):
 
 
 class Bot(abc.ABC):
-    _api_key: str = None
-    _session: requests.Session = None
-    _proxy: str = None
-    _me: dict = None
-    _username: str = None
-    _superuser_id: int = None
     public_id_offset = -1000000000000
-    _logger: logging.Logger = None
-
-    _update_offset: int
 
     def __init__(self, api_key: str, superuser_id: int, proxy=None):
         self._api_key = api_key
