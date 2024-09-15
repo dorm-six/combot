@@ -88,7 +88,7 @@ class ComBot(Bot):
                     self, update, chat_info, cmd_obj.cmd
                 ):
                     pass
-                elif chat_id in DORM_CHAT_IDS:
+                elif chat_id in self._dorm_chat_ids:
                     #
                     # Original commands
                     #
@@ -106,7 +106,7 @@ class ComBot(Bot):
                     ):
                         # `handle` will return true if the command was handled
                         pass
-            elif chat_id not in DORM_CHAT_IDS:
+            elif chat_id not in self._dorm_chat_ids:
                 self.handle_personal_message(msg)
 
 
