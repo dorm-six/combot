@@ -13,7 +13,7 @@ from ..db.models import Base
 
 
 class CommandInfo(Base):
-    __tablename__ = "command_info"
+    __tablename__ = "bot_command_info"
 
     id = Column(Integer, primary_key=True)
     chat_id = Column(BigInteger)
@@ -29,14 +29,14 @@ class CommandInfo(Base):
 
 
 class ChatInfo(Base):
-    __tablename__ = "chat_info"
+    __tablename__ = "bot_chat_info"
 
     id = Column(BigInteger, primary_key=True)
     handle = Column(String, nullable=True)
 
 
 class UserInfo(Base):
-    __tablename__ = "user_info"
+    __tablename__ = "bot_user_info"
 
     id = Column(BigInteger, primary_key=True)
     first_name = Column(String, nullable=False)
@@ -49,18 +49,18 @@ class UserInfo(Base):
 
 
 class PinnedMsg(Base):
-    __tablename__ = "pinned_msg"
+    __tablename__ = "bot_pinned_msg"
 
     chat_id = Column(BigInteger, primary_key=True)
     message_id = Column(BigInteger, primary_key=True)
     pin_id = Column(String, nullable=True, index=True)
     pinned = Column(Boolean, default=True)
 
-    __table_args__ = (Index("chat_id", "pin_id", "pinned"),)
+    __table_args__ = (Index("ix_bot_pinned_msg__pined", "chat_id", "pin_id", "pinned"),)
 
 
 class MediaGroupMessage(Base):
-    __tablename__ = "media_group_message"
+    __tablename__ = "bot_media_group_message"
 
     chat_id = Column(BigInteger, primary_key=True)
     media_group_id = Column(String(length=255), primary_key=True)
@@ -68,4 +68,4 @@ class MediaGroupMessage(Base):
     caption = Column(Text)
     finalized = Column(Boolean, default=False)
 
-    __table_args__ = (Index("chat_id", "media_group_id", "finalized"),)
+    __table_args__ = (Index("ix_bot_mgm__finalized", "chat_id", "media_group_id", "finalized"),)

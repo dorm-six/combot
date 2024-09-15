@@ -4,9 +4,9 @@ from ...db.models import Base
 
 
 class ChatExperience(Base):
-    __tablename__ = "chat_xp"
+    __tablename__ = "xp_table"
 
-    chat_id = Column(BigInteger, primary_key=True)
+    chat_id = Column(BigInteger, primary_key=True, index=True)
     user_id = Column(BigInteger, primary_key=True)
     last_user_name = Column(String(length=511), default="")
     experience = Column(BigInteger, default=0)
@@ -20,7 +20,7 @@ class ChatExperience(Base):
 
 
 class ChatJackpotProbability(Base):
-    __tablename__ = "chat_xp_jackpot_probability"
+    __tablename__ = "xp_chat_jackpot_prob"
 
     chat_id = Column(BigInteger, primary_key=True)
     jackpot_prob = Column(Float, nullable=False, default=0)
