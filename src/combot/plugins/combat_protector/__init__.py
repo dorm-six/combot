@@ -8,14 +8,13 @@ def pin(bot: Bot, msg: dict):
     chat_id = msg["chat"]["id"]
     msg = bot.send_message(chat_id=chat_id, text="КОМБАТЫ")
     if msg["ok"]:
-        bot.pin(msg, pin_id=_pin_id)
+        bot.pin(chat_id, msg_id=msg["result"]["message_id"], pin_id=_pin_id)
 
 
 def unpin(bot: Bot, msg: dict):
     chat_id = msg["chat"]["id"]
-
-    if bot.unpin(chat_id=chat_id, pin_id=_pin_id):
-        bot.send_message(chat_id=chat_id, text="ОТКРЕПЛЕНО")
+    bot.unpin_by_pin_id(chat_id, pin_id=_pin_id)
+    bot.send_message(chat_id=chat_id, text="ОТКРЕПЛЕНО")
 
 
 def handle(bot: Bot, update: dict, command: str):

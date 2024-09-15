@@ -340,51 +340,69 @@ class Bot(abc.ABC):
 
     @dbsession
     def pin(
-        self, msg: dict, pin_id: str = None, notify=True, session=None
+        self,
+        chat_id: int,
+        msg_id: int,
+        pin_id: str | None = None,
+        notify=True,
+        session=None,
     ) -> Optional[dict]:
-        chat_id = msg["chat"]["id"]
-        message_id = msg["message_id"]
-        if msg["chat"]["type"] == "private":
-            return None
-
         data = {
             "chat_id": chat_id,
-            "message_id": message_id,
+            "message_id": msg_id,
             "disable_notification": not notify,
         }
         result = self._post_method("pinChatMessage", params=data)
         if result["ok"]:
-            session.add(
-                PinnedMsg(
-                    chat_id=chat_id, message_id=message_id, pin_id=pin_id, pinned=True
-                )
+            pinned = (
+                session.query(PinnedMsg)
+                .filter_by(chat_id=chat_id, message_id=msg_id)
+                .one_or_none()
             )
-
-        return result
+            if pinned is None:
+                pinned = PinnedMsg(chat_id=chat_id, message_id=msg_id)
+            # TODO Different pin IDs with the same pin?
+            pinned.pinned = True
+            pinned.pin_id = pin_id
+            session.add(pinned)
+            session.commit()
+            session.flush()
 
     @dbsession
-    def unpin(
-        self, chat_id: int, message_id: int = None, pin_id: str = None, session=None
-    ) -> dict:
-        messages = []
-        message_ids = []
-        if message_id is not None:
-            message_ids.append(message_id)
-        elif pin_id is not None:
-            messages = (
-                session.query(PinnedMsg)
-                .filter(
-                    PinnedMsg.chat_id == chat_id,
-                    PinnedMsg.pin_id == pin_id,
-                    PinnedMsg.pinned == True,
+    def unpin(self, chat_id: int, msg_id: int = None, session=None):
+        data = {"chat_id": chat_id}
+        if msg_id is not None:
+            data["message_id"] = msg_id
+        result = self._post_method("unpinChatMessage", params={"chat_id": chat_id})
+
+        if result["ok"]:
+            q = update(PinnedMsg)
+            if msg_id is not None:
+                q = q.where(
+                    PinnedMsg.chat_id == chat_id, PinnedMsg.message_id == msg_id
                 )
-                .all()
+            else:
+                # TODO Telegram unpins the latest message, but we don't track which one was the latest.
+                #  It does not matter much for the current situation, but this could be critical to other
+                #  use cases.
+                q = q.where(PinnedMsg.chat_id == chat_id)
+            q = q.values(pinned=False)
+            session.execute(q)
+            session.commit()
+            session.flush()
+
+    @dbsession
+    def unpin_by_pin_id(self, chat_id: int, pin_id: str, session=None):
+        messages = (
+            session.query(PinnedMsg)
+            .filter(
+                PinnedMsg.chat_id == chat_id,
+                PinnedMsg.pin_id == pin_id,
+                PinnedMsg.pinned == True,
             )
-            message_ids = [m.message_id for m in messages]
-
-        if not message_ids:
-            return self._post_method("unpinChatMessage", params={"chat_id": chat_id})
-
+            .all()
+        )
+        message_ids = [m.message_id for m in messages]
         successfully_unpinned = set()
         for message_id in message_ids:
             resp = self._post_method(
@@ -400,15 +418,6 @@ class Bot(abc.ABC):
                 session.add(m)
         session.commit()
         session.flush()
-
-    @dbsession
-    def unpin(self, msg: dict, pin_id: str = None, session=None) -> dict:
-        return self.unpin(
-            chat_id=msg["chat"]["id"],
-            message_id=msg["message_id"],
-            pin_id=pin_id,
-            session=session,
-        )
 
     def finalize_media_group(self, mg: MediaGroupMessage, session=None) -> bool:
         # Provide your own implementation
