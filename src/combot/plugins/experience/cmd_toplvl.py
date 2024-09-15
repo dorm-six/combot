@@ -1,8 +1,8 @@
 from datetime import datetime, timezone, timedelta
 
-from app.bot import Bot
-from app.bot.utils import escape_md
-from app.db.session import dbsession
+from ...bot import Bot
+from ...bot.utils import escape_md
+from ...db.session import dbsession
 from .data import calculate_level
 from .models import ChatExperience
 

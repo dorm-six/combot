@@ -1,5 +1,5 @@
-from app.bot import Bot
-from app.db.session import dbsession
+from ...bot import Bot
+from ...db.session import dbsession
 from .data import calculate_level
 from .models import ChatExperience
 

@@ -1,8 +1,8 @@
 from sqlalchemy import select
 
-from app.db.session import dbsession
-from app.bot import Bot
-from app.bot.models import ChatInfo, MediaGroupMessage
+from ...db.session import dbsession
+from ...bot import Bot
+from ...bot.models import ChatInfo, MediaGroupMessage
 
 from .models import ChatFeed, ForwardedMessage
 

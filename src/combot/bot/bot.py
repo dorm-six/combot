@@ -8,12 +8,12 @@ from typing import Optional, Callable, Iterable
 
 import requests
 
-from app.bot.models import (
+from .models import (
     PinnedMsg,
     MediaGroupMessage,
 )
-from app.bot.utils import pretty_json
-from app.db.session import dbsession
+from .utils import pretty_json
+from ..db.session import dbsession
 
 
 class UnexpectedTelegramResponseCode(Exception):

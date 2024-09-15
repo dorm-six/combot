@@ -2,8 +2,8 @@ import csv
 import os
 import random
 from datetime import datetime, timedelta, timezone
-from app.bot import Bot
-from app.bot.models import ChatInfo, UserInfo
+from ...bot import Bot
+from ...bot.models import ChatInfo, UserInfo
 
 
 class Chicks:

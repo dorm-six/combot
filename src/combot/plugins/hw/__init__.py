@@ -1,5 +1,5 @@
 import random
-from app.bot import Bot
+from ...bot import Bot
 
 
 # I don't expect these to change. The meme it refers to is long forgotten,

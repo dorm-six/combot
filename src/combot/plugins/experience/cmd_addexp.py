@@ -1,5 +1,5 @@
-from app.bot import Bot
-from app.bot.utils import extract_user
+from ...bot import Bot
+from ...bot.utils import extract_user
 from . import add_experience
 
 

@@ -1,0 +1,16 @@
+[project]
+name = "combot"
+version = "0.1.0"
+description = "Dorm 6 Telegram bot"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "alembic>=1.13.2",
+    "celery>=5.4.0",
+    "psycopg2-binary>=2.9.9",
+    "requests>=2.32.3",
+    "sqlalchemy>=2.0.34",
+]
+
+[project.scripts]
+combot = "combot.combot:main"

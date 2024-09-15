@@ -1,6 +1,6 @@
 from sqlalchemy import Column, BigInteger, String, DateTime, Float
 
-from app.db.models import Base
+from ...db.models import Base
 
 
 class ChatExperience(Base):

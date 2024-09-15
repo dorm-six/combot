@@ -1,20 +1,20 @@
 import logging
 
 
-from app.bot import Bot
-from app.bot.utils import user_and_chat_info
-from app.command import Command
-from app.db.session import dbsession
-from app.plugins import combat_protector, hw, experience, feed_forward
-from app.plugins.chicks import Chicks
-from app.plugins.static_commands import StaticCommands
-from app.settings import (
+from .bot import Bot
+from .bot.utils import user_and_chat_info
+from .command import Command
+from .db.session import dbsession
+from .plugins import combat_protector, hw, experience, feed_forward
+from .plugins.chicks import Chicks
+from .plugins.static_commands import StaticCommands
+from .settings import (
     TELEGRAM_TOKEN,
     CHAT_ID_DORM_CHAT,
     CHAT_ID_TEST_CHAT,
     DORM_CHAT_IDS,
 )
-from app.settings import CHAT_ID_SUPERUSER
+from .settings import CHAT_ID_SUPERUSER
 
 chicks = Chicks()
 static_commands = StaticCommands()

@@ -1,9 +1,9 @@
 import random
 from datetime import datetime, timedelta
 
-from app.bot import Bot
-from app.bot.models import ChatInfo, UserInfo
-from app.db.session import dbsession
+from ...bot import Bot
+from ...bot.models import ChatInfo, UserInfo
+from ...db.session import dbsession
 from .data import generate_luck_message, generate_levelup_message
 from .models import ChatJackpotProbability, ChatExperience
 

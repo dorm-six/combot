@@ -1,8 +1,8 @@
 import os
 from typing import NamedTuple, Optional
 
-from app.bot import Bot
-from app.bot.models import ChatInfo
+from ...bot import Bot
+from ...bot.models import ChatInfo
 
 
 extension_to_parse_mode = {

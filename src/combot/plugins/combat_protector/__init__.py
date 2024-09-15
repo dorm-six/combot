@@ -1,4 +1,4 @@
-from app.bot import Bot
+from ...bot import Bot
 
 
 _pin_id = "combat_protector"
