@@ -53,10 +53,10 @@ class PinnedMsg(Base):
 
     chat_id = Column(BigInteger, primary_key=True)
     message_id = Column(BigInteger, primary_key=True)
-    pin_id = Column(String, nullable=True)
+    pin_id = Column(String, nullable=True, index=True)
     pinned = Column(Boolean, default=True)
-    # TODO forwarded_to_channel = Column(Boolean, default=False)
 
+    __table_args__ = (Index("chat_id", "pin_id", "pinned"),)
 
 
 class MediaGroupMessage(Base):
