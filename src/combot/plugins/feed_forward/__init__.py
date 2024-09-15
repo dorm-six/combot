@@ -58,8 +58,10 @@ def forward_to_bound_channel(bot: Bot, chat_id: int, msg: dict, session=None):
         mgm = session.execute(
             select(MediaGroupMessage).join(
                 ForwardedMessage,
-                MediaGroupMessage.chat_id == ForwardedMessage.chat_id,
-                MediaGroupMessage.msg_id == ForwardedMessage.message_id,
+                and_(
+                    MediaGroupMessage.chat_id == ForwardedMessage.chat_id,
+                    MediaGroupMessage.msg_id == ForwardedMessage.message_id,
+                ),
             )
         ).all()
         if mgm:
