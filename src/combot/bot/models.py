@@ -42,6 +42,7 @@ class UserInfo(Base):
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=True)
     username = Column(String, nullable=True)
+    is_bot = Column(Boolean, nullable=False, default=False)
 
     @property
     def full_name(self) -> str:

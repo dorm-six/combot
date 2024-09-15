@@ -55,9 +55,9 @@ def cmd_addexp(bot: Bot, msg: dict) -> None:
         return
 
     rtm = msg["reply_to_message"]
-    user_id, _, _, full_name, _ = extract_user(rtm)
+    user_id, _, _, full_name, _, is_bot = extract_user(rtm)
 
-    if user_id < 0 or rtm["from"]["is_bot"]:
+    if user_id < 0 or is_bot:
         bot.send_message(
             chat_id,
             "У автора сообщения не может быть опыта.",

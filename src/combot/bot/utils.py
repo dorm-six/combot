@@ -12,14 +12,15 @@ def escape_md(text: str) -> str:
     return result
 
 
-def extract_user(msg: dict) -> tuple[int, str, str, str, str]:
+def extract_user(msg: dict) -> tuple[int, str, str, str, str, bool]:
     f = msg["from"]
     user_id = f["id"]
     first_name = f["first_name"]
     last_name = f.get("last_name", "")
     username = f.get("username", "")
+    is_bot = f.get("is_bot")
     full_name = f"{first_name} {last_name}".strip()
-    return user_id, first_name, last_name, full_name, username
+    return user_id, first_name, last_name, full_name, username, is_bot
 
 
 @contextlib.contextmanager
@@ -35,13 +36,16 @@ def user_and_chat_info(update, session):
             chat_info = ChatInfo(id=update["message"]["chat"]["id"])
         chat_info.handle = update["message"]["chat"].get("username", None)
 
-    user_id, first_name, last_name, _, username = extract_user(update["message"])
+    user_id, first_name, last_name, _, username, is_bot = extract_user(
+        update["message"]
+    )
     user_info = session.query(UserInfo).filter(UserInfo.id == user_id).one_or_none()
     if user_info is None:
         user_info = UserInfo(id=user_id)
     user_info.first_name = first_name
     user_info.last_name = last_name
     user_info.username = username
+    user_info.is_bot = is_bot
 
     try:
         yield chat_info, user_info
