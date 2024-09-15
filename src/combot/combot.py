@@ -99,6 +99,8 @@ class ComBot(Bot):
                     elif experience.handle(self, msg, chat_info, user_info, cmd):
                         # `handle` will return true if the command was handled
                         pass
+                    elif feed_forward.command_handler(self, update, chat_info, cmd):
+                        pass
             elif chat_id not in self._dorm_chat_ids:
                 self.handle_personal_message(msg)
 

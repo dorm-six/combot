@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, delete, and_
 
 from ...db.session import dbsession
 from ...bot import Bot
@@ -117,25 +117,32 @@ def pinned_message_handler(bot: Bot, update: dict, chat_info: ChatInfo) -> bool:
     return True
 
 
-def channel_command_handler(bot: Bot, update: dict, chat_info: ChatInfo, cmd: str):
-    if cmd != "/channel":
-        return False
-
+def command_handler(bot: Bot, update: dict, chat_info: ChatInfo, cmd: str) -> bool:
     msg = update["message"]
-    msg_id = msg["message_id"]
     from_id = msg["from"]["id"]
 
     admins = bot.get_chat_admins(chat_info.id)
     if not admins["ok"]:
-        bot.send_message(
-            chat_info.id, "Не удалось получить список администраторов.", reply_to=msg_id
-        )
-        return
+        return False
 
     admins = admins["result"]
     admin_ids = [admin["user"]["id"] for admin in admins]
     if from_id not in admin_ids:
-        return
+        return False
+
+    if cmd == "/channel":
+        channel_command_handler(bot, msg, chat_info)
+        return True
+    elif cmd == "/bind":
+        bind_command_handler(bot, msg, chat_info)
+        return True
+    elif cmd == "/unbind":
+        unbind_command_handler(bot, msg, chat_info)
+        return True
+
+
+def channel_command_handler(bot: Bot, msg: dict, chat_info: ChatInfo):
+    msg_id = msg["message_id"]
 
     if "reply_to_message" not in msg:
         bot.send_message(
@@ -144,8 +151,74 @@ def channel_command_handler(bot: Bot, update: dict, chat_info: ChatInfo, cmd: st
         )
         return True
 
-    reply_to = update["message"]["reply_to_message"]
+    reply_to = msg["reply_to_message"]
     _, message, countdown = forward_to_bound_channel(bot, chat_info.id, reply_to)
 
     bot.send_message(chat_info.id, message, reply_to=msg_id, countdown=countdown)
     return True
+
+
+@dbsession
+def bind_command_handler(bot: Bot, msg: dict, chat_info: ChatInfo, session=None):
+    msg_id = msg["message_id"]
+    args = msg["text"].strip().split(" ")[1:]
+    bind_id = None
+    if len(args) == 1:
+        try:
+            bind_id = int(args[0])
+        except:
+            pass
+
+    if not bind_id:
+        bot.send_message(
+            chat_info.id,
+            "Формат команды: /bind <ID канала или чата>",
+            reply_to=msg_id,
+            countdown=30,
+        )
+        return
+
+    # Validate if the chat is accessible by the bot
+    chat = bot.get_chat(bind_id)
+    if not chat["ok"]:
+        bot.send_message(
+            chat_info.id,
+            f"Не удалось привязать канал/чат {chat_info.id}, `getChat` вернул ошибку.",
+            reply_to=msg_id,
+        )
+        return
+    # For supergroups, all "can_send" permissions should exist
+    missing_permissions = []
+    if "permissions" in chat["result"]:
+        for key, value in chat["result"]["permissions"].items():
+            if not key.startswith("can_send_"):
+                continue
+            if not value:
+                missing_permissions.append(key)
+    if missing_permissions:
+        bot.send_message(
+            chat_info.id,
+            f"Не удалось привязать канал/чат {chat_info.id}, не хватает разрешений: \n - "
+            + "\n - ".join(missing_permissions),
+            reply_to=msg_id,
+        )
+        return
+
+    existing_bind = (
+        session.query(ChatFeed).filter_by(chat_id=chat_info.id).one_or_none()
+    )
+    if not existing_bind:
+        existing_bind = ChatFeed(chat_id=chat_info.id)
+    existing_bind.feed_channel_id = bind_id
+    session.add(existing_bind)
+    session.commit()
+    session.flush()
+
+    bot.send_message(chat_info.id, "Канал/чат привязан", reply_to=msg_id)
+
+
+@dbsession
+def unbind_command_handler(bot: Bot, msg: dict, chat_info: ChatInfo, session=None):
+    msg_id = msg["message_id"]
+    session.execute(delete(ChatFeed).where(chat_id=chat_info.id))
+    bot.send_message(chat_info.id, "Канал/чат отвязан", reply_to=msg_id)
