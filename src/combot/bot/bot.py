@@ -264,7 +264,7 @@ class Bot(abc.ABC):
         data = {
             "chat_id": chat_id,
             "photo": photo,
-            "text": caption,
+            "caption": caption,
             "parse_mode": parse_mode,
             "disable_web_page_preview": no_preview,
             "has_spoiler": has_spoiler,
