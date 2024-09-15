@@ -69,4 +69,6 @@ class MediaGroupMessage(Base):
     caption = Column(Text)
     finalized = Column(Boolean, default=False)
 
-    __table_args__ = (Index("ix_bot_mgm__finalized", "chat_id", "media_group_id", "finalized"),)
+    __table_args__ = (
+        Index("ix_bot_mgm__finalized", "chat_id", "media_group_id", "finalized"),
+    )
