@@ -168,6 +168,10 @@ class Bot(abc.ABC):
         self._me = self._get_method("getMe")["result"]
         self._logger.info(pretty_json(self._me))
 
+    @property
+    def me(self):
+        return self._me
+
     def answer_callback_query(self, query_id: int, text: str, alert=False) -> dict:
         return self._post_method(
             "answerCallbackQuery",
