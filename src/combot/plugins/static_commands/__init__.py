@@ -6,17 +6,23 @@ from ...bot.models import ChatInfo
 
 
 extension_to_parse_mode = {
-    ".txt": None,
-    ".md": "Markdown",
-    ".v2.md": "MarkdownV2",
-    ".html": "HTML",
-    ".htm": "HTML",
+    ".txt": (None, False),
+    ".md": ("Markdown", False),
+    ".v2_md": ("MarkdownV2", False),
+    ".html": ("HTML", False),
+    ".htm": ("HTML", False),
+    ".nopreview_txt": (None, True),
+    ".nopreview_md": ("Markdown", True),
+    ".nopreview_v2_md": ("MarkdownV2", True),
+    ".nopreview_html": ("HTML", True),
+    ".nopreview_htm": ("HTML", True),
 }
 
 
 class CommandContent(NamedTuple):
     text: str
     parse_mode: str
+    no_preview: bool
 
 
 class StaticCommands:
@@ -42,14 +48,18 @@ class StaticCommands:
                 continue
 
             with open(item.path, "r", encoding="utf-8") as f:
-                return CommandContent(
-                    text=f.read(), parse_mode=extension_to_parse_mode[ext]
-                )
+                pm = extension_to_parse_mode[ext]
+                return CommandContent(text=f.read(), parse_mode=pm[0], no_preview=pm[1])
         return None
 
     def handle(
         self, bot: Bot, update: dict, chat_info: ChatInfo, command: str
     ) -> Optional[bool]:
+        if command.startswith("/"):
+            command = command[1:]
+        else:
+            return False
+
         if command not in self._discovered_commands:
             self._discovered_commands[command] = self._lookup_command(command)
 
@@ -63,5 +73,6 @@ class StaticCommands:
             text=dc.text,
             reply_to=msg_id,
             parse_mode=dc.parse_mode,
+            no_preview=dc.no_preview,
         )
         return True
