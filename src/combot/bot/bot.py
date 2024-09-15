@@ -307,6 +307,9 @@ class Bot(abc.ABC):
             params={"chat_id": chat_id, "message_id": msg_id},
         )
 
+    def get_chat(self, chat_id: int) -> dict:
+        return self._post_method("getChat", params={"chat_id": chat_id})
+
     def get_chat_admins(self, chat_id: int) -> dict:
         return self._post_method("getChatAdministrators", params={"chat_id": chat_id})
 
