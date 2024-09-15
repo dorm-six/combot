@@ -13,10 +13,10 @@ def load_experience() -> tuple[list[int], list[str]]:
     if not _exp_scale or not _levels:
         p = os.path.join(os.path.dirname(__file__), "experience.csv")
         with open(p, "r") as f:
-            with csv.reader(f) as csvfile:
-                for row in csvfile:
-                    _exp_scale.append(row[0])
-                    _levels.append(row[1])
+            csvfile = csv.reader(f)
+            for row in csvfile:
+                _exp_scale.append(int(row[0]))
+                _levels.append(row[1])
     return _exp_scale, _levels
 
 
