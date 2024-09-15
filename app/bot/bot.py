@@ -356,10 +356,6 @@ class Bot(abc.ABC):
                 )
             )
 
-        # TODO
-        # if with_forward:
-        #     self.forward_to_bound_channel(chat_id, msg)
-
         return result
 
     @dbsession

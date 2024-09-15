@@ -5,7 +5,7 @@ from app.bot import Bot
 from app.bot.utils import user_and_chat_info
 from app.command import Command
 from app.db.session import dbsession
-from app.plugins import combat_protector, hw, experience
+from app.plugins import combat_protector, hw, experience, feed_forward
 from app.plugins.chicks import Chicks
 from app.plugins.static_commands import StaticCommands
 from app.settings import (
@@ -54,10 +54,11 @@ class ComBot(Bot):
 
     @dbsession
     def handle(self, update: dict, session=None) -> None:
+        super().handle(update)
+
         try:
             msg = update["message"]
             chat_id = msg["chat"]["id"]
-            cmd_obj = Command(msg["text"])
         except KeyError:
             return
 
@@ -66,31 +67,45 @@ class ComBot(Bot):
 
             # Keep track of experience
             experience.experience_handler(self, update, chat_info, user_info)
+            # Forward messages to a feed
+            feed_forward.pinned_message_handler(self, update, chat_info)
 
-            if cmd_obj.is_single_cmd():
-                #
-                # Original commands
-                #
+            cmd_obj = None
+            if "text" in msg:
+                cmd_obj = Command(msg["text"])
+
+            if cmd_obj and cmd_obj.is_single_cmd():
                 if cmd_obj.is_cmd_eq("/ping", self._username):
+                    # Original command
                     self.handle_ping(msg)
                 elif cmd_obj.is_cmd_eq("/baby", self._username):
+                    # Original command
                     chicks.handle(self, msg, chat_info, user_info)
+                elif static_commands.handle(self, update, chat_info, cmd_obj.cmd):
+                    # DormBot command. `handle` will return true if static command was found
+                    pass
+                elif feed_forward.channel_command_handler(
+                    self, update, chat_info, cmd_obj.cmd
+                ):
+                    pass
                 elif chat_id in DORM_CHAT_IDS:
+                    #
+                    # Original commands
+                    #
                     if cmd_obj.is_cmd_eq("/pin", self._username):
                         combat_protector.pin(self, msg)
                     elif cmd_obj.is_cmd_eq("/unpin", self._username):
                         combat_protector.unpin(self, msg)
                     elif cmd_obj.is_cmd_eq("/hw", self._username):
                         hw.handle(self, msg)
-                #
-                # DormBot plugin commands
-                #
-                elif static_commands.handle(self, update, chat_info, cmd_obj.cmd):
-                    # `handle` will return true if static command was found
-                    pass
-                elif experience.handle(self, msg, chat_info, user_info, cmd_obj.cmd):
-                    # `handle` will return true if the command was handled
-                    pass
+                    #
+                    # DormBot XP commands
+                    #
+                    elif experience.handle(
+                        self, msg, chat_info, user_info, cmd_obj.cmd
+                    ):
+                        # `handle` will return true if the command was handled
+                        pass
             elif chat_id not in DORM_CHAT_IDS:
                 self.handle_personal_message(msg)
 
