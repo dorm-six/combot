@@ -15,9 +15,3 @@ CHAT_ID_SUPERUSER = int(require_env_var("CHAT_ID_SUPERUSER"))
 CHAT_ID_DORM_CHAT = int(require_env_var("CHAT_ID_DORM_CHAT"))
 CHAT_ID_TEST_CHAT = int(require_env_var("CHAT_ID_TEST_CHAT"))
 
-DORM_CHAT_IDS = list(
-    {
-        CHAT_ID_TEST_CHAT,
-        CHAT_ID_DORM_CHAT,
-    }
-)

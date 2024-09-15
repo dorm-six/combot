@@ -13,7 +13,6 @@ from .settings import (
     TELEGRAM_TOKEN,
     CHAT_ID_DORM_CHAT,
     CHAT_ID_TEST_CHAT,
-    DORM_CHAT_IDS,
 )
 from .settings import CHAT_ID_SUPERUSER
 
