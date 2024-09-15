@@ -7,6 +7,7 @@ from collections import defaultdict
 from typing import Optional, Callable, Iterable
 
 import requests
+from sqlalchemy import update
 
 from .models import (
     PinnedMsg,
