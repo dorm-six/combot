@@ -54,13 +54,15 @@ class Bot(abc.ABC):
         self._superuser_id = superuser_id
         self._update_offset = 0
         self._logger = logging.getLogger(
-            f"{self.__class__.__name__}#{api_key.split(":", 2)[0]}"
+            f"{self.__class__.__name__}#{api_key.split(':', 2)[0]}"
         )
         self._configure_requests_session()
         self._update_me()
         self._username = self._me["username"]
         self._pre_hooks: dict[str, list[Callable[[dict], None]]] = defaultdict(list)
-        self._post_hooks: dict[str, list[Callable[[dict, dict], None]]] = defaultdict(list)
+        self._post_hooks: dict[str, list[Callable[[dict, dict], None]]] = defaultdict(
+            list
+        )
         self._session: Optional[requests.Session] = None
 
     def _configure_requests_session(self) -> None:
@@ -77,7 +79,9 @@ class Bot(abc.ABC):
     def register_pre_hook(self, method: string, callback: Callable[[dict], None]):
         self._pre_hooks[method].append(callback)
 
-    def register_post_hook(self, method: string, callback: Callable[[dict, dict], None]):
+    def register_post_hook(
+        self, method: string, callback: Callable[[dict, dict], None]
+    ):
         self._post_hooks[method].append(callback)
 
     def _api_url(self, method: str) -> str:
@@ -119,7 +123,9 @@ class Bot(abc.ABC):
             self.send_message(chat_id=self._superuser_id, text=e)
         return r
 
-    def _call_method(self, get_response: Callable, method: str, params: dict = None, **kwargs) -> dict:
+    def _call_method(
+        self, get_response: Callable, method: str, params: dict = None, **kwargs
+    ) -> dict:
         url = self._api_url(method)
         request_id = "".join(random.choices(string.ascii_letters, k=7))
 
@@ -149,11 +155,13 @@ class Bot(abc.ABC):
     def _get_method(self, method: str, params: dict = None, **kwargs) -> dict:
         def get_response(url: str, params: dict, **kwargs):
             return self._session.get(url, params=params, **kwargs)
+
         return self._call_method(get_response, method, params, **kwargs)
 
     def _post_method(self, method: str, params: dict, **kwargs) -> dict:
         def get_response(url: str, params: dict, **kwargs):
             return self._session.post(url, json=params, **kwargs)
+
         return self._call_method(get_response, method, params, **kwargs)
 
     def _update_me(self) -> None:

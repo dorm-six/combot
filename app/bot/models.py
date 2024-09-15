@@ -45,7 +45,7 @@ class UserInfo(Base):
 
     @property
     def full_name(self) -> str:
-        return f"{self.first_name} {self.last_name or ""}".strip()
+        return f"{self.first_name} {self.last_name or ''}".strip()
 
 
 class PinnedMsg(Base):
