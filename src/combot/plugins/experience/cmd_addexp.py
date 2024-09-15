@@ -70,8 +70,8 @@ def cmd_addexp(bot: Bot, msg: dict) -> None:
         bot=bot,
         chat_id=chat_id,
         user_id=user_id,
-        points=exp_to_add,
-        fullname=full_name,
+        amount=exp_to_add,
+        full_name=full_name,
         silent=True,
         timed=False,
     )
