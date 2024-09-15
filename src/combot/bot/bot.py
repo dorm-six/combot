@@ -56,14 +56,15 @@ class Bot(abc.ABC):
         self._logger = logging.getLogger(
             f"{self.__class__.__name__}#{api_key.split(':', 2)[0]}"
         )
-        self._configure_requests_session()
-        self._update_me()
-        self._username = self._me["username"]
+        self._session: Optional[requests.Session] = None
         self._pre_hooks: dict[str, list[Callable[[dict], None]]] = defaultdict(list)
         self._post_hooks: dict[str, list[Callable[[dict, dict], None]]] = defaultdict(
             list
         )
-        self._session: Optional[requests.Session] = None
+        self._configure_requests_session()
+        self._update_me()
+        self._username = self._me["username"]
+        self._logger.debug(f"Bot @{self._username} initialized")
 
     def _configure_requests_session(self) -> None:
         if self._session:
@@ -406,7 +407,7 @@ class Bot(abc.ABC):
             session=session,
         )
 
-    def finalize_media_group(self, mg: MediaGroupMessages, session=None) -> bool:
+    def finalize_media_group(self, mg: MediaGroupMessage, session=None) -> bool:
         # Provide your own implementation
         return True
 
@@ -419,7 +420,7 @@ class Bot(abc.ABC):
         chat_id = msg["chat"]["id"]
         if "media_group_id" not in msg:
             unfinalized_media_groups = (
-                session.query(MediaGroupMessages)
+                session.query(MediaGroupMessage)
                 .filter_by(chat_id=chat_id, finalized=False)
                 .all()
             )
