@@ -116,9 +116,9 @@ class Bot(abc.ABC):
 
         if "ok" in r and not r["ok"]:
             e = (
-                f"{method}#{request_id} failed\n\n"
-                f"Parameters: {pretty_json(params)}\n\n"
-                f"Response: {pretty_json(r)}"
+                f"{method}#{request_id} failed.\n"
+                f"{request_id} Parameters: {pretty_json(params)}\n"
+                f"{request_id} Response: {pretty_json(r)}\n\n"
             )
             self._logger.error(e)
             self.send_message(chat_id=self._superuser_id, text=e)
@@ -148,7 +148,7 @@ class Bot(abc.ABC):
                 m(params, result)
 
         self._logger.debug(
-            f"{method}#{request_id} succeeded\n\n" f"Response: {pretty_json(result)}"
+            f"{method}#{request_id} succeeded. Response: {pretty_json(result)}\n\n"
         )
 
         return result
@@ -456,20 +456,15 @@ class Bot(abc.ABC):
             "timeout": max(timeout, 30) - 5,
         }
 
-        try:
-            response = self._get_method("getUpdates", params=payload, timeout=timeout)
-            if "ok" in response:
-                result = response["result"]
+        response = self._get_method("getUpdates", params=payload, timeout=timeout)
+        if "ok" in response:
+            result = response["result"]
 
-                if self._update_offset == 0 and len(result) > cutting_index:
-                    self._update_offset = result[cutting_index]["update_id"]
-                    result = result[:cutting_index]
-                return result
-            else:
-                raise Exception("getUpdates failed")
-        except Exception as e:
-            traceback.print_exc()
-        return []
+            if self._update_offset == 0 and len(result) > cutting_index:
+                self._update_offset = result[cutting_index]["update_id"]
+                result = result[:cutting_index]
+            return result
+        raise Exception("getUpdates failed")
 
     def get_and_process_updates(self, timeout=60, cutting_index=50):
         result = self.get_updates(timeout=timeout, cutting_index=cutting_index)
@@ -480,8 +475,7 @@ class Bot(abc.ABC):
             try:
                 self.handle(update)
             except Exception as e:
-                traceback.print_exc()
-                log = traceback.format_exc()
+                log = traceback.format_exc(chain=False)
 
                 crashed_chat = "<UNKNOWN>"
                 if "message" in update:
@@ -491,7 +485,11 @@ class Bot(abc.ABC):
                         update["callback_query"]["message"]["chat"]["id"]
                     )
 
-                self.send_message(
-                    self._superuser_id, f"Crash in {crashed_chat}:\n```{log}```"
-                )
+                try:
+                    self.send_message(
+                        self._superuser_id, f"Crash in {crashed_chat}:\n```{log}```"
+                    )
+                except Exception:
+                    # Whatever, we tried our best
+                    pass
                 raise e
