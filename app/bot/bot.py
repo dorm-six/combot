@@ -4,7 +4,7 @@ import random
 import string
 import traceback
 from collections import defaultdict
-from typing import Optional, Callable
+from typing import Optional, Callable, Iterable
 
 import requests
 
@@ -273,6 +273,16 @@ class Bot(abc.ABC):
         return self._post_method(
             "forwardMessage",
             params={"chat_id": to_id, "from_chat_id": chat_id, "message_id": msg_id},
+        )
+
+    def forward_messages(self, chat_id: int, msg_ids: Iterable[int], to_id: int):
+        return self._post_method(
+            "forwardMessages",
+            params={
+                "chat_id": to_id,
+                "from_chat_id": chat_id,
+                "message_ids": list(msg_ids),
+            },
         )
 
     def delete_message(self, chat_id: int, msg_id: int) -> dict:
