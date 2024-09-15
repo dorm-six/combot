@@ -35,7 +35,7 @@ def user_and_chat_info(update, session):
             chat_info = ChatInfo(id=update["message"]["chat"]["id"])
         chat_info.handle = update["message"]["chat"].get("username", None)
 
-    user_id, first_name, last_name, _, username = extract_user(update)
+    user_id, first_name, last_name, _, username = extract_user(update["message"])
     user_info = session.query(UserInfo).filter(UserInfo.id == user_id).one_or_none()
     if user_info is None:
         user_info = UserInfo(id=user_id)
