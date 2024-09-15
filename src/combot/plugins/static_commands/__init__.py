@@ -20,11 +20,9 @@ class CommandContent(NamedTuple):
 
 
 class StaticCommands:
-    _search_root: str
-    _discovered_commands: dict[str, CommandContent]
-
     def __init__(self, search_root: str = os.path.dirname(__file__)) -> None:
         self._search_root = search_root
+        self._discovered_commands: dict[str, CommandContent] = {}
 
     def clear(self):
         self._discovered_commands.clear()
