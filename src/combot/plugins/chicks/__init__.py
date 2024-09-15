@@ -21,7 +21,7 @@ class Chicks:
         with open(self._chicks_path, "r") as f:
             reader = csv.reader(f)
             for row in reader:
-                if len(row) == 2:
+                if len(row) == 4:
                     self._chicks.append(row)
 
     def clear(self) -> None:
