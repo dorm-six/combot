@@ -1,5 +1,6 @@
 import logging
-
+import os
+import traceback
 
 from .bot import Bot
 from .bot.utils import user_and_chat_info
@@ -112,16 +113,28 @@ class ComBot(Bot):
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
+
+    if "SENTRY_DSN" in os.environ:
+        import sentry_sdk
+        sentry_sdk.init(
+            dsn=os.environ["SENTRY_DSN"],
+            traces_sample_rate=1.0,
+            profiles_sample_rate=1.0,
+        )
+
     combot = ComBot(
         api_key=TELEGRAM_TOKEN,
         superuser_id=CHAT_ID_SUPERUSER,
         dorm_chat_ids=[CHAT_ID_DORM_CHAT, CHAT_ID_TEST_CHAT],
     )
+
     while True:
         try:
             combot.get_and_process_updates()
         except KeyboardInterrupt:
             break
+        except Exception:
+            traceback.print_exc()
 
 
 if __name__ == "__main__":
