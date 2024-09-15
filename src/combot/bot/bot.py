@@ -241,9 +241,9 @@ class Bot(abc.ABC):
 
         if result["ok"] and countdown is not None:
             ids = [result["result"]["message_id"]]
-            if remove_reply:
+            if remove_reply and reply_to:
                 ids.append(reply_to)
-            self.delete_deferred(chat_id=chat_id, message_ids=ids, delay=countdown)
+            self.delete_deferred(chat_id, message_ids=ids, delay=countdown)
         return result
 
     def send_photo(
@@ -281,9 +281,9 @@ class Bot(abc.ABC):
 
         if result["ok"] and countdown is not None:
             ids = [result["result"]["message_id"]]
-            if remove_reply:
+            if remove_reply and reply_to:
                 ids.append(reply_to)
-            self.delete_deferred(chat_ids=chat_id, message_ids=ids, delay=countdown)
+            self.delete_deferred(chat_id, message_ids=ids, delay=countdown)
         return result
 
     def forward_message(self, chat_id: int, msg_id: int, to_id: int) -> dict:
