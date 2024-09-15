@@ -212,7 +212,7 @@ class Bot(abc.ABC):
 
     @abc.abstractmethod
     def delete_deferred(
-        self, chat_ids: list[int], message_ids: list[int], delay: int = 0
+        self, chat_id: int, message_ids: Iterable[int], delay: int = 0
     ) -> dict:
         pass
 
@@ -243,7 +243,7 @@ class Bot(abc.ABC):
             ids = [result["result"]["message_id"]]
             if remove_reply:
                 ids.append(reply_to)
-            self.delete_deferred(chat_ids=ids, message_ids=ids, delay=countdown)
+            self.delete_deferred(chat_id=chat_id, message_ids=ids, delay=countdown)
         return result
 
     def send_photo(
@@ -283,7 +283,7 @@ class Bot(abc.ABC):
             ids = [result["result"]["message_id"]]
             if remove_reply:
                 ids.append(reply_to)
-            self.delete_deferred(chat_ids=ids, message_ids=ids, delay=countdown)
+            self.delete_deferred(chat_ids=chat_id, message_ids=ids, delay=countdown)
         return result
 
     def forward_message(self, chat_id: int, msg_id: int, to_id: int) -> dict:

@@ -29,8 +29,8 @@ class ComBot(Bot):
         super().__init__(api_key, superuser_id, proxy)
 
     def delete_deferred(
-        self, chat_ids: list[int], message_ids: list[int], delay: int = 0
-    ) -> dict:
+        self, chat_id: int, message_ids: Iterable[int], delay: int = 0
+    ):
         pass
 
     def handle_ping(self, msg):
