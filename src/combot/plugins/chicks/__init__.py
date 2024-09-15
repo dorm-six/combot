@@ -46,7 +46,7 @@ class Chicks:
     ) -> bool:
         is_admin = chat_info.id < 0 and bot.get_chat_member(
             chat_id=chat_info.id, user_id=user_info.id
-        )["status"] in [
+        )["result"]["status"] in [
             "creator",
             "administrator",
         ]
