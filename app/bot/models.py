@@ -6,6 +6,7 @@ from sqlalchemy import (
     Integer,
     String,
     UniqueConstraint,
+    Index,
 )
 
 from ..db.models import Base
@@ -57,12 +58,14 @@ class PinnedMsg(Base):
     # TODO forwarded_to_channel = Column(Boolean, default=False)
 
 
-class MediaGroup(Base):
-    __tablename__ = "media_groups"
+
+class MediaGroupMessage(Base):
+    __tablename__ = "media_group_message"
 
     chat_id = Column(BigInteger, primary_key=True)
+    media_group_id = Column(String(length=255), primary_key=True)
     msg_id = Column(BigInteger, primary_key=True)
-    media_group_id = Column(String(length=255))
-    media_type = Column(String(length=255), default=None)
-    media_id = Column(String(length=1024), default=None)
-    caption = Column(Text, default=None)
+    caption = Column(Text)
+    finalized = Column(Boolean, default=False)
+
+    __table_args__ = (Index("chat_id", "media_group_id", "finalized"),)

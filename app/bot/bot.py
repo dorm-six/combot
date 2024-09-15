@@ -8,7 +8,10 @@ from typing import Optional, Callable, Iterable
 
 import requests
 
-from app.bot.models import PinnedMsg, MediaGroup
+from app.bot.models import (
+    PinnedMsg,
+    MediaGroupMessage,
+)
 from app.bot.utils import pretty_json
 from app.db.session import dbsession
 
@@ -395,33 +398,47 @@ class Bot(abc.ABC):
             session=session,
         )
 
-    @dbsession
-    def media_group_save_handler(self, update: dict, session=None) -> bool:
-        if "message" in update and "media_group_id" in update["message"]:
-            msg = update["message"]["message_id"]
-            mginfo = MediaGroup(
-                chat_id=msg["chat"]["id"],
-                msg_id=msg["message_id"],
-                media_group_id=msg["media_group_id"],
-            )
-            if "photo" in msg:
-                mginfo.media_type = "photo"
-                mginfo.media_id = msg["photo"][-1]["file_id"]
-            elif "video" in msg:
-                mginfo.media_type = "video"
-                mginfo.media_id = msg["video"]["file_id"]
-
-            if "caption" in msg:
-                mginfo.caption = msg["caption"]
-
-            session.add(mginfo)
-            session.commit()
-            session.flush()
+    def finalize_media_group(self, mg: MediaGroupMessages, session=None) -> bool:
+        # Provide your own implementation
         return True
 
-    @abc.abstractmethod
-    def handle(self, update) -> None:
-        raise NotImplemented("Provide your own implementation.")
+    @dbsession
+    def media_group_save_handler(self, update: dict, session=None) -> bool:
+        if "message" not in update:
+            return False
+
+        msg = update["message"]
+        chat_id = msg["chat"]["id"]
+        if "media_group_id" not in msg:
+            unfinalized_media_groups = (
+                session.query(MediaGroupMessages)
+                .filter_by(chat_id=chat_id, finalized=False)
+                .all()
+            )
+
+            for mg in unfinalized_media_groups:
+                mg.finalized = self.finalize_media_group(mg)
+                session.add(mg)
+
+            session.commit()
+            session.flush()
+            return False
+
+        mgm = MediaGroupMessage(
+            chat_id=chat_id,
+            media_group_id=msg["media_group_id"],
+            msg_id=msg["message_id"],
+            caption=msg["caption"] if "caption" in msg else None,
+        )
+
+        # TODO Catch existing pk
+        session.add(mgm)
+        session.commit()
+        session.flush()
+        return True
+
+    def handle(self, update: dict) -> None:
+        self.media_group_save_handler(update)
 
     def get_updates(self, timeout=60, cutting_index=50):
         payload = {
