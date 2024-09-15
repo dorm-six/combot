@@ -469,8 +469,8 @@ class Bot(abc.ABC):
     def get_and_process_updates(self, timeout=60, cutting_index=50):
         result = self.get_updates(timeout=timeout, cutting_index=cutting_index)
         for update in result:
-            if update["update_id"] + 1 > self._update_offset:
-                self._update_offset = update["update_id"] + 1
+            if update["update_id"] > self._update_offset:
+                self._update_offset = update["update_id"]
 
             try:
                 self.handle(update)
