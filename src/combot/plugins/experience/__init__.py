@@ -84,7 +84,7 @@ def experience_handler(
     user_info: UserInfo,
     session=None,
 ):
-    if "message" not in update or not chat_info:
+    if "message" not in update or not chat_info or not user_info or user_info.is_bot:
         return
 
     prob = (
