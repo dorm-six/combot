@@ -5,3 +5,21 @@ services:
     working_dir: "/app"
     command: ["/bin/bash", "start_bot.sh"]
     restart: on-failure
+
+  combot-celery:
+    build: .
+    environment:
+      - "CELERY_APP=combot.celery.celery"
+      - "CELERYD_LOG_FILE=/var/log/celery/dorm_%n%I.log"
+      - "CELERYD_USER=celery"
+      - "CELERYD_GROUP=celery"
+      - "CELERY_CREATE_DIRS=1"
+      - "BROKER_CONNECTION_TIMEOUT=30"
+      - "IN_CELERY=1"
+    env_file:
+      - .env-dev
+    command: celery worker --pidfile "/var/run/celery/dorm_%n%I.pid" --loglevel INFO
+    volumes:
+      - /var/log/celery:/var/log/celery
+      - /var/run/celery:/var/run/celery
+    restart: on-failure

@@ -8,6 +8,7 @@ dependencies = [
     "alembic>=1.13.2",
     "celery>=5.4.0",
     "psycopg2-binary>=2.9.9",
+    "redis>=5.0.8",
     "requests>=2.32.3",
     "sentry-sdk>=2.14.0",
     "sqlalchemy>=2.0.34",

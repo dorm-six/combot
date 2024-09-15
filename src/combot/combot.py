@@ -1,6 +1,7 @@
 import logging
 import os
 import traceback
+from typing import Iterable
 
 from .bot import Bot
 from .bot.utils import user_and_chat_info
@@ -31,11 +32,13 @@ class ComBot(Bot):
     def delete_deferred(
         self, chat_id: int, message_ids: Iterable[int], delay: int = 0
     ):
+        from .celery import delete_task
+        delete_task.apply_async((chat_id, message_ids), countdown=delay)
         pass
 
-    def handle_ping(self, msg):
+    def handle_ping(self, msg, countdown=None):
         chat_id = msg["chat"]["id"]
-        self.send_message(chat_id=chat_id, text="I am Alive, сучка")
+        self.send_message(chat_id=chat_id, text="I am Alive, сучка", countdown=countdown)
 
     def handle_personal_message(self, msg):
         from_chat_id = msg["chat"]["id"]
@@ -77,6 +80,8 @@ class ComBot(Bot):
                 if cmd == "/ping":
                     # Original command
                     self.handle_ping(msg)
+                elif cmd == "/pong":
+                    self.handle_ping(msg, countdown=3)
                 elif cmd == "/baby":
                     # Original command
                     chicks.handle(self, msg, chat_info, user_info)
