@@ -11,7 +11,7 @@ def cmd_mylvl(bot: Bot, msg: dict, session=None) -> None:
     from_id = msg["from"]["id"]
     is_private = msg["chat"]["type"] == "private"
 
-    message = "*Ваш статус*: "
+    message = "Ваш статус: "
     if is_private:
         bot.send_message(chat_id, "Эта команда работает только в чатах.")
         return
@@ -23,7 +23,7 @@ def cmd_mylvl(bot: Bot, msg: dict, session=None) -> None:
     )
     if rating is not None:
         level, level_name, till_next = calculate_level(rating.experience)
-        message = f"*{level_name} ({rating.experience}/{till_next})"
+        message += f"*{level_name}* ({rating.experience}/{till_next})"
     else:
         message += "*кто вы? Ид~*"
     bot.send_message(chat_id, message, reply_to=msg_id, countdown=300)
