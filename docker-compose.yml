@@ -1,7 +1,7 @@
-version: '3'
 services:
   combot-tg:
     build: .
-    env_file: .env
-    command: /bin/ash /app/scripts/start_bot.sh
+    env_file: .env-dev
+    working_dir: "/app"
+    command: ["/bin/bash", "start_bot.sh"]
     restart: on-failure

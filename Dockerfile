@@ -1,11 +1,16 @@
-FROM python:3.6-alpine
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS builder
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
 WORKDIR /app
-# Add requirements first to avoid rebuilding dependencies each time something but requirements changes
-ADD ./app/requirements.txt /app
-RUN apk add --update build-base postgresql-libs postgresql-dev linux-headers
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
-RUN apk del build-base postgresql-dev linux-headers
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
+ADD . /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
 
-ADD ./app /app
-ADD ./runner.py /runner.py
-RUN chmod 755 /app/scripts/start_bot.sh
+FROM python:3.12-slim-bookworm
+WORKDIR /app
+COPY --from=builder --chown=app:app /app /app
+ENV PATH="/app/.venv/bin:$PATH"
+COPY --chmod=755 --chown=app:app start_bot.sh /app

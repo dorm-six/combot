@@ -12,5 +12,9 @@ dependencies = [
     "sqlalchemy>=2.0.34",
 ]
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project.scripts]
 combot = "combot.combot:main"
