@@ -69,7 +69,7 @@ class StaticCommands:
 
         msg_id = update["message"]["message_id"]
         bot.send_message(
-            chat_id=chat_info.id,
+            chat_id=update["message"]["chat"]["id"],
             text=dc.text,
             reply_to=msg_id,
             parse_mode=dc.parse_mode,
