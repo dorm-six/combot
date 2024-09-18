@@ -57,6 +57,7 @@ class Chicks:
                     chat_id=chat_info.id,
                     text="Типичный пример малолетнего дебила.",
                     reply_to=msg_id,
+                    parse_mode=None
                 )
             elif random.randint(0, 100) < 50:
                 bot.send_photo(
@@ -66,6 +67,7 @@ class Chicks:
                         user_info.first_name, user_info.last_name
                     ).strip(),
                     reply_to=msg_id,
+                    parse_mode=None
                 )
             return True
 

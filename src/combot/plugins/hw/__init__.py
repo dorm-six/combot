@@ -59,4 +59,4 @@ def handle(bot: Bot, msg: dict):
     else:
         resp_msg = "Huli Wi {}".format(random.choice(_hw))
 
-    bot.send_message(msg["chat"]["id"], resp_msg)
+    bot.send_message(msg["chat"]["id"], resp_msg, parse_mode=None)
