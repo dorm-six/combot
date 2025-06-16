@@ -6,13 +6,14 @@ from typing import Iterable
 from .bot import Bot
 from .bot.utils import user_and_chat_info
 from .db.session import dbsession
-from .plugins import combat_protector, hw, experience, feed_forward
+from .plugins import hw, experience, feed_forward
 from .plugins.chicks import Chicks
 from .plugins.static_commands import StaticCommands
 from .settings import (
     TELEGRAM_TOKEN,
     CHAT_ID_DORM_CHAT,
     CHAT_ID_TEST_CHAT,
+    CHAT_ID_PRIVATE_CHAT,
 )
 from .settings import CHAT_ID_SUPERUSER
 
@@ -22,11 +23,13 @@ static_commands = StaticCommands()
 
 class ComBot(Bot):
     _dorm_chat_ids = []
+    _premium_chat_ids = []
 
     def __init__(
-        self, api_key: str, superuser_id: int, dorm_chat_ids: list[int], proxy=None
+        self, api_key: str, superuser_id: int, dorm_chat_ids: list[int], premium_chat_ids: list[int], proxy=None
     ):
         self._dorm_chat_ids = dorm_chat_ids
+        self._premium_chat_ids = premium_chat_ids
         super().__init__(api_key, superuser_id, proxy)
 
     def delete_deferred(
@@ -82,31 +85,25 @@ class ComBot(Bot):
                     self.handle_ping(msg)
                 elif cmd == "/pong":
                     self.handle_ping(msg, countdown=3)
-                elif cmd == "/baby":
-                    # Original command
-                    chicks.handle(self, msg, chat_info, user_info)
                 elif static_commands.handle(self, update, chat_info, cmd):
                     # DormBot command. `handle` will return true if static command was found
                     pass
                 elif chat_id in self._dorm_chat_ids:
                     #
-                    # Original commands
-                    #
-                    if cmd == "/pin":
-                        combat_protector.pin(self, msg)
-                    elif cmd == "/unpin":
-                        combat_protector.unpin(self, msg)
-                    elif cmd == "/hw":
-                        hw.handle(self, msg)
-                    #
                     # DormBot XP commands
                     #
-                    elif experience.handle(self, msg, chat_info, user_info, cmd):
+                    if experience.handle(self, msg, chat_info, user_info, cmd):
                         # `handle` will return true if the command was handled
                         pass
                     elif feed_forward.command_handler(self, update, chat_info, cmd):
                         pass
-            elif chat_id not in self._dorm_chat_ids:
+                elif chat_id in self._premium_chat_ids:
+                    # Original command
+                    if cmd == "/baby":
+                        chicks.handle(self, msg, chat_info, user_info)
+                    if cmd == "/hw":
+                        hw.handle(self, msg)
+            elif chat_id not in self._dorm_chat_ids and chat_id in self._premium_chat_ids:
                 self.handle_personal_message(msg)
 
 
@@ -126,6 +123,7 @@ def main():
         api_key=TELEGRAM_TOKEN,
         superuser_id=CHAT_ID_SUPERUSER,
         dorm_chat_ids=[CHAT_ID_DORM_CHAT, CHAT_ID_TEST_CHAT],
+        premium_chat_ids=[CHAT_ID_PRIVATE_CHAT]
     )
 
     while True:

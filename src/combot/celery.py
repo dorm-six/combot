@@ -4,7 +4,7 @@ import traceback
 from celery import Celery, Task
 
 from .combot import ComBot
-from .settings import TELEGRAM_TOKEN, CHAT_ID_SUPERUSER, CHAT_ID_DORM_CHAT, CHAT_ID_TEST_CHAT
+from .settings import TELEGRAM_TOKEN, CHAT_ID_SUPERUSER, CHAT_ID_DORM_CHAT, CHAT_ID_TEST_CHAT, CHAT_ID_PRIVATE_CHAT
 
 celery = Celery(
     "dormcelery",
@@ -19,6 +19,7 @@ class BotTask(Task):
                 api_key=TELEGRAM_TOKEN,
                 superuser_id=CHAT_ID_SUPERUSER,
                 dorm_chat_ids=[CHAT_ID_DORM_CHAT, CHAT_ID_TEST_CHAT],
+                premium_chat_ids=[CHAT_ID_PRIVATE_CHAT]
             )
         super(BotTask, self).__init__(*args, **kwargs)
 
