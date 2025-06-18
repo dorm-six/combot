@@ -11,9 +11,15 @@ class Chicks:
     _chicks: list[list[str]]
 
     def __init__(
-        self, chicks_csv=os.path.join(os.path.dirname(__file__), "chicks.csv")
+        self, csv_relative_path=None, csv_absolute_path=None,
     ):
-        self._chicks_path = chicks_csv
+        if csv_absolute_path:
+            self._chicks_path = csv_absolute_path
+        elif csv_relative_path:
+            self._chicks_path = str(os.path.join(os.path.dirname(__file__), csv_relative_path))
+        else:
+            raise RuntimeError("Chicks plugin requires a CSV path")
+
         self._load_chicks()
 
     def _load_chicks(self) -> None:

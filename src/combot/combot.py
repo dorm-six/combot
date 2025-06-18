@@ -17,7 +17,7 @@ from .settings import (
 )
 from .settings import CHAT_ID_SUPERUSER
 
-chicks = Chicks()
+chicks = Chicks(csv_relative_path="chicks.csv")
 static_commands = StaticCommands()
 
 
