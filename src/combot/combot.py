@@ -7,7 +7,7 @@ from .bot import Bot
 from .bot.utils import user_and_chat_info
 from .db.session import dbsession
 from .plugins import hw, experience, feed_forward
-from .plugins.chicks import Chicks
+from .plugins.random_pics import RandomPics
 from .plugins.static_commands import StaticCommands
 from .settings import (
     TELEGRAM_TOKEN,
@@ -17,7 +17,7 @@ from .settings import (
 )
 from .settings import CHAT_ID_SUPERUSER
 
-chicks = Chicks(csv_relative_path="chicks.csv")
+chicks = RandomPics(csv_relative_path="chicks.csv")
 static_commands = StaticCommands()
 
 

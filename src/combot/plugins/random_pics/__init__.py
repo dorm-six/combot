@@ -6,35 +6,35 @@ from ...bot import Bot
 from ...bot.models import ChatInfo, UserInfo
 
 
-class Chicks:
-    _chicks_path: str
-    _chicks: list[list[str]]
+class RandomPics:
+    _csv_path: str
+    _pics: list[list[str]]
 
     def __init__(
         self, csv_relative_path=None, csv_absolute_path=None,
     ):
         if csv_absolute_path:
-            self._chicks_path = csv_absolute_path
+            self._csv_path = csv_absolute_path
         elif csv_relative_path:
-            self._chicks_path = str(os.path.join(os.path.dirname(__file__), csv_relative_path))
+            self._csv_path = str(os.path.join(os.path.dirname(__file__), csv_relative_path))
         else:
-            raise RuntimeError("Chicks plugin requires a CSV path")
+            raise RuntimeError("RandomPics plugin requires a CSV path")
 
-        self._load_chicks()
+        self._load_pics()
 
-    def _load_chicks(self) -> None:
-        self._chicks = []
-        with open(self._chicks_path, "r") as f:
+    def _load_pics(self) -> None:
+        self._pics = []
+        with open(self._csv_path, "r") as f:
             reader = csv.reader(f)
             for row in reader:
                 if len(row) == 4:
-                    self._chicks.append(row)
+                    self._pics.append(row)
 
     def clear(self) -> None:
-        self._load_chicks()
+        self._load_pics()
 
-    def _get_random_chick(self) -> tuple[str, str, int, int]:
-        line = random.choice(self._chicks)
+    def _get_random_pic(self) -> tuple[str, str, int, int]:
+        line = random.choice(self._pics)
         name = line[0]
         url = line[1]
         min_mute = 0
@@ -77,7 +77,7 @@ class Chicks:
                 )
             return True
 
-        name, url, min_mute, max_mute = self._get_random_chick()
+        name, url, min_mute, max_mute = self._get_random_pic()
 
         restricted = False
         if min_mute > 0 and random.randint(0, 100) < 80:
