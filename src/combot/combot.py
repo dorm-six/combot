@@ -18,6 +18,7 @@ from .settings import (
 from .settings import CHAT_ID_SUPERUSER
 
 chicks = RandomPics(csv_relative_path="chicks.csv")
+boys = RandomPics(csv_relative_path="boys.csv")
 static_commands = StaticCommands()
 
 
@@ -97,12 +98,14 @@ class ComBot(Bot):
                         pass
                     elif feed_forward.command_handler(self, update, chat_info, cmd):
                         pass
-                elif chat_id in self._premium_chat_ids:
+                # elif chat_id in self._premium_chat_ids:
                     # Original command
-                    if cmd == "/baby":
-                        chicks.handle(self, msg, chat_info, user_info)
-                    if cmd == "/hw":
-                        hw.handle(self, msg)
+                if cmd == "/baby":
+                    chicks.handle(self, msg, chat_info, user_info, True)
+                if cmd == "/myboy":
+                    boys.handle(self, msg, chat_info, user_info, False)
+                if cmd == "/hw":
+                    hw.handle(self, msg)
             elif chat_id not in self._dorm_chat_ids and chat_id in self._premium_chat_ids:
                 self.handle_personal_message(msg)
 
