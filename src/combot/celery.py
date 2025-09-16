@@ -19,7 +19,7 @@ class BotTask(Task):
                 api_key=TELEGRAM_TOKEN,
                 superuser_id=CHAT_ID_SUPERUSER,
                 dorm_chat_ids=[CHAT_ID_DORM_CHAT, CHAT_ID_TEST_CHAT],
-                premium_chat_ids=[CHAT_ID_PRIVATE_CHAT]
+                blacklist_chat_ids=[]
             )
         super(BotTask, self).__init__(*args, **kwargs)
 
