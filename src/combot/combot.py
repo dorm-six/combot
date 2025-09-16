@@ -7,30 +7,29 @@ from .bot import Bot
 from .bot.utils import user_and_chat_info
 from .db.session import dbsession
 from .plugins import hw, experience, feed_forward
-from .plugins.random_pics import RandomPics
+from .plugins.random_pics import RandomPics, ChickPics
 from .plugins.static_commands import StaticCommands
 from .settings import (
     TELEGRAM_TOKEN,
     CHAT_ID_DORM_CHAT,
-    CHAT_ID_TEST_CHAT,
-    CHAT_ID_PRIVATE_CHAT,
+    CHAT_ID_TEST_CHAT
 )
 from .settings import CHAT_ID_SUPERUSER
 
-chicks = RandomPics(csv_relative_path="chicks.csv")
+chicks = ChickPics(csv_relative_path="chicks.csv")
 boys = RandomPics(csv_relative_path="boys.csv")
 static_commands = StaticCommands()
 
 
 class ComBot(Bot):
     _dorm_chat_ids = []
-    _premium_chat_ids = []
+    _blacklist_chat_ids = []
 
     def __init__(
-        self, api_key: str, superuser_id: int, dorm_chat_ids: list[int], premium_chat_ids: list[int], proxy=None
+        self, api_key: str, superuser_id: int, dorm_chat_ids: list[int], blacklist_chat_ids: list[int], proxy=None
     ):
         self._dorm_chat_ids = dorm_chat_ids
-        self._premium_chat_ids = premium_chat_ids
+        self._blacklist_chat_ids = blacklist_chat_ids
         super().__init__(api_key, superuser_id, proxy)
 
     def delete_deferred(
@@ -98,15 +97,15 @@ class ComBot(Bot):
                         pass
                     elif feed_forward.command_handler(self, update, chat_info, cmd):
                         pass
-                elif chat_id in self._premium_chat_ids:
+                if chat_id not in self._blacklist_chat_ids:
                     # Original command
                     if cmd == "/baby":
-                        chicks.handle(self, msg, chat_info, user_info, True)
+                        chicks.handle(self, msg, chat_info, user_info)
                     if cmd == "/myboy":
-                        boys.handle(self, msg, chat_info, user_info, False)
+                        boys.handle(self, msg, chat_info, user_info)
                     if cmd == "/hw":
                         hw.handle(self, msg)
-            elif chat_id not in self._dorm_chat_ids and chat_id in self._premium_chat_ids:
+            elif chat_id not in self._dorm_chat_ids and chat_id not in self._blacklist_chat_ids:
                 self.handle_personal_message(msg)
 
 
@@ -126,7 +125,7 @@ def main():
         api_key=TELEGRAM_TOKEN,
         superuser_id=CHAT_ID_SUPERUSER,
         dorm_chat_ids=[CHAT_ID_DORM_CHAT, CHAT_ID_TEST_CHAT],
-        premium_chat_ids=[CHAT_ID_PRIVATE_CHAT]
+        blacklist_chat_ids=[]
     )
 
     while True:

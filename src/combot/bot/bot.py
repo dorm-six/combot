@@ -220,8 +220,8 @@ class Bot(abc.ABC):
         self,
         chat_id: int,
         text: str,
+        parse_mode: Optional[str] = "Markdown",
         reply_to: Optional[int] = None,
-        parse_mode: str = "Markdown",
         reply_markup: dict = None,
         no_preview=False,
         countdown: int = None,
@@ -230,13 +230,14 @@ class Bot(abc.ABC):
         data = {
             "chat_id": chat_id,
             "text": text,
-            "parse_mode": parse_mode,
             "disable_web_page_preview": no_preview,
         }
         if reply_markup:
             data["reply_markup"] = reply_markup
         if reply_to:
             data["reply_to_message_id"] = reply_to
+        if parse_mode:
+            data["parse_mode"] = parse_mode
         result = self._post_method("sendMessage", params=data)
 
         if result["ok"] and countdown is not None:
@@ -251,8 +252,8 @@ class Bot(abc.ABC):
         chat_id: int,
         photo: str,
         caption: str,
+        parse_mode: Optional[str] = None,
         reply_to: Optional[int] = None,
-        # parse_mode: str = "Markdown",
         show_caption_above_media: bool = False,
         has_spoiler: bool = False,
         disable_notification: bool = False,
@@ -266,7 +267,6 @@ class Bot(abc.ABC):
             "chat_id": chat_id,
             "photo": photo,
             "caption": caption,
-            # "parse_mode": parse_mode,
             "disable_web_page_preview": no_preview,
             "has_spoiler": has_spoiler,
             "show_caption_above_media": show_caption_above_media,
@@ -277,6 +277,8 @@ class Bot(abc.ABC):
             data["reply_markup"] = reply_markup
         if reply_to:
             data["reply_to_message_id"] = reply_to
+        if parse_mode:
+            data["parse_mode"] = parse_mode
         result = self._post_method("sendPhoto", params=data)
 
         if result["ok"] and countdown is not None:

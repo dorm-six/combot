@@ -33,11 +33,7 @@ class RandomPics:
     def clear(self) -> None:
         self._load_pics()
 
-    def _get_random_pic(self, baby) -> tuple[str, str, int, int]:
-        if baby and random.randint(1, 100000) == 1:
-            return ("Lia Habibullina",
-                    "https://sun9-80.userapi.com/s/v1/ig2/izCzXV-hQI17Cd_U1mLRC_vl20S8JE3cDimz10PS3Hy5d9qlAU73jNsUc520rIYE65k7MYNtGBZGohDVhI2zDPc-.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&cs=1920x0",
-                    20000, 25000)
+    def _get_random_pic(self) -> tuple[str, str, int, int]:
         line = random.choice(self._pics)
         name = line[0]
         url = line[1]
@@ -52,7 +48,7 @@ class RandomPics:
         return name, url, min_mute, max_mute
 
     def handle(
-        self, bot: Bot, msg: dict, chat_info: ChatInfo, user_info: UserInfo, baby
+        self, bot: Bot, msg: dict, chat_info: ChatInfo, user_info: UserInfo
     ) -> bool:
         is_admin = chat_info.id < 0 and bot.get_chat_member(
             chat_id=chat_info.id, user_id=user_info.id
@@ -63,7 +59,7 @@ class RandomPics:
         msg_id = msg["message_id"]
         phrases = ["Типичный представитель дарвиновской премии.",
                    "Типичный пример малолетнего дебила.",
-                   "Гордость маминой переписки в WhatsApp.",
+                   "Гордость мамкиных чатов.",
                    "Пример того, как естественный отбор промахнулся.",
                    "Громко, но без толку — прямо как ты.",
                    "Мог бы молчать — казался бы умнее.",
@@ -80,13 +76,14 @@ class RandomPics:
              f"{user}")
         ]
 
-        name, url, min_mute, max_mute = self._get_random_pic(baby)
+        name, url, min_mute, max_mute = self._get_random_pic()
         if is_admin:
             if random.randint(0, 100) < 15:
                 bot.send_message(
                     chat_id=chat_info.id,
                     text=random.choice(phrases),
-                    reply_to=msg_id
+                    reply_to=msg_id,
+                    parse_mode=None
                 )
             elif random.randint(0, 100) < 30:
                 pic = random.choice(stupid_pics)
@@ -125,3 +122,22 @@ class RandomPics:
             name += "."
         bot.send_photo(chat_id=chat_info.id, photo=url, caption=name, reply_to=msg_id)
         return True
+
+class ChickPics (RandomPics):
+    def _get_random_pic(self) -> tuple[str, str, int, int]:
+        if random.randint(1, 100000) == 1:
+            return ("Lia Habibullina",
+                    "https://sun9-80.userapi.com/s/v1/ig2/izCzXV-hQI17Cd_U1mLRC_vl20S8JE3cDimz10PS3Hy5d9qlAU73jNsUc520rIYE65k7MYNtGBZGohDVhI2zDPc-.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,1080x1440,1280x1707,1440x1920,1920x2560&from=bu&cs=1920x0",
+                    20000, 25000)
+        line = random.choice(self._pics)
+        name = line[0]
+        url = line[1]
+        min_mute = 0
+        max_mute = 0
+        if len(line) > 2:
+            min_mute = int(line[2])
+            max_mute = min_mute
+        if len(line) > 3:
+            max_mute = int(line[3])
+
+        return name, url, min_mute, max_mute
