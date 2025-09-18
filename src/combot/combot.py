@@ -1,6 +1,7 @@
 import logging
 import os
 import traceback
+from datetime import timezone, timedelta, datetime
 from typing import Iterable
 
 from .bot import Bot
@@ -19,6 +20,9 @@ from .settings import CHAT_ID_SUPERUSER
 chicks = ChickPics(csv_relative_path="chicks.csv")
 boys = RandomPics(csv_relative_path="boys.csv")
 static_commands = StaticCommands()
+
+MSK = timezone(timedelta(hours=3))
+START_TIME = datetime(2025, 9, 20, 12, 00, tzinfo=MSK)
 
 
 class ComBot(Bot):
@@ -97,7 +101,7 @@ class ComBot(Bot):
                         pass
                     elif feed_forward.command_handler(self, update, chat_info, cmd):
                         pass
-                if chat_id not in self._blacklist_chat_ids:
+                if chat_id not in self._blacklist_chat_ids and datetime.now(MSK) > START_TIME:
                     # Original command
                     if cmd == "/baby":
                         chicks.handle(self, msg, chat_info, user_info)
